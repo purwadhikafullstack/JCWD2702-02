@@ -9,7 +9,9 @@ export const userRegister = async (
   next: NextFunction,
 ) => {
   try {
-    const { fullname, email, password } = req.body;
+    const { fullname, email, password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) throw new Error("Password doesn't match");
 
     const emailValidation = await findUserByEmail({ email });
 
