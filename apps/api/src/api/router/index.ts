@@ -1,9 +1,9 @@
 import express, { Router } from 'express';
-import RolesRouter from './../roles/RolesRouter';
+import AuthRouter from './../auth/AuthRouter';
 
 const router = Router();
 router.use(express.json());
 
-router.use('/roles', RolesRouter);
+router.use('/auth', AuthRouter);
 
 export default router;
