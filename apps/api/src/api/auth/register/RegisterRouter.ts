@@ -1,7 +1,11 @@
 import { Router } from 'express';
-import { userRegister } from './RegisterController';
+import {
+  userRegisterByEmail,
+  userVerificationByEmail,
+} from './RegisterController';
 import { userRegisterValidator } from '../../../middlewares/validator/UserRegister/userRegisterValidator';
 import { handleErrorExpressValidator } from './../../../middlewares/validator/HandleErrorExpressValidator';
+import { tokenVerify } from '@/helpers/Token';
 
 const router = Router();
 
@@ -9,7 +13,8 @@ router.post(
   '/',
   userRegisterValidator,
   handleErrorExpressValidator,
-  userRegister,
+  userRegisterByEmail,
 );
+router.post('/verification', tokenVerify, userVerificationByEmail);
 
 export default router;

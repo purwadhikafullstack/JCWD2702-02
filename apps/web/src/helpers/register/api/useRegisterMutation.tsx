@@ -5,8 +5,6 @@ import axios from 'axios'
 interface IReqUseRegisterMutation {
   fullname: string
   email: string
-  password: string
-  confirmPassword: string
 }
 
 export const useRegisterMutation = ({
@@ -17,17 +15,10 @@ export const useRegisterMutation = ({
   onError: any
 }) => {
   const { mutate, data, isSuccess, isPending } = useMutation({
-    mutationFn: async ({
-      fullname,
-      email,
-      password,
-      confirmPassword,
-    }: IReqUseRegisterMutation) => {
+    mutationFn: async ({ fullname, email }: IReqUseRegisterMutation) => {
       return await axios.post('http://localhost:8000/auth/register', {
         fullname,
         email,
-        password,
-        confirmPassword,
       })
     },
     onSuccess,

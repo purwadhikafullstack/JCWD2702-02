@@ -1,69 +1,41 @@
 'use client'
+import Link from 'next/link'
+import { useVerification } from './../../../helpers/verification/hooks/useVerification'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import { userLoginSchema } from '../../helpers/login/schema/userLoginSchema'
-import { MdEmail, MdLock } from 'react-icons/md'
-import { useUserLogin } from '../../helpers/login/hooks/useUserLogin'
-import { useRouter } from 'next/navigation'
+import { userRegisterVerificationSchema } from '@/helpers/verification/schema/userRegisterVerificationSchema'
+import { MdLock, MdLockOutline } from 'react-icons/md'
 
-export default function Login() {
-  const { mutationLogin, isPending } = useUserLogin()
-  const navigate = useRouter()
+export default function Verification({ params }: any) {
+  const { mutationVerification } = useVerification()
+  const token = params.token as string
+
   return (
     <Formik
       initialValues={{
-        email: '',
         password: '',
+        confirmPassword: '',
       }}
-      validationSchema={userLoginSchema}
-      onSubmit={(values) => {
-        mutationLogin({
-          email: values.email,
+      validationSchema={userRegisterVerificationSchema}
+      onSubmit={(values, { resetForm }) => {
+        console.log(values)
+        mutationVerification({
+          accesstoken: token,
           password: values.password,
+          confirmPassword: values.confirmPassword,
         })
-        navigate.push('/')
       }}
     >
       {({ dirty, isValid }) => {
         return (
           <Form>
             <div className='flex h-fit items-center justify-center p-[100px]'>
-              <div className='flex h-[600px] w-[500px] flex-col items-start justify-between rounded-md border-2 border-white p-10 shadow-xl'>
+              <div className='flex h-[500px] w-[500px] flex-col items-start justify-between rounded-md border-2 border-white p-10 shadow-xl'>
                 <div className='flex flex-col gap-[25px]'>
                   <div className='text-[25px] font-bold'>
-                    Login to Your Account
-                  </div>
-                  <div className='text-[15px]'>
-                    Dont have an account?{' '}
-                    <a
-                      href='/register/user'
-                      className='text-eggplant underline underline-offset-2 hover:text-hover_eggplant'
-                    >
-                      Sign up now
-                    </a>
+                    Verify Your Account
                   </div>
                 </div>
                 <div className='flex w-full flex-col gap-10'>
-                  <div className='flex flex-col gap-2'>
-                    <div className='flex items-center font-bold'>
-                      Email*
-                      <MdEmail />
-                    </div>
-                    <div>
-                      <label className='input input-bordered flex w-full items-center gap-2'>
-                        <Field
-                          type='text'
-                          className='grow'
-                          placeholder='Email'
-                          name='email'
-                        />
-                      </label>
-                      <ErrorMessage
-                        name='email'
-                        component='div'
-                        className='text-red-500'
-                      />
-                    </div>
-                  </div>
                   <div className='flex flex-col gap-2'>
                     <div className='flex items-center font-bold'>
                       Password*
@@ -85,14 +57,35 @@ export default function Login() {
                       />
                     </div>
                   </div>
+                  <div className='flex flex-col gap-2'>
+                    <div className='flex items-center font-bold'>
+                      Confirm Password*
+                      <MdLockOutline />
+                    </div>
+                    <div>
+                      <label className='input input-bordered flex w-full items-center gap-2'>
+                        <Field
+                          type='password'
+                          className='grow'
+                          placeholder='Confirm Password'
+                          name='confirmPassword'
+                        />
+                      </label>
+                      <ErrorMessage
+                        name='confirmPassword'
+                        component='div'
+                        className='text-red-500'
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div className='flex w-full flex-col'>
                   <button
                     type='submit'
-                    className='rounded-m bg-azureBlue btn flex w-full justify-center bg-eggplant text-white hover:bg-hover_eggplant'
-                    disabled={!(dirty && isValid) || isPending == true}
+                    className='rounded-m bg-cerulean btn flex w-full justify-center bg-eggplant text-white hover:bg-hover_eggplant'
+                    disabled={!(dirty && isValid)}
                   >
-                    LOG IN
+                    Verify
                   </button>
                   <div className='divider'></div>
                 </div>
