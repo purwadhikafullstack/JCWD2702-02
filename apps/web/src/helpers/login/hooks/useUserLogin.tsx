@@ -2,14 +2,30 @@ import { useUserLoginMutation } from '../api/useUserLoginMutation'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import { Slide } from 'react-toastify'
+import { setCookie } from '@/config/cookie'
+import { UserContext } from '@/config/context/userContext'
+import { useContext } from 'react'
 
 export const useUserLogin = () => {
+  const { userData, setUserData }: any = useContext(UserContext)
+
   const navigate = useRouter()
+
   const { mutate: mutationLogin, isPending } = useUserLoginMutation({
     onSuccess: (res: any) => {
+      const response = res.data.data
+      let nameResult = response.name
+      nameResult = nameResult.split(' ')
+      setUserData({
+        fullname: response.name,
+        firstname: nameResult[0],
+        role: response.role,
+        email: response.email,
+      })
+      setCookie(res.data.data.accesstoken)
       toast.success(res.data.message, {
         position: 'top-right',
-        autoClose: 1500,
+        autoClose: 2000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,

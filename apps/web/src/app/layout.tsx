@@ -24,7 +24,6 @@ export default function RootLayout({
       <html lang='en'>
         <body className={inter.className}>
           <TanstackProvider>
-            <ToastContainer />
             <Navbar />
             {children}
             <Footer />
