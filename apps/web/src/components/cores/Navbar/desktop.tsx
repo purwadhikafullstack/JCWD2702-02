@@ -33,9 +33,12 @@ export default function NavbarDesktop() {
         >
           Register
         </Link>
-        <button className='border-eggplant hover:border-hover_eggplant hover:bg-hover_eggplant bg-eggplant flex h-[40px] w-[100px] items-center justify-center rounded-md border-2 font-bold text-white'>
+        <Link
+          href={'/login'}
+          className='border-eggplant hover:border-hover_eggplant hover:bg-hover_eggplant bg-eggplant flex h-[40px] w-[100px] items-center justify-center rounded-md border-2 font-bold text-white'
+        >
           Login
-        </button>
+        </Link>
       </div>
     </div>
   )

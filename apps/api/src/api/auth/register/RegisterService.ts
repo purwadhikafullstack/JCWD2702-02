@@ -1,5 +1,5 @@
 import { prisma } from './../../../lib/PrismaClient';
-import { IReqUserRegisterService } from './RegisterType';
+import { IReqUserRegisterService } from './RegisterTypes';
 
 export const userRegisterService = async ({
   fullname,
