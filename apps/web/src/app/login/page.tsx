@@ -4,6 +4,7 @@ import { userLoginSchema } from '../../helpers/login/schema/userLoginSchema'
 import { MdEmail, MdLock } from 'react-icons/md'
 import { useUserLogin } from '../../helpers/login/hooks/useUserLogin'
 import { useRouter } from 'next/navigation'
+import GoogleSignUpButton from '../../components/cores/Google'
 
 export default function Login() {
   const { mutationLogin, isPending } = useUserLogin()
@@ -20,7 +21,6 @@ export default function Login() {
           email: values.email,
           password: values.password,
         })
-        navigate.push('/')
       }}
     >
       {({ dirty, isValid }) => {
@@ -57,11 +57,11 @@ export default function Login() {
                           name='email'
                         />
                       </label>
-                      <ErrorMessage
+                      {/* <ErrorMessage
                         name='email'
                         component='div'
                         className='text-red-500'
-                      />
+                      /> */}
                     </div>
                   </div>
                   <div className='flex flex-col gap-2'>
@@ -78,11 +78,11 @@ export default function Login() {
                           name='password'
                         />
                       </label>
-                      <ErrorMessage
+                      {/* <ErrorMessage
                         name='password'
                         component='div'
                         className='text-red-500'
-                      />
+                      /> */}
                     </div>
                   </div>
                 </div>
@@ -95,6 +95,7 @@ export default function Login() {
                     LOG IN
                   </button>
                   <div className='divider'></div>
+                  <GoogleSignUpButton />
                 </div>
               </div>
             </div>

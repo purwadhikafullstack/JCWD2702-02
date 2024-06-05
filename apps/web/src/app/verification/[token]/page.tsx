@@ -17,7 +17,6 @@ export default function Verification({ params }: any) {
       }}
       validationSchema={userRegisterVerificationSchema}
       onSubmit={(values, { resetForm }) => {
-        console.log(values)
         mutationVerification({
           accesstoken: token,
           password: values.password,
