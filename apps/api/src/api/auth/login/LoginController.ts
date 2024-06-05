@@ -78,3 +78,31 @@ export const keepLogin = async (
     next(error);
   }
 };
+
+export const loginWithOuath = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+
+    const loginWithOauthResult = await findUserByIdService({ uid });
+
+    const accesstoken = await createToken({ uid: loginWithOauthResult?.uid! });
+
+    res.status(201).send({
+      error: false,
+      message: 'Login With Google Success',
+      data: {
+        accesstoken: accesstoken,
+        role: loginWithOauthResult?.roleId,
+        email: loginWithOauthResult?.email,
+        name: loginWithOauthResult?.fullname,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
