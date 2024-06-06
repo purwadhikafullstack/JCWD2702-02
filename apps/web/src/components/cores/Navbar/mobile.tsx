@@ -3,17 +3,37 @@ import { MdClose } from 'react-icons/md'
 import Link from 'next/link'
 import { UserContext } from '@/config/context/userContext'
 import { useKeepLogin } from '@/helpers/login/hooks/useKeepLogin'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useEffect } from 'react'
+import { deleteCookie } from '@/config/cookie'
+import { useRouter } from 'next/navigation'
 
 export default function NavbarMobile() {
   const { userData, setUserData }: any = useContext(UserContext)
+  const [isLogin, setIsLogin]: any = useState(false)
+
+  const navigate = useRouter()
 
   const { mutationKeepLogin } = useKeepLogin()
 
+  const handleLogout = async () => {
+    await deleteCookie()
+    setUserData(null)
+    navigate.push('/')
+    setIsLogin(false)
+  }
+
+  const handleKeepLogin = () => {
+    if (isLogin == false) {
+      mutationKeepLogin()
+      setIsLogin(false)
+    }
+  }
+
   useEffect(() => {
-    mutationKeepLogin()
-  }, [userData])
+    handleKeepLogin()
+    setIsLogin(true)
+  }, [])
 
   return (
     <div className='relative flex h-[60px] w-screen items-center justify-center border-b-2 px-3 shadow-md'>
@@ -49,6 +69,14 @@ export default function NavbarMobile() {
                 <Link className='text-bouquet hover:text-eggplant' href=''>
                   Item
                 </Link>
+              </li>
+              <li>
+                <div
+                  className='text-bouquet hover:text-eggplant'
+                  onClick={handleLogout}
+                >
+                  Item
+                </div>
               </li>
               {/* Close button */}
               <input id='my-drawer' type='checkbox' className='hidden' />

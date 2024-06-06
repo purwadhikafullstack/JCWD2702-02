@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useVerification } from './../../../helpers/verification/hooks/useVerification'
+import { useVerification } from './../../../../helpers/verification/hooks/useVerification'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { userRegisterVerificationSchema } from '@/helpers/verification/schema/userRegisterVerificationSchema'
 import { MdLock, MdLockOutline } from 'react-icons/md'

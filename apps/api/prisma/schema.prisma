@@ -25,6 +25,9 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  User_Reset_Password     User_Reset_Password[]
+  User_Email_Verification User_Email_Verification[]
+
   @@map("users")
 }
 
@@ -44,6 +47,34 @@ model Role {
   User User[]
 
   @@map("roles")
+}
+
+model User_Email_Verification {
+  id       Int      @id @default(autoincrement())
+  userId   String
+  expireIn DateTime
+
+  user User @relation(fields: [userId], references: [uid])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("user_email_verification")
+}
+
+model User_Reset_Password {
+  id       Int      @id @default(autoincrement())
+  userId   String
+  expireIn DateTime
+
+  user User @relation(fields: [userId], references: [uid])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("user_reset_password")
 }
 
 model Category {

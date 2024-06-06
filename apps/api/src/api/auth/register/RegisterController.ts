@@ -7,7 +7,7 @@ import {
 } from './RegisterService';
 import { findUserByIdService } from '../cores/AuthService';
 import { createUserRegisterToken } from '@/helpers/Token';
-import { transporterNodemailer } from './../../../helpers/TransporterMailer';
+import { transporterNodemailer } from '../../../helpers/Mailer/TransporterMailer';
 import Handlebars from 'handlebars';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
 import fs from 'fs';
@@ -40,9 +40,10 @@ export const userRegisterByEmail = async (
 
     let verificationHTMLCompiler: any =
       await Handlebars.compile(verificationHTML);
+
     verificationHTMLCompiler = verificationHTMLCompiler({
       username: email,
-      link: `http://localhost:3000/verification/${accesstoken}`,
+      link: `http://localhost:3000/auth/verification/${accesstoken}`,
     });
 
     transporterNodemailer.sendMail({

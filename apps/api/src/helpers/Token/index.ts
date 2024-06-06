@@ -23,6 +23,12 @@ export const createOauthToken = ({ uid }: { uid: string }) => {
   });
 };
 
+export const createVerificationToken = ({ uid }: { uid: string }) => {
+  return jwt.sign({ uid }, process.env.JWT_SECRET_KEY as string, {
+    expiresIn: '1h',
+  });
+};
+
 export const tokenVerify = (
   req: Request,
   res: Response,
