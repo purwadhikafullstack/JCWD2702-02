@@ -1,8 +1,20 @@
 import { RxHamburgerMenu } from 'react-icons/rx'
 import { MdClose } from 'react-icons/md'
 import Link from 'next/link'
+import { UserContext } from '@/config/context/userContext'
+import { useKeepLogin } from '@/helpers/login/hooks/useKeepLogin'
+import { useContext } from 'react'
+import { useEffect } from 'react'
 
 export default function NavbarMobile() {
+  const { userData, setUserData }: any = useContext(UserContext)
+
+  const { mutationKeepLogin } = useKeepLogin()
+
+  useEffect(() => {
+    mutationKeepLogin()
+  }, [userData])
+
   return (
     <div className='relative flex h-[60px] w-screen items-center justify-center border-b-2 px-3 shadow-md'>
       <div className='absolute left-3'>
@@ -19,8 +31,8 @@ export default function NavbarMobile() {
               aria-label='close sidebar'
               className='drawer-overlay'
             ></label>
-            <ul className='menu bg-base-200 text-shuttlegray relative min-h-full w-80 p-4 font-bold'>
-              <li className='hover:text-eggplant text-bouquet pt-10'>
+            <ul className='text-shuttlegray menu relative min-h-full w-80 bg-base-200 p-4 font-bold'>
+              <li className='pt-10 text-bouquet hover:text-eggplant'>
                 <Link href='/'>Home</Link>
               </li>
               <li>
@@ -29,12 +41,12 @@ export default function NavbarMobile() {
                 </Link>
               </li>
               <li>
-                <Link className='hover:text-eggplant text-bouquet' href=''>
+                <Link className='text-bouquet hover:text-eggplant' href=''>
                   Item
                 </Link>
               </li>
               <li>
-                <Link className='hover:text-eggplant text-bouquet' href=''>
+                <Link className='text-bouquet hover:text-eggplant' href=''>
                   Item
                 </Link>
               </li>

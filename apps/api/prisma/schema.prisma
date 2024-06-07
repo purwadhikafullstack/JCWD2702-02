@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  uid      String     @id @default(uuid())
-  roleId   Int        @default(3)
-  fullname String
-  email    String     @unique
-  password String
-  verify   UserVerify @default(UNVERIFY)
+  uid          String     @id @default(uuid())
+  roleId       Int        @default(3)
+  fullname     String
+  email        String     @unique
+  password     String?
+  verify       UserVerify @default(UNVERIFY)
+  userImageUrl String?
 
   role Role @relation(fields: [roleId], references: [id])
 

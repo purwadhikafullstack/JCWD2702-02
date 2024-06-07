@@ -1,16 +1,11 @@
-import { useRegisterMutation } from '../api/useRegisterMutation'
-import { toast } from 'react-toastify'
+import { useVerificationMutation } from './../api/useVerificationMutation'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 import { Slide, Zoom, Flip, Bounce } from 'react-toastify'
 
-export const useRegister = () => {
+export const useVerification = () => {
   const navigate = useRouter()
-  const {
-    mutate: mutationRegister,
-    data: dataRegister,
-    isSuccess,
-    isPending,
-  } = useRegisterMutation({
+  const { mutate: mutationVerification, isPending } = useVerificationMutation({
     onSuccess: (res: any) => {
       toast.success(res.data.message, {
         position: 'top-right',
@@ -41,9 +36,7 @@ export const useRegister = () => {
   })
 
   return {
-    mutationRegister,
-    dataRegister,
-    isSuccess,
+    mutationVerification,
     isPending,
   }
 }

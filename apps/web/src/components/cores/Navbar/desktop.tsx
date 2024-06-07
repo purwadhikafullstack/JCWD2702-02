@@ -1,9 +1,30 @@
 import Link from 'next/link'
 import { MdShoppingCart } from 'react-icons/md'
+import { useContext, useEffect } from 'react'
+import { UserContext } from '@/config/context/userContext'
+import { useKeepLogin } from '@/helpers/login/hooks/useKeepLogin'
+import { useRouter } from 'next/navigation'
+import { deleteCookie } from '@/config/cookie'
 
 export default function NavbarDesktop() {
+  const { userData, setUserData }: any = useContext(UserContext)
+
+  const navigate = useRouter()
+
+  const { mutationKeepLogin } = useKeepLogin()
+
+  const handleLogout = async () => {
+    await deleteCookie()
+    setUserData(null)
+    navigate.push('/')
+  }
+
+  useEffect(() => {
+    mutationKeepLogin()
+  }, [userData])
+
   return (
-    <div className='flex h-[60px] w-screen items-center justify-between border-b-2 px-3 shadow-md lg:px-10 xl:px-36 2xl:px-60'>
+    <div className='2xl:px-60 flex h-[60px] w-screen items-center justify-between border-b-2 px-3 shadow-md lg:px-10 xl:px-36'>
       <div className='flex w-[45%] justify-between text-xl lg:w-[35%]'>
         <div className='flex w-full'>
           <a href=''>Logo</a>
@@ -24,21 +45,41 @@ export default function NavbarDesktop() {
         </div>
       </div>
       <div className='flex w-[35%] justify-end gap-6'>
-        <div className='bg-concrete hover:bg-mercury flex items-center justify-center rounded-full md:w-[50px] lg:w-[40px]'>
-          <MdShoppingCart size={20} />
-        </div>
-        <Link
-          href={'/register/user'}
-          className='border-regent_gray hover:border-bombay hover:bg-bombay bg-regent_gray flex h-[40px] w-[100px] items-center justify-center rounded-md border-2 font-bold text-white'
-        >
-          Register
-        </Link>
-        <Link
-          href={'/login'}
-          className='border-eggplant hover:border-hover_eggplant hover:bg-hover_eggplant bg-eggplant flex h-[40px] w-[100px] items-center justify-center rounded-md border-2 font-bold text-white'
-        >
-          Login
-        </Link>
+        {userData ? (
+          <>
+            <div className='flex items-center justify-center rounded-full bg-concrete hover:bg-mercury md:w-[50px] lg:w-[40px]'>
+              <MdShoppingCart size={20} />
+            </div>
+            <div className='flex h-[40px] w-[100px] items-center justify-center rounded-md border-2 border-regent_gray bg-regent_gray font-bold text-white hover:border-bombay hover:bg-bombay'>
+              {userData.firstname}
+            </div>
+            <div
+              onClick={handleLogout}
+              className='flex h-[40px] w-[100px] items-center justify-center rounded-md border-2 border-eggplant bg-eggplant font-bold text-white hover:border-hover_eggplant hover:bg-hover_eggplant'
+            >
+              Logout
+            </div>
+          </>
+        ) : (
+          <>
+            <div className='flex items-center justify-center rounded-full bg-concrete hover:bg-mercury md:w-[50px] lg:w-[40px]'>
+              <MdShoppingCart size={20} />
+            </div>
+            <Link
+              href={'/register'}
+              className='flex h-[40px] w-[100px] items-center justify-center rounded-md border-2 border-regent_gray bg-regent_gray font-bold text-white hover:border-bombay hover:bg-bombay'
+            >
+              Register
+            </Link>
+            <Link
+              href={'/login'}
+              className='flex h-[40px] w-[100px] items-center justify-center rounded-md border-2 border-eggplant bg-eggplant font-bold text-white hover:border-hover_eggplant hover:bg-hover_eggplant'
+            >
+              Login
+            </Link>
+          </>
+        )}
+        {/*  */}
       </div>
     </div>
   )

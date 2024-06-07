@@ -10,13 +10,14 @@ export const createToken = ({ uid }: { uid: string }) => {
     expiresIn: '1d',
   });
 };
-export const createRefreshToken = ({ uid }: { uid: string }) => {
+
+export const createUserRegisterToken = ({ uid }: { uid: string }) => {
   return jwt.sign({ uid }, process.env.JWT_SECRET_KEY as string, {
-    expiresIn: '7d',
+    expiresIn: '1h',
   });
 };
 
-export const createUserRegisterToken = ({ uid }: { uid: string }) => {
+export const createOauthToken = ({ uid }: { uid: string }) => {
   return jwt.sign({ uid }, process.env.JWT_SECRET_KEY as string, {
     expiresIn: '1h',
   });
@@ -33,6 +34,32 @@ export const tokenVerify = (
     // console.log(accesstoken);
 
     if (!accesstoken) throw new Error('Please login first!');
+
+    const decodedPayload = jwt.verify(
+      accesstoken as string,
+      process.env.JWT_SECRET_KEY as string,
+    );
+    // console.log(decodedPayload);
+    reqToken.payload = decodedPayload;
+    // console.log(reqToken.payload);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const KeepLoginTokenVerify = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { accesstoken } = req.headers;
+    // console.log(req.headers);
+    // console.log(accesstoken);
+
+    if (!accesstoken) return;
 
     const decodedPayload = jwt.verify(
       accesstoken as string,

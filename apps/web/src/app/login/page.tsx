@@ -3,9 +3,12 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { userLoginSchema } from '../../helpers/login/schema/userLoginSchema'
 import { MdEmail, MdLock } from 'react-icons/md'
 import { useUserLogin } from '../../helpers/login/hooks/useUserLogin'
+import { useRouter } from 'next/navigation'
+import GoogleSignUpButton from '../../components/cores/Google'
 
 export default function Login() {
   const { mutationLogin, isPending } = useUserLogin()
+  const navigate = useRouter()
   return (
     <Formik
       initialValues={{
@@ -14,7 +17,6 @@ export default function Login() {
       }}
       validationSchema={userLoginSchema}
       onSubmit={(values) => {
-        // console.log(values)
         mutationLogin({
           email: values.email,
           password: values.password,
@@ -34,7 +36,7 @@ export default function Login() {
                     Dont have an account?{' '}
                     <a
                       href='/register/user'
-                      className='text-eggplant hover:text-hover_eggplant underline underline-offset-2'
+                      className='text-eggplant underline underline-offset-2 hover:text-hover_eggplant'
                     >
                       Sign up now
                     </a>
@@ -55,11 +57,11 @@ export default function Login() {
                           name='email'
                         />
                       </label>
-                      <ErrorMessage
+                      {/* <ErrorMessage
                         name='email'
                         component='div'
                         className='text-red-500'
-                      />
+                      /> */}
                     </div>
                   </div>
                   <div className='flex flex-col gap-2'>
@@ -76,23 +78,24 @@ export default function Login() {
                           name='password'
                         />
                       </label>
-                      <ErrorMessage
+                      {/* <ErrorMessage
                         name='password'
                         component='div'
                         className='text-red-500'
-                      />
+                      /> */}
                     </div>
                   </div>
                 </div>
                 <div className='flex w-full flex-col'>
                   <button
                     type='submit'
-                    className='rounded-m btn bg-eggplant bg-azureBlue hover:bg-hover_eggplant flex w-full justify-center text-white'
-                    disabled={!(dirty && isValid)}
+                    className='rounded-m bg-azureBlue btn flex w-full justify-center bg-eggplant text-white hover:bg-hover_eggplant'
+                    disabled={!(dirty && isValid) || isPending == true}
                   >
                     LOG IN
                   </button>
                   <div className='divider'></div>
+                  <GoogleSignUpButton />
                 </div>
               </div>
             </div>
