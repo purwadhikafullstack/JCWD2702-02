@@ -84,8 +84,9 @@ model User_Reset_Password {
 }
 
 model Category {
-  id   Int    @id @default(autoincrement())
-  name String
+  id          Int     @id @default(autoincrement())
+  name        String
+  categoryUrl String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

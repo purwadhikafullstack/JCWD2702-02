@@ -4,17 +4,17 @@ import { IProductCard } from "./types";
 
 export default function ProductCard({ name, price, image }: IProductCard) {
     return (
-        <div>
-            <div>
+        <div className="flex flex-col px-[10px]">
+            <div className="mx-auto">
                 <Image src={`http://localhost:8000/${image}`} alt="image" width={230} height={230} />
             </div>
-            <div className="text-[#34222f] font-bold my-[10px]">
+            <div className="text-[#704b66] hover:text-[#362531] font-bold my-2">
                 {name}
             </div>
-            <div className="font-medium text-[#212529] my-[10px]">
+            <div className="font-medium text-[#212529] my-2">
                 {price}
             </div>
             <hr />
         </div>
-    )
+    );
 }

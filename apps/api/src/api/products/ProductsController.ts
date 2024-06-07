@@ -1,59 +1,69 @@
 import { Request, Response, NextFunction } from 'express';
-import { DeletedUploadedFiles } from '../../helpers/DeleteUploadedFiles';
+import { DeletedProductUrlFiles } from '../../helpers/DeleteProductUrlFiles';
 import fs from 'fs';
 import path from 'path';
-import { createProductAndProductImagesQuery, getProductsQuery, getProductCategoriesQuery, getProductImagesQuery, deleteProductQuery } from '../products/ProductService';
-
-// Controller for get all categories
-export const getProductCategories = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const getCategoriesResult = await getProductCategoriesQuery();
-        res.status(200).send({
-            error: false,
-            meesage: 'Get Categories',
-            data: getCategoriesResult
-        });
-    } catch (error) {
-        next(error);
-    }
-};
+import { createProductAndProductImagesQuery, updateProductAndProductImagesQuery, getProductsQuery, getProductByIdQuery, getProductImagesQuery, deleteProductQuery } from '../products/ProductService';
 
 // Controller for get all products
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const getProductsResult = await getProductsQuery();
+        const { sort, minPrice, maxPrice, categoryId, search } = req.query;
+        const minPriceNum = minPrice ? parseInt(minPrice as string) : undefined;
+        const maxPriceNum = maxPrice ? parseInt(maxPrice as string) : undefined;
+        const categoryIdNum = categoryId ? parseInt(categoryId as string) : undefined;
+
+        const products = await getProductsQuery(sort as string, minPriceNum, maxPriceNum, categoryIdNum, search as string);
+
         res.status(200).send({
-            count: getProductsResult.length,
+            count: products.length,
             error: false,
-            meesage: 'Get Products',
-            data: getProductsResult
+            message: 'Get Products',
+            data: products
         });
     } catch (error) {
         next(error);
     }
 };
+
+// Controller for get product and product images by id
+export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+        const productResult = await getProductByIdQuery(id)
+        if (!productResult) throw new Error('Cannot get product, product not found')
+        res.status(200).send({
+            error: false,
+            message: 'Get Product',
+            data: productResult
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 // Controller for create product
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = JSON.parse(req.body.data)
+        let uploadedProductUrl;
         if (req.files) {
-            const uploadedFiles = Array.isArray(req.files) ? req.files : req.files['producturl']
+            uploadedProductUrl = Array.isArray(req.files) ? req.files : req.files['producturl']
             const getProductsQueryResult = await getProductsQuery()
             for (const product of getProductsQueryResult) {
                 if (product.name === data.name) {
                     throw new Error('Cannot Create Product, Product name already exists')
                 }
             }
-            await createProductAndProductImagesQuery(data, uploadedFiles)
         }
+        await createProductAndProductImagesQuery(data, uploadedProductUrl)
         res.status(201).send({
             error: false,
             message: 'Product created successfully',
             data: null
         })
     } catch (error) {
-        DeletedUploadedFiles(req.files)
+        DeletedProductUrlFiles(req.files)
         next(error)
     }
 }
@@ -63,18 +73,13 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
     try {
         const { id } = req.params
         const productImages = await getProductImagesQuery(id);
+        if (productImages.length === 0) throw new Error('Cannot delete product, product not found')
         for (const image of productImages) {
             const imagePath = path.join(image.productUrl);
-            console.log(`Attempting to delete image at path: ${imagePath}`); // Debugging log untuk attempt delete
             if (fs.existsSync(imagePath)) {
-                try {
-                    fs.rmSync(imagePath);
-                    console.log(`Successfully deleted image: ${imagePath}`); // Debugging log untuk delete success
-                } catch (err) {
-                    console.error(`Error deleting file: ${imagePath}`, err); // Error log untuk delete fail
-                }
+                fs.rmSync(imagePath);
             } else {
-                console.warn(`File does not exist: ${imagePath}`); // Warning log kalau file not exists
+                console.warn(`File does not exist: ${imagePath}`);
             }
         }
         await deleteProductQuery(id)
@@ -84,6 +89,38 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
             data: null
         })
     } catch (error) {
+        next(error)
+    }
+}
+
+// Controller for update product
+export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+        const data = JSON.parse(req.body.data)
+        let uploadedProductUrl;
+        if (req.files) {
+            uploadedProductUrl = Array.isArray(req.files) ? req.files : req.files['producturl']
+        }
+        const productImages = await getProductImagesQuery(id);
+        const product = await getProductByIdQuery(id);
+        if (!product) throw new Error('Cannot update product, product not found')
+        await updateProductAndProductImagesQuery(id, data, uploadedProductUrl)
+        for (const image of productImages) {
+            const imagePath = path.join(image.productUrl);
+            if (fs.existsSync(imagePath)) {
+                fs.rmSync(imagePath);
+            } else {
+                console.warn(`File does not exist: ${imagePath}`);
+            }
+        }
+        res.status(201).send({
+            error: false,
+            message: 'Product updated successfully',
+            data: null
+        })
+    } catch (error) {
+        DeletedProductUrlFiles(req.files)
         next(error)
     }
 }
