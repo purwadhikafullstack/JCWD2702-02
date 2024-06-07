@@ -17,6 +17,7 @@ model User {
   email        String     @unique
   password     String?
   verify       UserVerify @default(UNVERIFY)
+  google       isGoogle   @default(FALSE)
   userImageUrl String?
 
   role Role @relation(fields: [roleId], references: [id])
@@ -25,7 +26,15 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  User_Reset_Password     User_Reset_Password[]
+  User_Email_Verification User_Email_Verification[]
+
   @@map("users")
+}
+
+enum isGoogle {
+  TRUE
+  FALSE
 }
 
 enum UserVerify {
@@ -44,6 +53,34 @@ model Role {
   User User[]
 
   @@map("roles")
+}
+
+model User_Email_Verification {
+  id       Int      @id @default(autoincrement())
+  userId   String
+  expireIn DateTime
+
+  user User @relation(fields: [userId], references: [uid])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("user_email_verification")
+}
+
+model User_Reset_Password {
+  id       Int      @id @default(autoincrement())
+  userId   String
+  expireIn DateTime
+
+  user User @relation(fields: [userId], references: [uid])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("user_reset_password")
 }
 
 model Category {

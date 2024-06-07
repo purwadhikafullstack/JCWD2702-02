@@ -23,6 +23,10 @@ export const userLoginByEmail = async (
       throw new Error('Please Verify Your Account First');
     }
 
+    if (findUserByEmailResult.google == 'TRUE') {
+      throw new Error('Please Login By Google');
+    }
+
     const passwordValidation = await ComparePassword({
       passwordFromClient: password,
       passwordFromDatabase: findUserByEmailResult.password!,

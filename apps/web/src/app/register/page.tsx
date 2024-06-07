@@ -34,15 +34,15 @@ export default function Register() {
                     Already Have Account?{' '}
                     <a
                       href='/login'
-                      className='text-eggplant hover:text-hover_eggplant underline underline-offset-2'
+                      className='text-eggplant underline underline-offset-2 hover:text-hover_eggplant'
                     >
                       Login now
                     </a>
                   </div>
                   <div className='text-[15px]'>
                     <a
-                      href='/verification'
-                      className='text-eggplant hover:text-hover_eggplant underline underline-offset-2'
+                      href='/auth/verification'
+                      className='text-eggplant underline underline-offset-2 hover:text-hover_eggplant'
                     >
                       Verify Your Account
                     </a>
@@ -95,7 +95,7 @@ export default function Register() {
                 <div className='flex w-full flex-col'>
                   <button
                     type='submit'
-                    className='rounded-m btn bg-cerulean bg-eggplant hover:bg-hover_eggplant flex w-full justify-center text-white'
+                    className='rounded-m bg-cerulean btn flex w-full justify-center bg-eggplant text-white hover:bg-hover_eggplant'
                     disabled={!(dirty && isValid) || isPending == true}
                   >
                     Register

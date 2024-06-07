@@ -1,4 +1,5 @@
 import { prisma } from './../src/lib/PrismaClient';
+import { HashingPassword } from './../src/helpers/HashingPassword';
 
 const dataCategories = [
   {
@@ -45,6 +46,29 @@ const main = async () => {
         },
         {
           name: 'User',
+        },
+      ],
+    });
+
+    await tx.user.createMany({
+      data: [
+        {
+          fullname: 'Aplha Test',
+          email: 'alpha@test.com',
+          verify: 'VERIFIED',
+          password: await HashingPassword({ password: 'test1234' }),
+        },
+        {
+          fullname: 'Beta Test',
+          email: 'beta@test.com',
+          verify: 'VERIFIED',
+          password: await HashingPassword({ password: 'test1234' }),
+        },
+        {
+          fullname: 'Gamma Test',
+          email: 'gamma@test.com',
+          verify: 'VERIFIED',
+          password: await HashingPassword({ password: 'test1234' }),
         },
       ],
     });

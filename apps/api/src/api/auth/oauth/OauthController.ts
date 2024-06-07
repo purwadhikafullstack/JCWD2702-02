@@ -51,7 +51,6 @@ export const googleOauthCallback = async (
     });
 
     const { data } = await oauth2.userinfo.get();
-    // console.log(data);
 
     if (!data.email || !data.name || !data.picture) {
       return res.json({
@@ -61,18 +60,10 @@ export const googleOauthCallback = async (
 
     let user = await findUserByEmailService({ email: data.email });
 
-    if (user?.userImageUrl == null) {
-      await updateUserImageByGoogleOauth({
-        email: data.email,
-        picture: data.picture,
-      });
-    }
-
     if (!user) {
       user = await userRegisterByGoogleOauth({
         name: data.name,
         email: data.email,
-        picture: data.picture,
       });
     }
 
