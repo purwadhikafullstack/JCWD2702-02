@@ -17,6 +17,7 @@ model User {
   email        String     @unique
   password     String?
   verify       UserVerify @default(UNVERIFY)
+  google       isGoogle   @default(FALSE)
   userImageUrl String?
 
   role Role @relation(fields: [roleId], references: [id])
@@ -29,6 +30,11 @@ model User {
   User_Email_Verification User_Email_Verification[]
 
   @@map("users")
+}
+
+enum isGoogle {
+  TRUE
+  FALSE
 }
 
 enum UserVerify {

@@ -1,12 +1,12 @@
 'use client'
-import { useVerification } from './../../../../helpers/verification/hooks/useVerification'
 import { Formik, Form } from 'formik'
 import { userRegisterVerificationSchema } from '@/helpers/verification/schema/userRegisterVerificationSchema'
-import { MdLock, MdLockOutline } from 'react-icons/md'
 import VerificationComponent from '@/components/cores/Verification'
+import { useUpdatePassword } from './../../../../helpers/auth/hooks/password/useUpdatePassword'
+import { MdLock, MdLockOutline } from 'react-icons/md'
 
-export default function Verification({ params }: any) {
-  const { mutationVerification } = useVerification()
+export default function ResetPassword({ params }: any) {
+  const { mutationUpdatePassword } = useUpdatePassword()
   const token = params.token as string
 
   return (
@@ -17,7 +17,8 @@ export default function Verification({ params }: any) {
       }}
       validationSchema={userRegisterVerificationSchema}
       onSubmit={(values, { resetForm }) => {
-        mutationVerification({
+        console.log(values)
+        mutationUpdatePassword({
           accesstoken: token,
           password: values.password,
           confirmPassword: values.confirmPassword,
@@ -28,13 +29,13 @@ export default function Verification({ params }: any) {
         return (
           <Form>
             <VerificationComponent
-              header={'Verify Your Account'}
+              header={'Reset Password'}
               initVal1={'password'}
               initVal2={'confirmPassword'}
-              iconVal1={<MdLock />}
-              iconVal2={<MdLockOutline />}
               labelVal1={'Password*'}
               labelVal2={'Confirm Password*'}
+              iconVal1={<MdLock />}
+              iconVal2={<MdLockOutline />}
               type={'password'}
               placeholdeVal1={'Password'}
               placeholdeVal2={'Confirm Password'}

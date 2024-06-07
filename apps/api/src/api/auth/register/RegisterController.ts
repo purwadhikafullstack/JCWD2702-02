@@ -6,10 +6,14 @@ import {
   userVerificationByEmailService,
 } from './RegisterService';
 import { findUserByIdService } from '../cores/AuthService';
-import { createUserRegisterToken } from '@/helpers/Token';
+import {
+  createUserRegisterToken,
+  createVerificationToken,
+} from '@/helpers/Token';
 import { transporterNodemailer } from '../../../helpers/Mailer/TransporterMailer';
 import Handlebars from 'handlebars';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
+import { sendMail } from '@/helpers/Mailer/Mailer';
 import fs from 'fs';
 
 export const userRegisterByEmail = async (
@@ -29,28 +33,16 @@ export const userRegisterByEmail = async (
       email,
     });
 
-    const accesstoken = await createUserRegisterToken({
+    const accesstoken = await createVerificationToken({
       uid: registerUserByEmailResult.uid,
     });
 
-    const verificationHTML = fs.readFileSync(
-      'src/template/EmailVerification.html',
-      'utf-8',
-    );
-
-    let verificationHTMLCompiler: any =
-      await Handlebars.compile(verificationHTML);
-
-    verificationHTMLCompiler = verificationHTMLCompiler({
+    await sendMail({
+      accesstoken: accesstoken,
+      email: email,
       username: email,
-      link: `http://localhost:3000/auth/verification/${accesstoken}`,
-    });
-
-    transporterNodemailer.sendMail({
-      from: 'hr-app-pwdk',
-      to: email,
-      subject: 'Activate Your Account',
-      html: verificationHTMLCompiler,
+      link: 'verification',
+      subject: 'Verify Your Email',
     });
 
     res.status(200).send({

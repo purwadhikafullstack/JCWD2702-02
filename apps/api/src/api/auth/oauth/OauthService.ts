@@ -1,22 +1,21 @@
+import { google } from 'googleapis';
 import { prisma } from './../../../lib/PrismaClient';
 
 interface IReqUserRegisterByGoogleOauthServiceParams {
   name: string;
   email: string;
-  picture: string;
 }
 
 export const userRegisterByGoogleOauth = async ({
   name,
   email,
-  picture,
 }: IReqUserRegisterByGoogleOauthServiceParams) => {
   return await prisma.user.create({
     data: {
       fullname: name,
       email: email,
-      userImageUrl: picture,
       verify: 'VERIFIED',
+      google: 'TRUE',
     },
   });
 };

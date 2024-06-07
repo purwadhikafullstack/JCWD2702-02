@@ -64,14 +64,6 @@ export const googleOauthCallback = async (
       user = await userRegisterByGoogleOauth({
         name: data.name,
         email: data.email,
-        picture: data.picture,
-      });
-    }
-
-    if (user?.userImageUrl == null) {
-      await updateUserImageByGoogleOauth({
-        email: data.email,
-        picture: data.picture,
       });
     }
 
