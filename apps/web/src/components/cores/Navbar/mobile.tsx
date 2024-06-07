@@ -24,7 +24,7 @@ export default function NavbarMobile() {
                 <Link href='/'>Home</Link>
               </li>
               <li>
-                <Link className='hover:text-eggplant text-bouquet' href=''>
+                <Link className='hover:text-eggplant text-bouquet' href='/shop'>
                   Shop
                 </Link>
               </li>
