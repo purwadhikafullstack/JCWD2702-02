@@ -10,6 +10,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  uid          String     @id @default(uuid())
+  roleId       Int        @default(3)
+  fullname     String
+  email        String     @unique
+  password     String?
+  verify       UserVerify @default(UNVERIFY)
+  userImageUrl String?
+
+  role Role @relation(fields: [roleId], references: [id])
+  Cart Carts[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("users")
+}
+
+enum UserVerify {
+  UNVERIFY
+  VERIFIED
+}
+
 model Role {
   id   Int    @id @default(autoincrement())
   name String
@@ -18,5 +42,83 @@ model Role {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  User User[]
+
   @@map("roles")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id               Int    @id @default(autoincrement())
+  name             String
+  description      String @db.LongText()
+  price            Int    @default(0)
+  reservedQuantity Int    @default(0)
+  categoryId       Int?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  ProductImages Product_Images[]
+  CartItems Cart_Items[]
+  Categories    Category?        @relation(fields: [categoryId], references: [id])
+
+  @@map("products")
+}
+
+model Product_Images {
+  id         Int    @id @default(autoincrement())
+  productUrl String
+  productId  Int?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  Product Product? @relation(fields: [productId], references: [id])
+
+  @@map("product_images")
+}
+
+model Carts {
+  id Int @id @default(autoincrement())
+  userId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  CartItems Cart_Items[]
+  User User? @relation(fields: [userId], references: [uid])
+
+  @@map("carts")
+}
+
+model Cart_Items {
+  id Int @id @default(autoincrement())
+  cartId Int?
+  productId Int?
+  qty Int
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  Product Product? @relation(fields: [productId], references: [id])
+  Carts Carts? @relation(fields: [cartId], references: [id])
+
+  @@map("cart_items")
 }
