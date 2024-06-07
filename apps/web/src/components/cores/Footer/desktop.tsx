@@ -51,7 +51,7 @@ export default function FooterDekstop() {
             <div className='flex flex-col gap-2'>
               <p>
                 We are a team of passionate people whose goal is to improve
-                everyone's life through disruptive products. We build great
+                everyone&apos;s life through disruptive products. We build great
                 products to solve your business problems.
               </p>
               <p>

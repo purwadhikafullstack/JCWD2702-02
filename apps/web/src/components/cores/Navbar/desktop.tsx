@@ -30,12 +30,12 @@ export default function NavbarDesktop() {
           <a href=''>Logo</a>
         </div>
         <div className='flex w-full gap-6'>
-          <a href='' className='hover:underline'>
+          <a href='/' className='hover:underline'>
             Home
           </a>
-          <a href='' className='text-dove_gray hover:text-black'>
+          <Link href='/shop' className='text-dove_gray hover:text-black'>
             Shop
-          </a>
+          </Link>
           <a href='' className='text-dove_gray hover:text-black'>
             Item
           </a>
