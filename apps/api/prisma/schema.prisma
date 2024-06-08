@@ -26,9 +26,10 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  User_Reset_Password         User_Reset_Password[]
-  User_Email_Verification     User_Email_Verification[]
-  User_Reset_Password_History User_Reset_Password_History[]
+  User_Reset_Password             User_Reset_Password[]
+  User_Email_Verification         User_Email_Verification[]
+  User_Reset_Password_History     User_Reset_Password_History[]
+  User_Email_Verification_History User_Email_Verification_History[]
 
   @@map("users")
 }
@@ -70,11 +71,26 @@ model User_Email_Verification {
 
   user User @relation(fields: [userId], references: [uid])
 
+  createdAt                       DateTime                          @default(now())
+  updatedAt                       DateTime                          @updatedAt
+  deletedAt                       DateTime?
+  User_Email_Verification_History User_Email_Verification_History[]
+
+  @@map("user_email_verification")
+}
+
+model User_Email_Verification_History {
+  id      Int                @id @default(autoincrement())
+  userId  String
+  verifId Int
+  status  VerificationStatus @default(PENDING)
+
+  user              User                    @relation(fields: [userId], references: [uid])
+  emailVerification User_Email_Verification @relation(fields: [verifId], references: [id])
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-
-  @@map("user_email_verification")
 }
 
 model User_Reset_Password {

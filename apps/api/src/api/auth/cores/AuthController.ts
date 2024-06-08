@@ -9,6 +9,8 @@ import {
   findUserByEmailService,
   findResetPasswordHistoryService,
   expiredUserResetPasswordInfo,
+  expiredUserEmailVerificationInfo,
+  findEmailVerificationHistoryResult,
 } from './AuthService';
 import { Request, Response, NextFunction } from 'express';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
@@ -169,11 +171,22 @@ export const updateEmailRequest = async (
       await findUserEmailVerificationInfoService({ uid: findUserResult?.uid! });
 
     if (
+      findUserEmailVerificationInfoResult?.status !== 'DONE' &&
       currTime <= findUserEmailVerificationInfoResult?.expireIn.toISOString()!
     ) {
       throw new Error(
         'We Already Sent The Link To Your Email Expire In 1 Hour',
       );
+    }
+
+    if (
+      findUserEmailVerificationInfoResult &&
+      findUserEmailVerificationInfoResult.status !== 'DONE'
+    ) {
+      await expiredUserEmailVerificationInfo({
+        uid: findUserEmailVerificationInfoResult?.userId!,
+        id: findUserEmailVerificationInfoResult?.id!,
+      });
     }
 
     await createUserEmailVerificationInfoService({
@@ -213,12 +226,26 @@ export const updateEmail = async (
     const { uid } = reqToken.payload;
     const { email, confirmEmail } = req.body;
 
+    const currTime = await currentTime();
+
     if (email != confirmEmail) throw new Error("Email Doesn't Match");
 
-    const findUserByIdResult = await findUserByIdService({ uid });
+    const findEmailVerificationResult =
+      await findEmailVerificationHistoryResult({ uid });
+
+    if (
+      findEmailVerificationResult?.status == 'DONE' ||
+      currTime >= findEmailVerificationResult?.expireIn.toISOString()!
+    ) {
+      await expiredUserEmailVerificationInfo({
+        uid: findEmailVerificationResult?.userId!,
+        id: findEmailVerificationResult?.id!,
+      });
+      throw new Error('Please Request New Link');
+    }
 
     await updateUserEmailService({
-      uid: findUserByIdResult?.uid!,
+      uid,
       email: email,
     });
 
