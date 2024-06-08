@@ -35,11 +35,7 @@ const fileFilter = (req: any, file: any, cb: any) => {
   cb(null, true);
 };
 
-<<<<<<< HEAD:apps/api/src/helpers/Multer.ts
-export const multerUpload = multer({
+export const multerProductUrlUpload = multer({
   storage: storage,
   fileFilter: fileFilter,
 });
-=======
-export const multerProductUrlUpload = multer({ storage: storage, fileFilter: fileFilter })
->>>>>>> dev:apps/api/src/helpers/ProductMulter.ts
