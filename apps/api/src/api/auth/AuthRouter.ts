@@ -4,6 +4,7 @@ import {
   updatePassword,
   updateEmailRequest,
   updateEmail,
+  resendVerifyEmail,
 } from './cores/AuthController';
 import express, { Router } from 'express';
 import RolesRouter from './../roles/RolesRouter';
@@ -24,6 +25,6 @@ router.post('/reset-password', tokenVerify, resetPasswordRequest);
 router.post('/update-password', tokenVerify, updatePassword);
 router.post('/reset-email', tokenVerify, updateEmailRequest);
 router.post('/update-email', tokenVerify, updateEmail);
-// router.post('/')
+router.post('/resend-email', resendVerifyEmail);
 
 export default router;

@@ -17,11 +17,11 @@ export const createUserPasswordInfoService = async ({
   date: any;
 }) => {
   return await prisma.$transaction(async (tx) => {
-    const findUserResetPasswordInfo = await tx.user_Reset_Password.findFirst({
-      where: {
-        userId: uid,
-      },
-    });
+    // const findUserResetPasswordInfo = await tx.user_Reset_Password.findFirst({
+    //   where: {
+    //     userId: uid,
+    //   },
+    // });
 
     const createUserPasswordInfo = await tx.user_Reset_Password.create({
       data: {
@@ -30,14 +30,23 @@ export const createUserPasswordInfoService = async ({
       },
     });
 
-    if (findUserResetPasswordInfo) {
-      await tx.user_Reset_Password.delete({
-        where: {
-          id: findUserResetPasswordInfo?.id,
-          userId: uid,
-        },
-      });
-    }
+    await tx.user_Reset_Password_History.create({
+      data: {
+        userId: uid,
+        resetId: createUserPasswordInfo.id,
+      },
+    });
+
+    // await tx.
+
+    // if (findUserResetPasswordInfo) {
+    //   await tx.user_Reset_Password.delete({
+    //     where: {
+    //       id: findUserResetPasswordInfo?.id,
+    //       userId: uid,
+    //     },
+    //   });
+    // }
 
     return createUserPasswordInfo;
   });
@@ -52,6 +61,37 @@ export const findUserResetPasswordInfoService = async ({
     where: {
       userId: uid,
     },
+    orderBy: {
+      id: 'desc',
+    },
+  });
+};
+
+export const expiredUserResetPasswordInfo = async ({
+  uid,
+  id,
+}: {
+  uid: string;
+  id: number;
+}) => {
+  await prisma.$transaction(async (tx) => {
+    const findUserResetPasswordInfo = await tx.user_Reset_Password.update({
+      where: {
+        id: id,
+        userId: uid,
+      },
+      data: {
+        status: 'EXPIRED',
+      },
+    });
+
+    await tx.user_Reset_Password_History.create({
+      data: {
+        resetId: findUserResetPasswordInfo.id,
+        userId: findUserResetPasswordInfo.userId,
+        status: 'EXPIRED',
+      },
+    });
   });
 };
 
@@ -59,12 +99,56 @@ export const updatePasswordService = async ({
   uid,
   password,
 }: IReqUpdatePasswordServiceParams) => {
-  return await prisma.user.update({
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
+      where: {
+        uid: uid,
+      },
+      data: {
+        password: password,
+      },
+    });
+
+    const findUserResetPasswordInfo = await tx.user_Reset_Password.findFirst({
+      where: {
+        userId: uid,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+
+    await tx.user_Reset_Password.update({
+      where: {
+        id: findUserResetPasswordInfo?.id!,
+        userId: uid,
+      },
+      data: {
+        status: 'DONE',
+      },
+    });
+
+    await tx.user_Reset_Password_History.create({
+      data: {
+        userId: uid,
+        resetId: findUserResetPasswordInfo?.id!,
+        status: 'DONE',
+      },
+    });
+  });
+};
+
+export const findResetPasswordHistoryService = async ({
+  uid,
+}: {
+  uid: string;
+}) => {
+  return await prisma.user_Reset_Password.findFirst({
     where: {
-      uid: uid,
+      userId: uid,
     },
-    data: {
-      password: password,
+    orderBy: {
+      id: 'desc',
     },
   });
 };
@@ -127,6 +211,14 @@ export const updateUserEmailService = async ({
       uid: uid,
     },
     data: {
+      email: email,
+    },
+  });
+};
+
+export const findUserByEmailService = async ({ email }: { email: string }) => {
+  return await prisma.user.findUnique({
+    where: {
       email: email,
     },
   });

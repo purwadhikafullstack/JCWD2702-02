@@ -6,6 +6,9 @@ import {
   findUserEmailVerificationInfoService,
   createUserEmailVerificationInfoService,
   updateUserEmailService,
+  findUserByEmailService,
+  findResetPasswordHistoryService,
+  expiredUserResetPasswordInfo,
 } from './AuthService';
 import { Request, Response, NextFunction } from 'express';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
@@ -57,10 +60,23 @@ export const resetPasswordRequest = async (
     const findUserResetPasswordInfoResult =
       await findUserResetPasswordInfoService({ uid: findUserResult?.uid! });
 
-    if (currTime <= findUserResetPasswordInfoResult?.expireIn.toISOString()!) {
+    if (
+      findUserResetPasswordInfoResult?.status !== 'DONE' &&
+      currTime <= findUserResetPasswordInfoResult?.expireIn.toISOString()!
+    ) {
       throw new Error(
         'We Already Sent The Link To Your Email Expire In 1 Hour',
       );
+    }
+
+    if (
+      findUserResetPasswordInfoResult &&
+      findUserResetPasswordInfoResult.status !== 'DONE'
+    ) {
+      await expiredUserResetPasswordInfo({
+        uid: findUserResetPasswordInfoResult?.userId!,
+        id: findUserResetPasswordInfoResult?.id!,
+      });
     }
 
     await createUserPasswordInfoService({
@@ -100,7 +116,24 @@ export const updatePassword = async (
     const { uid } = reqToken.payload;
     const { password, confirmPassword } = req.body;
 
+    const currTime = await currentTime();
+
     if (password !== confirmPassword) throw new Error("Password Doesn't Match");
+
+    const findResetHistoryResult = await findResetPasswordHistoryService({
+      uid,
+    });
+
+    if (
+      findResetHistoryResult?.status == 'DONE' ||
+      currTime >= findResetHistoryResult?.expireIn.toISOString()!
+    ) {
+      await expiredUserResetPasswordInfo({
+        uid: findResetHistoryResult?.userId!,
+        id: findResetHistoryResult?.id!,
+      });
+      throw new Error('Please Request New Link');
+    }
 
     const hashedPassword = await HashingPassword({ password });
 
@@ -193,6 +226,38 @@ export const updateEmail = async (
       error: false,
       message: 'Update Email Success',
       data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resendVerifyEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { email } = req.body;
+
+    const findUserByEmailResult = await findUserByEmailService({ email });
+
+    if (!findUserByEmailResult)
+      throw new Error('Please Register Your Email First');
+
+    if (findUserByEmailResult.verify == 'VERIFIED')
+      throw new Error('Your Account Already Verify');
+
+    const accesstoken = await createVerificationToken({
+      uid: findUserByEmailResult.uid,
+    });
+
+    await sendMail({
+      accesstoken: accesstoken,
+      username: findUserByEmailResult.email,
+      email: findUserByEmailResult.email,
+      link: 'verification',
+      subject: 'Verify Your Account',
     });
   } catch (error) {
     next(error);
