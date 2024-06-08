@@ -1,6 +1,5 @@
 'use client'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
 import { axiosInstance } from '@/config/axios/axiosInstance'
 
 interface IReqUpdateEmailMutation {
