@@ -28,6 +28,7 @@ model User {
 
   User_Reset_Password     User_Reset_Password[]
   User_Email_Verification User_Email_Verification[]
+  Carts Carts?
 
   @@map("users")
 }
@@ -111,6 +112,7 @@ model Product {
 
   ProductImages Product_Images[]
   Categories    Category?        @relation(fields: [categoryId], references: [id])
+  CartItems Cart_Items[]
 
   @@map("products")
 }
@@ -126,5 +128,37 @@ model Product_Images {
 
   Product Product? @relation(fields: [productId], references: [id])
 
+
   @@map("product_images")
+}
+
+model Carts {
+  id Int @id @default(autoincrement())
+  userId String? @unique
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  Items Cart_Items[]
+  User User? @relation(fields: [userId], references: [uid])
+
+  @@map("carts")
+}
+
+model Cart_Items {
+  id Int @id @default(autoincrement())
+  cartId Int?
+  productId Int?
+  qty Int
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  Product Product? @relation(fields: [productId], references: [id])
+  Carts Carts? @relation(fields: [cartId], references: [id])
+
+  @@map("cart_items")
+  @@unique([cartId, productId])
 }

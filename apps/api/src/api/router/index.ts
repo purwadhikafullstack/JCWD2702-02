@@ -3,6 +3,7 @@ import RolesRouter from './../roles/RolesRouter';
 import ProductsRouter from './../products/ProductsRouter';
 import AuthRouter from './../auth/AuthRouter';
 import ProductCategoriesRouter from './../productCategories/ProductCategoriesRouter';
+import CartRouter from './../cart/CartRouter'
 
 const router = Router();
 router.use(express.json());
@@ -14,5 +15,6 @@ router.use('/roles', RolesRouter);
 router.use('/products', ProductsRouter);
 router.use('/categories', ProductCategoriesRouter);
 router.use('/auth', AuthRouter);
+router.use('/carts', CartRouter)
 
 export default router;
