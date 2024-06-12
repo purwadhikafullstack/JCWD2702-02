@@ -4,10 +4,12 @@ import { userLoginSchema } from '../../helpers/login/schema/userLoginSchema'
 import { MdEmail, MdLock } from 'react-icons/md'
 import { useUserLogin } from '../../helpers/login/hooks/useUserLogin'
 import { useRouter } from 'next/navigation'
+import { useForgotPassword } from '@/helpers/login/hooks/useForgotPassword'
 import GoogleSignUpButton from '../../components/cores/Google'
 
 export default function Login() {
   const { mutationLogin, isPending } = useUserLogin()
+  const { mutationForgotPassword } = useForgotPassword()
   const navigate = useRouter()
   return (
     <Formik
@@ -85,6 +87,14 @@ export default function Login() {
                       /> */}
                     </div>
                   </div>
+                </div>
+                <div className='text-[15px]'>
+                  <a
+                    href='/login/forgot-password'
+                    className='text-eggplant underline underline-offset-2 hover:text-hover_eggplant'
+                  >
+                    Forgot Password
+                  </a>
                 </div>
                 <div className='flex w-full flex-col'>
                   <button

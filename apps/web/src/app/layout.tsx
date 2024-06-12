@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { UserContext } from '@/config/context/userContext'
 import { useState } from 'react'
 import { SideBarContext } from '@/config/context/sideBarContext'
+import ProtectedRouteProvider from '@/provider/ProtectedRoute'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,12 +27,14 @@ export default function RootLayout({
       <UserContext.Provider value={{ userData, setUserData }}>
         <html lang='en'>
           <body className={inter.className}>
-            <TanstackProvider>
-              <Navbar />
-              {children}
-              <Footer />
-              <ToastContainer />
-            </TanstackProvider>
+            <ProtectedRouteProvider>
+              <TanstackProvider>
+                <Navbar />
+                {children}
+                <Footer />
+                <ToastContainer />
+              </TanstackProvider>
+            </ProtectedRouteProvider>
           </body>
         </html>
       </UserContext.Provider>

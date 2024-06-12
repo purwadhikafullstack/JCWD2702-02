@@ -1,6 +1,12 @@
 import { Router } from 'express';
 
-import { createProduct, getProducts, deleteProduct, updateProduct, getProductById } from './ProductsController';
+import {
+  createProduct,
+  getProducts,
+  deleteProduct,
+  updateProduct,
+  getProductById,
+} from './ProductsController';
 
 // Middleware
 import { productUrlUploader } from '@/middlewares/ProductUrlUploader';

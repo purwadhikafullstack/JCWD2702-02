@@ -1,11 +1,11 @@
 'use client'
 import { Formik } from 'formik'
 import { verifyEmailSchema } from '@/helpers/auth/api/schema/verifyEmailSchema'
-import { useResendEmailVerify } from '@/helpers/register/hooks/userResendVerifyEmail'
 import ResendVerification from '@/components/cores/ResendVerification'
+import { useForgotPassword } from '@/helpers/login/hooks/useForgotPassword'
 
 export default function VerifyEmailPage() {
-  const { mutationResendEmail } = useResendEmailVerify()
+  const { mutationForgotPassword } = useForgotPassword()
   return (
     <Formik
       initialValues={{
@@ -14,7 +14,7 @@ export default function VerifyEmailPage() {
       validationSchema={verifyEmailSchema}
       onSubmit={(values, { resetForm }) => {
         console.log(values)
-        mutationResendEmail({
+        mutationForgotPassword({
           email: values.email,
         })
       }}
@@ -24,7 +24,7 @@ export default function VerifyEmailPage() {
           <ResendVerification
             dirty={dirty}
             isValid={isValid}
-            subject={'Verify Your Account'}
+            subject={'Input Your Email'}
           />
         )
       }}

@@ -30,6 +30,7 @@ model User {
   User_Email_Verification         User_Email_Verification[]
   User_Reset_Password_History     User_Reset_Password_History[]
   User_Email_Verification_History User_Email_Verification_History[]
+  Address                         Address[]
 
   @@map("users")
 }
@@ -61,6 +62,23 @@ enum VerificationStatus {
   PENDING
   DONE
   EXPIRED
+}
+
+model Address {
+  id          Int    @id @default(autoincrement())
+  userId      String
+  recipients  String
+  address     String
+  phoneNumber String
+  postalCode  String
+
+  user User @relation(fields: [userId], references: [uid])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("user_address")
 }
 
 model User_Email_Verification {

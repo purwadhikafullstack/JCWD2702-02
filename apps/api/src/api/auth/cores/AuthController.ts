@@ -267,6 +267,9 @@ export const resendVerifyEmail = async (
   try {
     const { email } = req.body;
 
+    const currTime = await currentTime();
+    const expireInOneHour = await defaultExpireTime(1);
+
     const findUserByEmailResult = await findUserByEmailService({ email });
 
     if (!findUserByEmailResult)
@@ -274,6 +277,35 @@ export const resendVerifyEmail = async (
 
     if (findUserByEmailResult.verify == 'VERIFIED')
       throw new Error('Your Account Already Verify');
+
+    const findUserEmailVerificationInfoResult =
+      await findUserEmailVerificationInfoService({
+        uid: findUserByEmailResult?.uid,
+      });
+
+    if (
+      findUserEmailVerificationInfoResult?.status !== 'DONE' &&
+      currTime <= findUserEmailVerificationInfoResult?.expireIn.toISOString()!
+    ) {
+      throw new Error(
+        'We Already Sent The Link To Your Email Expire In 1 Hour',
+      );
+    }
+
+    if (
+      findUserEmailVerificationInfoResult &&
+      findUserEmailVerificationInfoResult.status !== 'DONE'
+    ) {
+      await expiredUserEmailVerificationInfo({
+        uid: findUserEmailVerificationInfoResult.userId,
+        id: findUserEmailVerificationInfoResult.id,
+      });
+    }
+
+    await createUserEmailVerificationInfoService({
+      uid: findUserByEmailResult.uid,
+      date: expireInOneHour,
+    });
 
     const accesstoken = await createVerificationToken({
       uid: findUserByEmailResult.uid,
@@ -285,6 +317,80 @@ export const resendVerifyEmail = async (
       email: findUserByEmailResult.email,
       link: 'verification',
       subject: 'Verify Your Account',
+    });
+
+    res.status(201).send({
+      error: false,
+      message: 'Check Your Email For Reset Password Link',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { email } = req.body;
+
+    const currTime = await currentTime();
+    const expireInOneHour = await defaultExpireTime(1);
+
+    const findUserByEmailResult = await findUserByEmailService({ email });
+    console.log('1');
+    const findUserResetPasswordInfoResult =
+      await findUserResetPasswordInfoService({
+        uid: findUserByEmailResult?.uid!,
+      });
+
+    if (!findUserByEmailResult) throw new Error('Please Register First');
+
+    if (
+      findUserResetPasswordInfoResult?.status !== 'DONE' &&
+      currTime <= findUserResetPasswordInfoResult?.expireIn.toISOString()!
+    ) {
+      throw new Error(
+        'We Already Sent The Link To Your Email Expire In 1 Hour',
+      );
+    }
+
+    if (
+      findUserResetPasswordInfoResult &&
+      findUserResetPasswordInfoResult.status !== 'DONE'
+    ) {
+      await expiredUserResetPasswordInfo({
+        uid: findUserResetPasswordInfoResult?.userId,
+        id: findUserResetPasswordInfoResult?.id,
+      });
+    }
+
+    await createUserPasswordInfoService({
+      uid: findUserByEmailResult?.uid,
+      date: expireInOneHour,
+    });
+
+    const accesstoken = await createVerificationToken({
+      uid: findUserByEmailResult.uid,
+    });
+
+    await sendMail({
+      accesstoken: accesstoken,
+      username: findUserByEmailResult?.email,
+      email: findUserByEmailResult?.email,
+      link: 'reset-password',
+      subject: 'Reset Password',
+    });
+
+    res.status(201).send({
+      error: false,
+      message: 'Check Your Email For Reset Password Link',
+      data: {
+        acctkn: accesstoken,
+      },
     });
   } catch (error) {
     next(error);

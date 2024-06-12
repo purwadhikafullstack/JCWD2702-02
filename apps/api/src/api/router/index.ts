@@ -7,8 +7,12 @@ import ProductCategoriesRouter from './../productCategories/ProductCategoriesRou
 const router = Router();
 router.use(express.json());
 
-router.use('*/productImage', express.static('src/public/productImage'))
-router.use('*/productCategoryImage', express.static('src/public/productCategoryImage'))
+router.use('*/productImage', express.static('src/public/productImage'));
+router.use(
+  '*/productCategoryImage',
+  express.static('src/public/productCategoryImage'),
+);
+router.use('*/userImage', express.static('src/public/userImage'));
 
 router.use('/roles', RolesRouter);
 router.use('/products', ProductsRouter);

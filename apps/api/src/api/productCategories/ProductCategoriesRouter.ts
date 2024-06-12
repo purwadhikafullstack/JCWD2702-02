@@ -1,6 +1,11 @@
 import { Router } from 'express';
 
-import { getProductCategories, createCategory, updateCategory, deleteCategory } from './ProductCategoriesController';
+import {
+  getProductCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from './ProductCategoriesController';
 
 // Middleware
 import { productCategoryUrlUploader } from '@/middlewares/ProductCategoryUrlUploader';
