@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { DeletedProductUrlFiles } from '../../helpers/DeleteProductUrlFiles';
 import fs from 'fs';
 import path from 'path';
-import { createProductAndProductImagesQuery, updateProductAndProductImagesQuery, getProductsQuery, getProductByIdQuery, getProductImagesQuery, deleteProductQuery } from '../products/ProductService';
+import { createProductAndProductImagesQuery, softDeleteProductQuery, getErasedProductsQuery, restoreProductQuery, updateProductImageQuery, getProductImageByIdQuery, updateProductDataQuery, resetProductAndProductImagesQuery, getProductsQuery, getProductByIdQuery, getProductImagesQuery, deleteProductQuery } from '../products/ProductService';
 
 // Controller for get all products
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
@@ -11,9 +11,7 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
         const minPriceNum = minPrice ? parseInt(minPrice as string) : undefined;
         const maxPriceNum = maxPrice ? parseInt(maxPrice as string) : undefined;
         const categoryIdNum = categoryId ? parseInt(categoryId as string) : undefined;
-
         const products = await getProductsQuery(sort as string, minPriceNum, maxPriceNum, categoryIdNum, search as string);
-
         res.status(200).send({
             count: products.length,
             error: false,
@@ -25,7 +23,22 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-// Controller for get product and product images by id
+// Controller for get all erased products
+export const getErasedProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const erasedProducts = await getErasedProductsQuery();
+        res.status(200).send({
+            count: erasedProducts.length,
+            error: false,
+            message: 'Get Erased Products',
+            data: erasedProducts
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Controller for get product and product images by id (total stock from all warehouse)
 export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params
@@ -40,7 +53,6 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
         next(error)
     }
 }
-
 
 // Controller for create product
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
@@ -93,8 +105,86 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
     }
 }
 
-// Controller for update product
-export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+// Controller for soft delete product
+export const softDeleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+        await softDeleteProductQuery(id)
+        res.status(200).send({
+            error: false,
+            message: 'Product deleted successfully',
+            data: null
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+// Controller for restore product
+export const restoreProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+        await restoreProductQuery(id)
+        res.status(200).send({
+            error: false,
+            message: 'Product restored successfully',
+            data: null
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+// Controller for update product data only
+export const updateProductData = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+        const product = await updateProductDataQuery(id, data);
+        if (!product) {
+            throw new Error('Cannot update product, product not found');
+        }
+        res.status(200).send({
+            error: false,
+            message: 'Product data updated successfully',
+            data: product,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Controller for update product images by productImages Id
+export const updateProductImage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { imageId } = req.params;
+        let uploadedProductUrl;
+        if (req.files) {
+            uploadedProductUrl = Array.isArray(req.files) ? req.files : req.files['producturl']
+        }
+        const existingImage = await getProductImageByIdQuery(imageId);
+        if (!existingImage) throw new Error('Cannot update product image, image not found')
+        const oldImagePath = path.join(existingImage.productUrl);
+        if (fs.existsSync(oldImagePath)) {
+            fs.rmSync(oldImagePath);
+        } else {
+            console.warn(`File does not exist: ${oldImagePath}`);
+        }
+        const updatedImage = await updateProductImageQuery(imageId, uploadedProductUrl);
+        res.status(200).send({
+            error: false,
+            message: 'Product image updated successfully',
+            data: existingImage,
+        });
+    } catch (error) {
+        console.log(error);
+        DeletedProductUrlFiles(req.files);
+        next(error);
+    }
+};
+
+// Controller for reset product
+export const resetProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params
         const data = JSON.parse(req.body.data)
@@ -104,8 +194,8 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
         }
         const productImages = await getProductImagesQuery(id);
         const product = await getProductByIdQuery(id);
-        if (!product) throw new Error('Cannot update product, product not found')
-        await updateProductAndProductImagesQuery(id, data, uploadedProductUrl)
+        if (!product) throw new Error('Cannot reset product, product not found')
+        await resetProductAndProductImagesQuery(id, data, uploadedProductUrl)
         for (const image of productImages) {
             const imagePath = path.join(image.productUrl);
             if (fs.existsSync(imagePath)) {
@@ -116,7 +206,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
         }
         res.status(201).send({
             error: false,
-            message: 'Product updated successfully',
+            message: 'Product reset successfully',
             data: null
         })
     } catch (error) {

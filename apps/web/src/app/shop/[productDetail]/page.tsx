@@ -3,15 +3,17 @@ import { useState, useEffect } from "react";
 import { useGetProductDetail } from "@/helpers/productDetail/hooks/useGetProductDetail";
 import Image from "next/image";
 import { IProductDetail } from "@/helpers/productDetail/ProductDetailTypes";
-import SearchBox from "@/components/cores/SearchBox";
+import SearchBox from "@/components/shop/SearchBox";
 import { FaShoppingCart, FaMinus, FaPlus, FaFacebookF, FaLinkedin, FaWhatsapp, FaPinterest, FaEnvelope } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import ActiveImageModal from "@/components/shop/ActiveImageModal";
 
 export default function ProductDetail({ params }: { params: { productDetail: string } }) {
     const { productDetail } = useGetProductDetail(params.productDetail);
     const [activeImg, setActiveImg] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(0);
+    const [showModal, setShowModal] = useState(false);
 
     const handleIncrement = () => {
         setQuantity(quantity + 1);
@@ -29,12 +31,22 @@ export default function ProductDetail({ params }: { params: { productDetail: str
         }
     }, [productDetail]);
 
+    const handleActiveImageClick = () => {
+        if (activeImg) {
+            setShowModal(true);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
     return (
         <div className="bg-[#ffffff] mt-8 mb-8 min-h-screen w-auto px-4 lg:px-8">
             <div className="flex flex-col lg:flex-row mx-[50px] justify-center items-center">
                 <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%] justify-center">
                     <div className="mb-4 flex justify-center">
-                        <SearchBox showAdditionalFilters={false} applyFilters={() => { }} initialSearchParams={{}} />
+                        <SearchBox showAdditionalFilters={false} applyFilters={() => { }} initialSearchParams={{}} refetchDataProducts={() => { }} />
                     </div>
                 </div>
                 <div className="flex flex-col lg:w-[55%] lg:justify-center">
@@ -46,7 +58,9 @@ export default function ProductDetail({ params }: { params: { productDetail: str
             <div className="flex flex-col lg:flex-row mx-[50px] justify-center">
                 <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%]">
                     <div className="flex flex-col gap-[15px] items-center">
-                        {activeImg && (<Image src={`http://localhost:8000/${activeImg}`} key={activeImg} className="aspect-square object-cover rounded-xl shadow-lg" alt="image" width={450} height={450} />)}
+                        {activeImg && (
+                            <Image src={`http://localhost:8000/${activeImg}`} key={activeImg} className="aspect-square object-cover rounded-xl shadow-lg cursor-pointer" alt="image" width={450} height={450} onClick={handleActiveImageClick} />
+                        )}
                         <div className="flex flex-row justify-start gap-2 flex-wrap">
                             {productDetail?.productImages?.map((image: IProductDetail, index: number) => (
                                 <div key={index} onClick={() => setActiveImg(image.productUrl)} className="w-24 h-24 rounded-xl cursor-pointer mb-2">
@@ -78,6 +92,9 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                                 <button onClick={handleIncrement} className="bg-gray-200 text-gray-700 rounded-r-md px-4 py-2" >
                                     <FaPlus />
                                 </button>
+                            </div>
+                            <div className="text-gray-500 font-medium">
+                                Stock left: {productDetail?.totalStockAllWarehouse}
                             </div>
                             <button className='border-eggplant hover:border-hover_eggplant hover:bg-hover_eggplant bg-eggplant lg:text-[16px] text-[14px] flex h-[30px] lg:h-[40px] w-[200px] items-center justify-center gap-5 rounded-md border-2 font-medium text-white'>
                                 <FaShoppingCart /> Add to Cart
@@ -115,6 +132,7 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                     </div>
                 </div>
             </div>
+            {showModal && activeImg && <ActiveImageModal src={`http://localhost:8000/${activeImg}`} alt="Product Image" onClose={handleCloseModal} />}
         </div>
     );
 }

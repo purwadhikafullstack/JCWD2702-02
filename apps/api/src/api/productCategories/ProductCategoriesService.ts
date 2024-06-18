@@ -3,7 +3,13 @@ import { IProductCategory } from './ProductCategoriesTypes';
 
 // Query for get all product Categories
 export const getProductCategoriesQuery = async () => {
-    return await prisma.category.findMany();
+    return await prisma.category.findMany(
+        {
+            where: {
+                deletedAt: null
+            }
+        }
+    );
 };
 
 // Query for get category by id
@@ -25,18 +31,56 @@ export const createCategoryAndCategoryImagesQuery = async (data: IProductCategor
 
 // Query for delete category
 export const deleteCategoryAndCategoryImagesQuery = async (categoryId: string) => {
+    const relatedProducts = await prisma.product.findMany({
+        where: {
+            categoryId: parseInt(categoryId)
+        }
+    });
+    if (relatedProducts.length > 0) {
+        throw new Error('Cannot delete category because there are still products associated with it.');
+    }
     return await prisma.category.delete({
-        where: { id: parseInt(categoryId) },
-    })
+        where: {
+            id: parseInt(categoryId)
+        },
+    });
+}
+
+// Query for soft delete category
+export const softDeleteCategoryAndCategoryImagesQuery = async (categoryId: string) => {
+    const relatedProducts = await prisma.product.findMany({
+        where: {
+            categoryId: parseInt(categoryId)
+        }
+    });
+
+    if (relatedProducts.length > 0) {
+        throw new Error('Cannot delete category because there are still products associated with it.');
+    }
+    return await prisma.category.update({
+        where: {
+            id: parseInt(categoryId)
+        },
+        data: {
+            deletedAt: new Date()
+        },
+    });
 }
 
 // Query for update category
-export const updateCategoryAndCategoryImagesQuery = async (categoryId: string, data: IProductCategory, files: any) => {
+export const updateCategoryAndCategoryImagesQuery = async (categoryId: string, data: Partial<IProductCategory>, files: any) => {
+    const updateData: { name?: string, categoryUrl?: string } = {};
+
+    if (data.name) {
+        updateData.name = data.name;
+    }
+
+    if (files && files.length > 0) {
+        updateData.categoryUrl = files[0].path;
+    }
+
     return await prisma.category.update({
         where: { id: parseInt(categoryId) },
-        data: {
-            name: data.name,
-            categoryUrl: files[0].path
-        }
-    })
-}
+        data: updateData
+    });
+};

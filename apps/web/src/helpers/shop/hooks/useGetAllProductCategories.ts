@@ -1,8 +1,10 @@
 import { useGetAllProductCategoriesQuery } from "../api/useGetAllProductCategoriesQuery";
 
 export const useGetAllProductCategories = () => {
-    const { productCategories } = useGetAllProductCategoriesQuery();
+    const { productCategories, refetchProductCategories, isLoading } = useGetAllProductCategoriesQuery();
     return {
-        dataProductCategories: productCategories?.data?.data
+        dataProductCategories: productCategories?.data?.data,
+        refetchProductCategories,
+        isLoading
     };
 }
