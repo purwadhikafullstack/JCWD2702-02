@@ -53,7 +53,7 @@ export default function FooterMobile() {
         <div className='collapse-content'>
           <p>
             We are a team of passionate people whose goal is to improve
-            everyone's life through disruptive products. We build great products
+            everyone&apos;s life through disruptive products. We build great products
             to solve your business problems.
           </p>
           <p>

@@ -1,3 +1,4 @@
+import { usePathname } from 'next/navigation'
 import NavbarDesktop from './desktop'
 import NavbarMobile from './mobile'
 import { useContext, useEffect, useState } from 'react'
@@ -45,6 +46,10 @@ export default function Navbar() {
   useEffect(() => {
     handleKeepLogin()
   }, [])
+  
+  const pathname = usePathname()
+
+  if (pathname.includes('/admin')) return null
   return (
     <div>
       <div className='md:hidden'>

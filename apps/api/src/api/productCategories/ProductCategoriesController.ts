@@ -9,6 +9,7 @@ import {
   getCategoryByIdQuery,
   updateCategoryAndCategoryImagesQuery,
 } from './ProductCategoriesService';
+import { getProductCategoriesQuery, deleteCategoryAndCategoryImagesQuery, softDeleteCategoryAndCategoryImagesQuery, createCategoryAndCategoryImagesQuery, getCategoryByIdQuery, updateCategoryAndCategoryImagesQuery } from './ProductCategoriesService';
 
 // Controller for get all categories
 export const getProductCategories = async (
@@ -63,58 +64,69 @@ export const createCategory = async (
 };
 
 // Controller for delete category
-export const deleteCategory = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { id } = req.params;
-    const categoryResult = await getCategoryByIdQuery(id);
-    if (!categoryResult)
-      throw new Error('Cannot delete category, category not found');
-    const imagePath = categoryResult?.categoryUrl;
-    console.log(imagePath);
-    if (imagePath) fs.rmSync(imagePath);
-    await deleteCategoryAndCategoryImagesQuery(id);
-    res.status(200).send({
-      error: false,
-      message: 'Category deleted successfully',
-      data: null,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+        const categoryResult = await getCategoryByIdQuery(id);
+        if (!categoryResult) throw new Error('Cannot delete category, category not found')
+        const imagePath = categoryResult?.categoryUrl;
+        if (imagePath) fs.rmSync(imagePath)
+        await deleteCategoryAndCategoryImagesQuery(id)
+        res.status(200).send({
+            error: false,
+            message: 'Category deleted successfully',
+            data: null
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+// Controller for soft delete category
+export const softDeleteCategory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+        const categoryResult = await getCategoryByIdQuery(id);
+        if (!categoryResult) throw new Error('Cannot delete category, category not found')
+        await softDeleteCategoryAndCategoryImagesQuery(id)
+        res.status(200).send({
+            error: false,
+            message: 'Category deleted successfully',
+            data: null
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
 // Controller for update category
-export const updateCategory = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { id } = req.params;
-    const data = JSON.parse(req.body.data);
-    let uploadedCategoryUrl;
-    if (req.files) {
-      uploadedCategoryUrl = Array.isArray(req.files)
-        ? req.files
-        : req.files['categoryurl'];
-    }
-    const getCategoryByIdResult = await getCategoryByIdQuery(id);
-    const previousCategoryUrl = getCategoryByIdResult?.categoryUrl;
+export const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const data = req.body.data ? JSON.parse(req.body.data) : {};
+        let uploadedCategoryUrl = null;
 
-    if (!uploadedCategoryUrl) throw new Error('Category not found');
-    await updateCategoryAndCategoryImagesQuery(id, data, uploadedCategoryUrl);
-    if (previousCategoryUrl) fs.rmSync(previousCategoryUrl);
-    res.status(201).send({
-      error: false,
-      message: 'Category updated successfully',
-      data: null,
-    });
-  } catch (error) {
-    DeletedProductCategoryUrlFiles(req.files);
-    next(error);
-  }
+        if (req.files) {
+            uploadedCategoryUrl = Array.isArray(req.files) ? req.files : req.files['categoryurl'];
+        }
+
+        const getCategoryByIdResult = await getCategoryByIdQuery(id);
+        const previousCategoryUrl = getCategoryByIdResult?.categoryUrl;
+
+        if (!getCategoryByIdResult) throw new Error('Category not found');
+
+        await updateCategoryAndCategoryImagesQuery(id, data, uploadedCategoryUrl);
+        if (uploadedCategoryUrl && previousCategoryUrl) {
+            fs.rmSync(previousCategoryUrl);
+        }
+
+        res.status(201).send({
+            error: false,
+            message: 'Category updated successfully',
+            data: null
+        });
+    } catch (error) {
+        DeletedProductCategoryUrlFiles(req.files);
+        next(error);
+    }
 };

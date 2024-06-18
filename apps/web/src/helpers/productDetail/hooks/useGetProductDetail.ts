@@ -1,8 +1,9 @@
 import { useGetProductDetailQuery } from "../api/useGetProductDetailQuery";
 
 export const useGetProductDetail = (id: string) => {
-    const { productDetail } = useGetProductDetailQuery(id);
+    const { productDetail, refetchProductDetail } = useGetProductDetailQuery(id);
     return {
-        productDetail: productDetail?.data?.data
+        productDetail: productDetail?.data?.data,
+        refetchProductDetail
     };
 }
