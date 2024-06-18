@@ -9,7 +9,7 @@ export const useLoginOauthMutation = ({
   onSuccess: any
   onError: any
 }) => {
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, data } = useMutation({
     mutationFn: async ({ accesstoken }: { accesstoken: string }) => {
       return await axiosInstance.post(
         'http://localhost:8000/auth/login/oauth',
@@ -28,5 +28,6 @@ export const useLoginOauthMutation = ({
   return {
     mutate,
     isPending,
+    data,
   }
 }

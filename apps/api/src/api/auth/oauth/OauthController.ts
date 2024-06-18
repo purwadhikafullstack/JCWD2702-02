@@ -69,7 +69,7 @@ export const googleOauthCallback = async (
 
     const accestoken = await createOauthToken({ uid: user.uid });
 
-    return res.redirect(201, `${process.env.APP_URL}/oauth/${accestoken}`);
+    return res.redirect(`${process.env.APP_URL}/oauth/${accestoken}`);
   } catch (error) {
     next(error);
   }

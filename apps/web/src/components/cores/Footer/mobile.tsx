@@ -3,7 +3,7 @@ import { MdMessage, MdMail, MdLocalPhone } from 'react-icons/md'
 export default function FooterMobile() {
   return (
     <div className='bg-ebony text-white'>
-      <details className='collapse-arrow collapse rounded-none'>
+      <details className='collapse collapse-arrow rounded-none'>
         <summary className='collapse-title flex w-screen text-xl font-medium'>
           Useful Links
         </summary>
@@ -46,7 +46,7 @@ export default function FooterMobile() {
           </a>
         </div>
       </details>
-      <details className='collapse-arrow collapse rounded-none'>
+      <details className='collapse collapse-arrow rounded-none'>
         <summary className='collapse-title flex w-screen text-xl font-medium'>
           About Us
         </summary>
@@ -62,7 +62,7 @@ export default function FooterMobile() {
           </p>
         </div>
       </details>
-      <details className='collapse-arrow collapse rounded-none'>
+      <details className='collapse collapse-arrow rounded-none'>
         <summary className='collapse-title flex w-screen text-xl font-medium'>
           Connect With Us
         </summary>
@@ -87,7 +87,7 @@ export default function FooterMobile() {
           </a>
         </div>
       </details>
-      <div className='bg-second_ebony text-bombay flex h-fit w-full items-center justify-center py-3'>
+      <div className='flex h-fit w-full items-center justify-center bg-second_ebony py-3 text-bombay'>
         Copyright © Burnog
       </div>
     </div>

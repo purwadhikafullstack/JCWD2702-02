@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { UserContext } from '@/config/context/userContext'
 import { useState } from 'react'
 import { SideBarContext } from '@/config/context/sideBarContext'
+import ProtectedRouteProvider from '@/provider/ProtectedRoute'
 
 const inter = Inter({ subsets: ['latin'] })
 

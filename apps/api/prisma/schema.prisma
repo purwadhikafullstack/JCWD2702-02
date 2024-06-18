@@ -26,8 +26,11 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  User_Reset_Password     User_Reset_Password[]
-  User_Email_Verification User_Email_Verification[]
+  User_Reset_Password             User_Reset_Password[]
+  User_Email_Verification         User_Email_Verification[]
+  User_Reset_Password_History     User_Reset_Password_History[]
+  User_Email_Verification_History User_Email_Verification_History[]
+  Address                         Address[]
 
   @@map("users")
 }
@@ -55,32 +58,93 @@ model Role {
   @@map("roles")
 }
 
-model User_Email_Verification {
-  id       Int      @id @default(autoincrement())
-  userId   String
-  expireIn DateTime
+enum VerificationStatus {
+  PENDING
+  DONE
+  EXPIRED
+}
+
+model Address {
+  id          Int    @id @default(autoincrement())
+  userId      String
+  recipients  String
+  address     String
+  province    String
+  provinceId  Int
+  city        String
+  cityId      Int
+  phoneNumber String
+  postalCode  String
+  latitude    String
+  longitude   String
 
   user User @relation(fields: [userId], references: [uid])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("user_address")
+}
+
+model User_Email_Verification {
+  id       Int                @id @default(autoincrement())
+  userId   String
+  expireIn DateTime
+  status   VerificationStatus @default(PENDING)
+
+  user User @relation(fields: [userId], references: [uid])
+
+  createdAt                       DateTime                          @default(now())
+  updatedAt                       DateTime                          @updatedAt
+  deletedAt                       DateTime?
+  User_Email_Verification_History User_Email_Verification_History[]
 
   @@map("user_email_verification")
 }
 
-model User_Reset_Password {
-  id       Int      @id @default(autoincrement())
-  userId   String
-  expireIn DateTime
+model User_Email_Verification_History {
+  id      Int                @id @default(autoincrement())
+  userId  String
+  verifId Int
+  status  VerificationStatus @default(PENDING)
 
-  user User @relation(fields: [userId], references: [uid])
+  user              User                    @relation(fields: [userId], references: [uid])
+  emailVerification User_Email_Verification @relation(fields: [verifId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+}
+
+model User_Reset_Password {
+  id       Int                @id @default(autoincrement())
+  userId   String
+  expireIn DateTime
+  status   VerificationStatus @default(PENDING)
+
+  user User @relation(fields: [userId], references: [uid])
+
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  deletedAt                   DateTime?
+  User_Reset_Password_History User_Reset_Password_History[]
 
   @@map("user_reset_password")
+}
+
+model User_Reset_Password_History {
+  id      Int                @id @default(autoincrement())
+  userId  String
+  resetId Int
+  status  VerificationStatus @default(PENDING)
+
+  user          User                @relation(fields: [userId], references: [uid])
+  resetPassword User_Reset_Password @relation(fields: [resetId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Category {

@@ -3,14 +3,24 @@ import { prisma } from './../../lib/PrismaClient';
 import { IProduct } from './ProductsTypes';
 
 // Query for get all products
-export const getProductsQuery = async (sortBy?: string, minPrice?: number, maxPrice?: number, categoryId?: number, search?: string) => {
-    const sortCriteriaMap: Record<string, Prisma.ProductOrderByWithRelationInput> = {
-        name: { name: 'asc' },
-        newest: { createdAt: 'desc' },
-        price_low_high: { price: 'asc' },
-        price_high_low: { price: 'desc' },
-        default: { createdAt: 'asc' },
-    };
+export const getProductsQuery = async (
+  sortBy?: string,
+  minPrice?: number,
+  maxPrice?: number,
+  categoryId?: number,
+  search?: string,
+) => {
+  const sortCriteriaMap: Record<
+    string,
+    Prisma.ProductOrderByWithRelationInput
+  > = {
+    name: { name: 'asc' },
+    newest: { createdAt: 'desc' },
+    price_low_high: { price: 'asc' },
+    price_high_low: { price: 'desc' },
+    default: { createdAt: 'asc' },
+  };
+
     const sortCriteria = sortBy && sortCriteriaMap[sortBy] ? sortCriteriaMap[sortBy] : sortCriteriaMap.default;
     const whereCriteria: Prisma.ProductWhereInput = {
         deletedAt: null,
@@ -86,9 +96,9 @@ export const getProductByIdQuery = async (id: string) => {
 
 // Query for get product images by product id
 export const getProductImagesQuery = async (id: string) => {
-    return await prisma.product_Images.findMany({
-        where: { productId: parseInt(id) },
-    });
+  return await prisma.product_Images.findMany({
+    where: { productId: parseInt(id) },
+  });
 };
 
 // Query for retrieving existing product image by image ID
@@ -99,36 +109,39 @@ export const getProductImageByIdQuery = async (imageId: string) => {
 };
 
 // Query for create product
-export const createProductAndProductImagesQuery = async (data: IProduct, files: any) => {
-    return await prisma.$transaction(async (tx) => {
-        const createProductResult = await tx.product.create({
-            data: {
-                name: data.name,
-                description: data.description,
-                price: data.price,
-                categoryId: data.categoryId
-            }
-        })
-        const productImages: any = [];
-        files.forEach((file: any) => {
-            productImages.push({
-                productId: createProductResult.id,
-                productUrl: file.path
-            })
-        })
-        await tx.product_Images.createMany({
-            data: [...productImages]
-        })
-    })
-}
+export const createProductAndProductImagesQuery = async (
+  data: IProduct,
+  files: any,
+) => {
+  return await prisma.$transaction(async (tx) => {
+    const createProductResult = await tx.product.create({
+      data: {
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        categoryId: data.categoryId,
+      },
+    });
+    const productImages: any = [];
+    files.forEach((file: any) => {
+      productImages.push({
+        productId: createProductResult.id,
+        productUrl: file.path,
+      });
+    });
+    await tx.product_Images.createMany({
+      data: [...productImages],
+    });
+  });
+};
 
 // Query for delete product and the product images
 export const deleteProductQuery = async (id: string) => {
-    return await prisma.$transaction(async (tx) => {
-        await tx.product_Images.deleteMany({ where: { productId: parseInt(id) } })
-        await tx.product.delete({ where: { id: parseInt(id) } })
-    })
-}
+  return await prisma.$transaction(async (tx) => {
+    await tx.product_Images.deleteMany({ where: { productId: parseInt(id) } });
+    await tx.product.delete({ where: { id: parseInt(id) } });
+  });
+};
 
 // Query for soft delete product
 export const softDeleteProductQuery = async (id: string) => {

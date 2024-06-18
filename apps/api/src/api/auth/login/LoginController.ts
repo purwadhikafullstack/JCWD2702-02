@@ -62,7 +62,7 @@ export const keepLogin = async (
     const reqToken = req as IReqAccessToken;
     const { uid } = reqToken.payload;
 
-    console.log(uid);
+    // console.log(uid);
 
     const findUserByIdResult = await findUserByIdService({ uid });
 

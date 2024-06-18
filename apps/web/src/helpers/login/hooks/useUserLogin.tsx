@@ -22,6 +22,10 @@ export const useUserLogin = () => {
         role: response.role,
         email: response.email,
       })
+      localStorage.setItem(
+        'auth',
+        JSON.stringify({ acctkn: res.data.data.accesstoken })
+      )
       setCookie(res.data.data.accesstoken)
       toast.success(res.data.message, {
         position: 'top-right',

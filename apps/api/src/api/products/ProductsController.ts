@@ -55,55 +55,66 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
 }
 
 // Controller for create product
-export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const data = JSON.parse(req.body.data)
-        let uploadedProductUrl;
-        if (req.files) {
-            uploadedProductUrl = Array.isArray(req.files) ? req.files : req.files['producturl']
-            const getProductsQueryResult = await getProductsQuery()
-            for (const product of getProductsQueryResult) {
-                if (product.name === data.name) {
-                    throw new Error('Cannot Create Product, Product name already exists')
-                }
-            }
+export const createProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = JSON.parse(req.body.data);
+    let uploadedProductUrl;
+    if (req.files) {
+      uploadedProductUrl = Array.isArray(req.files)
+        ? req.files
+        : req.files['producturl'];
+      const getProductsQueryResult = await getProductsQuery();
+      for (const product of getProductsQueryResult) {
+        if (product.name === data.name) {
+          throw new Error('Cannot Create Product, Product name already exists');
         }
-        await createProductAndProductImagesQuery(data, uploadedProductUrl)
-        res.status(201).send({
-            error: false,
-            message: 'Product created successfully',
-            data: null
-        })
-    } catch (error) {
-        DeletedProductUrlFiles(req.files)
-        next(error)
+      }
     }
-}
+    await createProductAndProductImagesQuery(data, uploadedProductUrl);
+    res.status(201).send({
+      error: false,
+      message: 'Product created successfully',
+      data: null,
+    });
+  } catch (error) {
+    DeletedProductUrlFiles(req.files);
+    next(error);
+  }
+};
 
 // Controller for delete product and the product images
-export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const { id } = req.params
-        const productImages = await getProductImagesQuery(id);
-        if (productImages.length === 0) throw new Error('Cannot delete product, product not found')
-        for (const image of productImages) {
-            const imagePath = path.join(image.productUrl);
-            if (fs.existsSync(imagePath)) {
-                fs.rmSync(imagePath);
-            } else {
-                console.warn(`File does not exist: ${imagePath}`);
-            }
-        }
-        await deleteProductQuery(id)
-        res.status(200).send({
-            error: false,
-            message: 'Product deleted successfully',
-            data: null
-        })
-    } catch (error) {
-        next(error)
+export const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const productImages = await getProductImagesQuery(id);
+    if (productImages.length === 0)
+      throw new Error('Cannot delete product, product not found');
+    for (const image of productImages) {
+      const imagePath = path.join(image.productUrl);
+      if (fs.existsSync(imagePath)) {
+        fs.rmSync(imagePath);
+      } else {
+        console.warn(`File does not exist: ${imagePath}`);
+      }
     }
-}
+    await deleteProductQuery(id);
+    res.status(200).send({
+      error: false,
+      message: 'Product deleted successfully',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Controller for soft delete product
 export const softDeleteProduct = async (req: Request, res: Response, next: NextFunction) => {
@@ -213,4 +224,4 @@ export const resetProduct = async (req: Request, res: Response, next: NextFuncti
         DeletedProductUrlFiles(req.files)
         next(error)
     }
-}
+};

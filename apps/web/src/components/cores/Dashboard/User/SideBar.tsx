@@ -4,6 +4,7 @@ import {
   MdWallet,
   MdListAlt,
   MdOutlineSecurity,
+  MdOutlineHome,
 } from 'react-icons/md'
 import { useState } from 'react'
 import { SideBarContext } from '@/config/context/sideBarContext'
@@ -26,8 +27,8 @@ export default function UserSideBar() {
         onClick={() => setSideBar(1)}
         className='btn flex w-full justify-start border-ebony bg-ebony text-white hover:border-ebony hover:bg-ebony hover:text-bouquet'
       >
-        <MdOutlineSecurity size={30} />
-        Security
+        <MdOutlineHome size={30} />
+        Address
       </button>
       <button
         onClick={() => setSideBar(2)}

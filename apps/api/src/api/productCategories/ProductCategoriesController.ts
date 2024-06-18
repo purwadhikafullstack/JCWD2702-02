@@ -1,47 +1,67 @@
 import { Request, Response, NextFunction } from 'express';
 import { DeletedProductCategoryUrlFiles } from '@/helpers/DeleteProductCategoryUrlFiles';
 import fs from 'fs';
+import path from 'path';
+import {
+  getProductCategoriesQuery,
+  deleteCategoryAndCategoryImagesQuery,
+  createCategoryAndCategoryImagesQuery,
+  getCategoryByIdQuery,
+  updateCategoryAndCategoryImagesQuery,
+} from './ProductCategoriesService';
 import { getProductCategoriesQuery, deleteCategoryAndCategoryImagesQuery, softDeleteCategoryAndCategoryImagesQuery, createCategoryAndCategoryImagesQuery, getCategoryByIdQuery, updateCategoryAndCategoryImagesQuery } from './ProductCategoriesService';
 
 // Controller for get all categories
-export const getProductCategories = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const getCategoriesResult = await getProductCategoriesQuery();
-        res.status(200).send({
-            error: false,
-            meesage: 'Get Categories',
-            data: getCategoriesResult
-        });
-    } catch (error) {
-        next(error);
-    }
+export const getProductCategories = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const getCategoriesResult = await getProductCategoriesQuery();
+    res.status(200).send({
+      error: false,
+      meesage: 'Get Categories',
+      data: getCategoriesResult,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Controller for create category
-export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const data = JSON.parse(req.body.data)
-        let uploadedCategoryUrl;
-        if (req.files) {
-            uploadedCategoryUrl = Array.isArray(req.files) ? req.files : req.files['categoryurl']
-            const getCategoriesQueryResult = await getProductCategoriesQuery()
-            for (const category of getCategoriesQueryResult) {
-                if (category.name === data.name) {
-                    throw new Error('Cannot Create Category, Category name already exists')
-                }
-            }
+export const createCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = JSON.parse(req.body.data);
+    let uploadedCategoryUrl;
+    if (req.files) {
+      uploadedCategoryUrl = Array.isArray(req.files)
+        ? req.files
+        : req.files['categoryurl'];
+      const getCategoriesQueryResult = await getProductCategoriesQuery();
+      for (const category of getCategoriesQueryResult) {
+        if (category.name === data.name) {
+          throw new Error(
+            'Cannot Create Category, Category name already exists',
+          );
         }
-        await createCategoryAndCategoryImagesQuery(data, uploadedCategoryUrl)
-        res.status(201).send({
-            error: false,
-            message: 'Category created successfully',
-            data: null
-        })
-    } catch (error) {
-        DeletedProductCategoryUrlFiles(req.files)
-        next(error)
+      }
     }
-}
+    await createCategoryAndCategoryImagesQuery(data, uploadedCategoryUrl);
+    res.status(201).send({
+      error: false,
+      message: 'Category created successfully',
+      data: null,
+    });
+  } catch (error) {
+    DeletedProductCategoryUrlFiles(req.files);
+    next(error);
+  }
+};
 
 // Controller for delete category
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
@@ -109,4 +129,4 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
         DeletedProductCategoryUrlFiles(req.files);
         next(error);
     }
-}
+};
