@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { getProductCategories, createCategory, updateCategory, deleteCategory } from './ProductCategoriesController';
+import { getProductCategories, createCategory, updateCategory, deleteCategory, softDeleteCategory } from './ProductCategoriesController';
 
 // Middleware
 import { productCategoryUrlUploader } from '@/middlewares/ProductCategoryUrlUploader';
@@ -8,8 +8,8 @@ import { productCategoryUrlUploader } from '@/middlewares/ProductCategoryUrlUplo
 const router = Router();
 
 router.post('/', productCategoryUrlUploader, createCategory);
-router.put('/:id', productCategoryUrlUploader, updateCategory);
+router.patch('/:id', productCategoryUrlUploader, updateCategory);
 router.get('/', getProductCategories);
-router.delete('/:id', deleteCategory);
+router.delete('/:id', softDeleteCategory);
 
 export default router;

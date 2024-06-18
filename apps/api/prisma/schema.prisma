@@ -111,6 +111,7 @@ model Product {
 
   ProductImages Product_Images[]
   Categories    Category?        @relation(fields: [categoryId], references: [id])
+  stockHistory  stockHistory[]
 
   @@map("products")
 }
@@ -127,4 +128,77 @@ model Product_Images {
   Product Product? @relation(fields: [productId], references: [id])
 
   @@map("product_images")
+}
+
+model stockHistory {
+  id        Int         @id @default(autoincrement())
+  fromId    Int
+  toId      Int
+  quantity  Int
+  status    StockStatus @default(PENDING)
+  productId Int
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  deletedAt DateTime?
+
+  Product Product       @relation(fields: [productId], references: [id])
+  from    Mutation_Type @relation("StockHistoryFrom", fields: [fromId], references: [id])
+  to      Mutation_Type @relation("StockHistoryTo", fields: [toId], references: [id])
+
+  @@map("stock_history")
+}
+
+enum StockStatus {
+  ACCEPTED
+  PENDING
+  REJECTED
+}
+
+model admin {
+  uid         String    @id @default(uuid())
+  adminRole   adminRole
+  fullname    String
+  email       String    @unique
+  password    String
+  warehouseId Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  Warehouse Warehouse? @relation(fields: [warehouseId], references: [id])
+
+  @@map("admins")
+}
+
+enum adminRole {
+  WAREHOUSEADMIN
+  SUPERADMIN
+}
+
+model Warehouse {
+  id         Int    @id @default(autoincrement())
+  name       String
+  province   String
+  city       String
+  detail     String
+  postalCode String
+  longitude  Float
+  latitude   Float
+
+  Admin         admin[]
+  Mutation_Type Mutation_Type[]
+
+  @@map("warehouses")
+}
+
+model Mutation_Type {
+  id          Int    @id @default(autoincrement())
+  name        String
+  warehouseId Int?
+
+  warehouse        Warehouse?     @relation(fields: [warehouseId], references: [id])
+  stockHistoryFrom stockHistory[] @relation("StockHistoryFrom")
+  stockHistoryTo   stockHistory[] @relation("StockHistoryTo")
+
+  @@map("mutation_types")
 }
