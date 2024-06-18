@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
+  reactStrictMode: false,
 }
 
 module.exports = nextConfig

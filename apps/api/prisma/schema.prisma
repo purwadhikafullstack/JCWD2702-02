@@ -69,8 +69,14 @@ model Address {
   userId      String
   recipients  String
   address     String
+  province    String
+  provinceId  Int
+  city        String
+  cityId      Int
   phoneNumber String
   postalCode  String
+  latitude    String
+  longitude   String
 
   user User @relation(fields: [userId], references: [uid])
 

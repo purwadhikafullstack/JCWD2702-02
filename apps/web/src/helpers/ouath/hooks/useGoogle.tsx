@@ -8,7 +8,11 @@ import { useContext } from 'react'
 export const useOauthLogin = () => {
   const { userData, setUserData }: any = useContext(UserContext)
 
-  const { mutate: mutationOauthLogin, isPending } = useLoginOauthMutation({
+  const {
+    mutate: mutationOauthLogin,
+    isPending,
+    data,
+  } = useLoginOauthMutation({
     onSuccess: (res: any) => {
       const response = res.data.data
       let nameResult = response.name
@@ -20,6 +24,10 @@ export const useOauthLogin = () => {
         email: response.email,
       })
       setCookie(res.data.data.accesstoken)
+      localStorage.setItem(
+        'auth',
+        JSON.stringify({ acctkn: res.data.data.accesstoken })
+      )
     },
     onError: (err: any) => {
       toast.error(err.response.data.message, {
@@ -40,5 +48,6 @@ export const useOauthLogin = () => {
   return {
     mutationOauthLogin,
     isPending,
+    data,
   }
 }

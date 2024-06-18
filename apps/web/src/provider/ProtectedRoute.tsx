@@ -1,61 +1,85 @@
 'use client'
 
 import { useEffect, useLayoutEffect, useState, useContext } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname, redirect } from 'next/navigation'
 import { UserContext } from '@/config/context/userContext'
-import { getCookie } from '@/config/cookie'
+import Loading from '@/components/cores/Loading'
 
 export default function ProtectedRouteProvider({
   children,
 }: {
   children: any
 }) {
-  const { userData, setUserData }: any = useContext(UserContext)
+  const { userData }: any = useContext(UserContext)
+  const [loading, setLoading] = useState(true)
 
-  //   const cookie = getCookie()
+  let accesstoken: any = localStorage.getItem('auth')
+  accesstoken = JSON.parse(accesstoken)
 
-  //   console.log(cookie)
+  const userRole = userData?.role
 
-  // Assume This is User Role from Global Store
-  const userRole = 'USER'
-  // Assume User Has Token at Localstorage/Cookies
-  const accessToken = true
-  // AdminRoute
-  const adminPermittedRoute = [
-    '/admin/dashboard',
-    '/admin/dashboard/product-items',
-  ]
-  const userPermittedRoute = ['/']
+  const accessToken = accesstoken
+
+  // console.log(!accessToken)
+  // console.log(userRole)
+  //   console.log(loading)
+
+  const adminPermittedRoute: any = ['/admin']
+  const userPermittedRoute: any = ['/dashboard']
 
   const pathname = usePathname()
   const router = useRouter()
-
-  const [loading, setLoading] = useState(true)
 
   useLayoutEffect(() => {
     setLoading(true)
   }, [pathname])
 
-  // //   useEffect(() => {
-  // //     const timer = setTimeout(() => {
-  // //       // Protect Admin Page
-  // //       if (
-  // //         accessToken &&
-  // //         userRole !== 'ADMIN' &&
-  // //         adminPermittedRoute.includes(pathname)
-  // //       ) {
-  // //         router.push('/404')
-  // //       } else {
-  // //         setLoading(false)
-  // //       }
-  // //     }, 2000)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (
+        accessToken &&
+        userRole == 3 &&
+        pathname.includes(adminPermittedRoute)
+      ) {
+        router.push('/')
+      } else {
+        setLoading(false)
+      }
+    })
+    return () => clearTimeout(timer)
+  }, [pathname, userRole])
 
-  //     return () => clearTimeout(timer)
-  //   }, [pathname, userRole])
-
-  //   if (loading === true) {
-  //     return <h1 className='text-xl font-bold'>Loading . . .</h1>
-  //   }
+  if (loading === true) {
+    return <Loading></Loading>
+  }
 
   return <>{children}</>
 }
+
+// export default function ProtectedRouteProvider({
+//   children,
+// }: {
+//   children: any
+// }) {
+//   const { userData }: any = useContext(UserContext)
+//   let accesstoken: any = localStorage.getItem('auth')
+//   accesstoken = JSON.parse(accesstoken)
+
+//   const navigate = useRouter()
+//   const path = usePathname()
+
+//   const userRole = userData?.role
+//   const accessToken = accesstoken?.acctkn
+
+//   console.log(userRole)
+//   console.log(accessToken)
+//   console.log(!accessToken)
+
+//   const authorizeUser = async () => {}
+
+//   useEffect(() => {
+//     authorizeUser()
+//   }, [])
+
+//   return <>{children}</>
+// }

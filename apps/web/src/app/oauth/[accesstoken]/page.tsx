@@ -6,7 +6,7 @@ import { UserContext } from '@/config/context/userContext'
 
 export default function Verification({ params }: any) {
   const accesstoken = params.accesstoken
-  const { mutationOauthLogin, isPending } = useOauthLogin()
+  const { mutationOauthLogin, isPending, data } = useOauthLogin()
   const { userData }: any = useContext(UserContext)
 
   const navigate = useRouter()
@@ -16,6 +16,8 @@ export default function Verification({ params }: any) {
       mutationOauthLogin({ accesstoken: accesstoken })
     }
   })
+
+  console.log(data?.data?.data.accesstoken)
 
   return (
     <div className='flex h-screen items-center justify-center p-[100px]'>

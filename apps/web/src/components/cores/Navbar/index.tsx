@@ -5,6 +5,8 @@ import { UserContext } from '@/config/context/userContext'
 import { useKeepLogin } from '@/helpers/login/hooks/useKeepLogin'
 import { useRouter } from 'next/navigation'
 import { deleteCookie } from '@/config/cookie'
+import { toast } from 'react-toastify'
+import { Slide } from 'react-toastify'
 
 export default function Navbar() {
   const { userData, setUserData }: any = useContext(UserContext)
@@ -15,10 +17,22 @@ export default function Navbar() {
   const { mutationKeepLogin } = useKeepLogin()
 
   const handleLogout = async () => {
+    localStorage.removeItem('auth')
     await deleteCookie()
     setUserData(null)
     navigate.push('/')
     setIsLogin(false)
+    toast.error('Logout', {
+      position: 'top-right',
+      autoClose: 1500,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'colored',
+      transition: Slide,
+    })
   }
 
   const handleKeepLogin = () => {

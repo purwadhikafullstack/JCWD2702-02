@@ -16,6 +16,9 @@ export const userImageUpload = async (
     const reqToken = req as IReqAccessToken;
     const { uid } = reqToken.payload;
 
+    console.log(req.files);
+    // console.log('>>>');
+
     let uploadedUserImageUrl;
     if (req.files) {
       uploadedUserImageUrl = Array.isArray(req.files)
@@ -25,7 +28,7 @@ export const userImageUpload = async (
 
     const findUserByIdResult = await findUserByIdService({ uid });
 
-    if (!findUserByIdResult) throw new Error('User Not Fount');
+    if (!findUserByIdResult) throw new Error('User Not Found');
 
     const prevUserImageUrl = findUserByIdResult?.userImageUrl;
 
@@ -54,14 +57,31 @@ export const userAddress = async (
   try {
     const reqToken = req as IReqAccessToken;
     const { uid } = reqToken.payload;
-    const { recipients, address, phoneNumber, postalCode } = req.body;
+    const {
+      recipients,
+      address,
+      province,
+      provinceId,
+      city,
+      cityId,
+      phoneNumber,
+      postalCode,
+      longitude,
+      latitude,
+    } = req.body;
 
     await createUserAddressService({
       uid,
       recipients,
       address,
+      province,
+      provinceId,
+      city,
+      cityId,
       phoneNumber,
       postalCode,
+      longitude,
+      latitude,
     });
 
     res.status(201).send({
