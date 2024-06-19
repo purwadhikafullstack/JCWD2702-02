@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { UserContext } from '@/config/context/userContext'
 import { useState } from 'react'
 import { SideBarContext } from '@/config/context/sideBarContext'
+import { CartContext } from '@/config/context/cartContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,21 +21,24 @@ export default function RootLayout({
 }) {
   const [userData, setUserData] = useState(null)
   const [sideBar, setSideBar] = useState(0)
+  const [cartData, setCartData] = useState(null)
 
   return (
-    <SideBarContext.Provider value={{ sideBar, setSideBar }}>
-      <UserContext.Provider value={{ userData, setUserData }}>
-        <html lang='en'>
-          <body className={inter.className}>
-            <TanstackProvider>
-              <Navbar />
-              {children}
-              <Footer />
-              <ToastContainer />
-            </TanstackProvider>
-          </body>
-        </html>
-      </UserContext.Provider>
-    </SideBarContext.Provider>
+    <CartContext.Provider value={{ cartData, setCartData }}>
+      <SideBarContext.Provider value={{ sideBar, setSideBar }}>
+        <UserContext.Provider value={{ userData, setUserData }}>
+          <html lang='en'>
+            <body className={inter.className}>
+              <TanstackProvider>
+                <Navbar />
+                {children}
+                <Footer />
+                <ToastContainer />
+              </TanstackProvider>
+            </body>
+          </html>
+        </UserContext.Provider>
+      </SideBarContext.Provider>
+    </CartContext.Provider>
   )
 }

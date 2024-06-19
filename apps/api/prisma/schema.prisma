@@ -28,7 +28,8 @@ model User {
 
   User_Reset_Password     User_Reset_Password[]
   User_Email_Verification User_Email_Verification[]
-  Carts Carts?
+  Orders                  Order[]
+  Carts                   Carts[]
 
   @@map("users")
 }
@@ -110,9 +111,12 @@ model Product {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  ProductImages Product_Images[]
-  Categories    Category?        @relation(fields: [categoryId], references: [id])
-  CartItems Cart_Items[]
+  ProductImages   Product_Images[]
+  Categories      Category?        @relation(fields: [categoryId], references: [id])
+  CartItems       Cart_Items[]
+  WarehouseStocks WarehouseStock[]
+  OrderItems      OrderItem[]
+  Carts           Carts[]
 
   @@map("products")
 }
@@ -128,37 +132,89 @@ model Product_Images {
 
   Product Product? @relation(fields: [productId], references: [id])
 
-
   @@map("product_images")
 }
 
 model Carts {
-  id Int @id @default(autoincrement())
-  userId String? @unique
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int    @id @default(autoincrement())
+  userId    String
+  productId Int
+  qty       Int
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  Items Cart_Items[]
-  User User? @relation(fields: [userId], references: [uid])
+  User    User    @relation(fields: [userId], references: [uid])
+  Product Product @relation(fields: [productId], references: [id])
 
   @@map("carts")
 }
 
-model Cart_Items {
-  id Int @id @default(autoincrement())
-  cartId Int?
-  productId Int?
-  qty Int
-  
+model Warehouse {
+  id        Int              @id @default(autoincrement())
+  name      String
+  latitude  Float
+  longitude Float
+  stocks    WarehouseStock[]
+  orders    Order[]
+}
+
+model WarehouseStock {
+  id          Int       @id @default(autoincrement())
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  warehouseId Int
+  product     Product   @relation(fields: [productId], references: [id])
+  productId   Int
+  stock       Int
+}
+
+model Order {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [uid])
+  userId      String
+  address     String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  warehouseId Int
+  status      String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  shippedAt DateTime?
+
+  items   OrderItem[]
+  payment Payment[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   Int
+  imagePath String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+}
+
+model Cart_Items {
+  id        Int  @id @default(autoincrement())
+  cartId    Int?
+  productId Int?
+  qty       Int
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   Product Product? @relation(fields: [productId], references: [id])
-  Carts Carts? @relation(fields: [cartId], references: [id])
 
-  @@map("cart_items")
   @@unique([cartId, productId])
+  @@map("cart_items")
 }

@@ -4,6 +4,7 @@ import ProductsRouter from './../products/ProductsRouter';
 import AuthRouter from './../auth/AuthRouter';
 import ProductCategoriesRouter from './../productCategories/ProductCategoriesRouter';
 import CartRouter from './../cart/CartRouter'
+import  OrderRouter from './../order/OrderRouter'
 
 const router = Router();
 router.use(express.json());
@@ -16,5 +17,6 @@ router.use('/products', ProductsRouter);
 router.use('/categories', ProductCategoriesRouter);
 router.use('/auth', AuthRouter);
 router.use('/carts', CartRouter)
+router.use('/order', OrderRouter)
 
 export default router;

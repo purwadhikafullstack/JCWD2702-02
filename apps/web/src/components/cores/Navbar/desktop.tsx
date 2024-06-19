@@ -5,10 +5,12 @@ import { UserContext } from '@/config/context/userContext'
 import { useKeepLogin } from '@/helpers/login/hooks/useKeepLogin'
 import { useRouter } from 'next/navigation'
 import { deleteCookie } from '@/config/cookie'
+import useCartStore from '@/zustand/cart/cartStore'
 
 export default function NavbarDesktop() {
   const { userData, setUserData }: any = useContext(UserContext)
   const [isLogin, setIsLogin]: any = useState(false)
+  const cartCount = useCartStore((state) => state.cartCount)
 
   const navigate = useRouter()
 
@@ -58,7 +60,14 @@ export default function NavbarDesktop() {
         {userData ? (
           <>
             <div className='flex items-center justify-center rounded-full bg-concrete hover:bg-mercury md:w-[50px] lg:w-[40px]'>
-              <MdShoppingCart size={20} />
+              <Link href={`/cart`}>
+                <MdShoppingCart size={20} />
+              </Link>
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs px-2">
+                  {cartCount}
+                </span>
+              )}
             </div>
             <Link
               href={'/dashboard/user'}

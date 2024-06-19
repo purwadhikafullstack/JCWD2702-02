@@ -14,8 +14,8 @@ export interface ICart {
 }
 
 declare global {
-    namespace Express{
-        interface Request{
+    namespace Express {
+        interface Request {
             user?: User
         }
     }
