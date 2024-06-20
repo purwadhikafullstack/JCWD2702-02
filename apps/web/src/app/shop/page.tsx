@@ -1,40 +1,47 @@
 'use client';
+import { useEffect } from "react";
 import ProductCard from "@/components/shop/ProductCard";
-import ProductCategoryCard from "@/components/shop/ProductCategoryCard";
-import { IDataProducts, IDataProductCategories } from "@/components/shop/types";
+import { IDataProducts } from "@/components/shop/types";
 import { useGetAllProducts } from "../../helpers/shop/hooks/useGetAllProducts";
-import { useGetAllProductCategories } from "../../helpers/shop/hooks/useGetAllProductCategories";
-import SearchBox from "@/components/cores/SearchBox";
+import SearchBox from "@/components/shop/SearchBox";
 import Link from "next/link";
 
-export default function ShopPage({ searchParams }: { searchParams: { search: string, sort: string, minPrice: string, maxPrice: string } }) {
-    console.log(searchParams)
-    const { search = '', sort = '', minPrice = '', maxPrice = '' } = searchParams;
-    const query = { search, sort, minPrice, maxPrice };
-    const { dataProducts } = useGetAllProducts(query);
-    const { dataProductCategories } = useGetAllProductCategories();
+export default function ShopPage({ searchParams }: { searchParams: { search: string, sort: string, minPrice: string, maxPrice: string, categoryId: string } }) {
+    const { search = '', sort = '', minPrice = '', maxPrice = '', categoryId = '' } = searchParams;
+    const query = { search, sort, minPrice, maxPrice, categoryId };
+
+    const { dataProducts, refetchDataProducts, isLoading } = useGetAllProducts(query);
+
+    useEffect(() => {
+        setTimeout(() => {
+            refetchDataProducts();
+        }, 10);
+    }, [search, sort, minPrice, maxPrice, categoryId]);
 
     return (
         <div className="bg-[#ffffff] mt-[3%] mb-[5%] min-h-screen w-auto">
             <div className="flex lg:flex-nowrap flex-wrap my-[1%] mx-[50px] gap-3 justify-center w-auto">
-                <SearchBox showAdditionalFilters={true} applyFilters={() => { }} initialSearchParams={searchParams} />
+                <SearchBox showAdditionalFilters={true} applyFilters={() => { }} initialSearchParams={searchParams} refetchDataProducts={refetchDataProducts} />
             </div>
-            <div className="flex md:flex-nowrap flex-wrap my-[1%] mx-[10px] lg:mx-[100px] gap-[10px] justify-center w-auto">
-                <div className="flex gap-[10px] justify-start lg:mx-[60px] overflow-x-scroll">
-                    {dataProductCategories?.map((item: IDataProductCategories, index: number) => (
-                        <button key={index} className="text-[#34222f] font-bold my-[10px]">
-                            <ProductCategoryCard name={item.name} image={item.categoryUrl} />
-                        </button>
+            {isLoading ? (
+                <div className="flex flex-col items-center justify-start mt-[80px] min-h-screen">
+                    <span className="loading loading-bars loading-lg h-[50px]"></span>
+                    <div>Searching For Products...</div>
+                </div>
+            ) : dataProducts && dataProducts.length > 0 ? (
+                <div className="flex flex-wrap mx-[10px] lg:mx-[100px] lg:pl-[120px] gap-[20px] justify-center lg:justify-start">
+                    {dataProducts.map((item: IDataProducts, index: number) => (
+                        <Link key={index} href={`/shop/${item.id}`}>
+                            <ProductCard name={item.name} price={item.price.toLocaleString("id-ID", { style: "currency", currency: "IDR" })} image={item.oneImage.productUrl} />
+                        </Link>
                     ))}
                 </div>
-            </div>
-            <div className="flex flex-wrap mx-[10px] lg:mx-[100px] gap-[20px] justify-center">
-                {dataProducts?.map((item: IDataProducts, index: number) => (
-                    <Link key={index} href={`/shop/${item.id}`}>
-                        <ProductCard name={item.name} price={item.price.toLocaleString("id-ID", { style: "currency", currency: "IDR" })} image={item.oneImage.productUrl} />
-                    </Link>
-                ))}
-            </div>
+            ) : (
+                <div className="flex flex-col items-center justify-start mt-[80px] min-h-screen text-center">
+                    <div className="text-2xl text-gray-500 font-semibold">No product defined</div>
+                    <div className="text-gray-500">No product defined in this category.</div>
+                </div>
+            )}
         </div>
     );
 }

@@ -1,13 +1,23 @@
 'use client'
 import { useOauthLogin } from '@/helpers/ouath/hooks/useGoogle'
+import { useRouter } from 'next/navigation'
+import { useEffect, useContext } from 'react'
+import { UserContext } from '@/config/context/userContext'
 
 export default function Verification({ params }: any) {
   const accesstoken = params.accesstoken
-  const { mutationOauthLogin, isPending } = useOauthLogin()
+  const { mutationOauthLogin, isPending, data } = useOauthLogin()
+  const { userData }: any = useContext(UserContext)
 
-  const handleOuathLogin = async () => {
-    mutationOauthLogin({ accesstoken: accesstoken })
-  }
+  const navigate = useRouter()
+
+  useEffect(() => {
+    if (!userData) {
+      mutationOauthLogin({ accesstoken: accesstoken })
+    }
+  })
+
+  console.log(data?.data?.data.accesstoken)
 
   return (
     <div className='flex h-screen items-center justify-center p-[100px]'>
@@ -18,7 +28,7 @@ export default function Verification({ params }: any) {
 
         <div className='flex w-full flex-col'>
           <button
-            onClick={handleOuathLogin}
+            onClick={() => navigate.push('/')}
             type='submit'
             className='rounded-m bg-cerulean btn flex w-full justify-center bg-eggplant text-white hover:bg-hover_eggplant'
           >

@@ -2,13 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { multerProductUrlUpload } from '@/helpers/ProductMulter';
 import { DeletedProductUrlFiles } from '@/helpers/DeleteProductUrlFiles';
 
-export const productUrlUploader = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const productUrlUploader = (req: Request, res: Response, next: NextFunction) => {
   const upload = multerProductUrlUpload.fields([
-    { name: 'producturl', maxCount: 5 },
+    { name: 'producturl', maxCount: 4 },
   ]);
 
   upload(req, res, (err) => {

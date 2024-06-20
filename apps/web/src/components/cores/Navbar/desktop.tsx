@@ -7,33 +7,8 @@ import { useRouter } from 'next/navigation'
 import { deleteCookie } from '@/config/cookie'
 import useCartStore from '@/zustand/cart/cartStore'
 
-export default function NavbarDesktop() {
+export default function NavbarDesktop(props: any) {
   const { userData, setUserData }: any = useContext(UserContext)
-  const [isLogin, setIsLogin]: any = useState(false)
-  const cartCount = useCartStore((state) => state.cartCount)
-
-  const navigate = useRouter()
-
-  const { mutationKeepLogin } = useKeepLogin()
-
-  const handleLogout = async () => {
-    await deleteCookie()
-    setUserData(null)
-    navigate.push('/')
-    setIsLogin(false)
-  }
-
-  const handleKeepLogin = () => {
-    if (isLogin == false) {
-      mutationKeepLogin()
-      setIsLogin(false)
-    }
-  }
-
-  useEffect(() => {
-    handleKeepLogin()
-    setIsLogin(true)
-  }, [])
 
   return (
     <div className='2xl:px-60 flex h-[60px] w-screen items-center justify-between border-b-2 px-3 shadow-md lg:px-10 xl:px-36'>
@@ -76,7 +51,7 @@ export default function NavbarDesktop() {
               {userData.firstname}
             </Link>
             <button
-              onClick={handleLogout}
+              onClick={props.handleLogout}
               className='flex h-[40px] w-[100px] items-center justify-center rounded-md border-2 border-eggplant bg-eggplant font-bold text-white hover:border-hover_eggplant hover:bg-hover_eggplant'
             >
               Logout

@@ -26,10 +26,13 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  User_Reset_Password     User_Reset_Password[]
-  User_Email_Verification User_Email_Verification[]
   Orders                  Order[]
   Carts                   Carts[]
+  User_Reset_Password             User_Reset_Password[]
+  User_Email_Verification         User_Email_Verification[]
+  User_Reset_Password_History     User_Reset_Password_History[]
+  User_Email_Verification_History User_Email_Verification_History[]
+  Address                         Address[]
 
   @@map("users")
 }
@@ -57,32 +60,93 @@ model Role {
   @@map("roles")
 }
 
-model User_Email_Verification {
-  id       Int      @id @default(autoincrement())
-  userId   String
-  expireIn DateTime
+enum VerificationStatus {
+  PENDING
+  DONE
+  EXPIRED
+}
+
+model Address {
+  id          Int    @id @default(autoincrement())
+  userId      String
+  recipients  String
+  address     String
+  province    String
+  provinceId  Int
+  city        String
+  cityId      Int
+  phoneNumber String
+  postalCode  String
+  latitude    String
+  longitude   String
 
   user User @relation(fields: [userId], references: [uid])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("user_address")
+}
+
+model User_Email_Verification {
+  id       Int                @id @default(autoincrement())
+  userId   String
+  expireIn DateTime
+  status   VerificationStatus @default(PENDING)
+
+  user User @relation(fields: [userId], references: [uid])
+
+  createdAt                       DateTime                          @default(now())
+  updatedAt                       DateTime                          @updatedAt
+  deletedAt                       DateTime?
+  User_Email_Verification_History User_Email_Verification_History[]
 
   @@map("user_email_verification")
 }
 
-model User_Reset_Password {
-  id       Int      @id @default(autoincrement())
-  userId   String
-  expireIn DateTime
+model User_Email_Verification_History {
+  id      Int                @id @default(autoincrement())
+  userId  String
+  verifId Int
+  status  VerificationStatus @default(PENDING)
 
-  user User @relation(fields: [userId], references: [uid])
+  user              User                    @relation(fields: [userId], references: [uid])
+  emailVerification User_Email_Verification @relation(fields: [verifId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+}
+
+model User_Reset_Password {
+  id       Int                @id @default(autoincrement())
+  userId   String
+  expireIn DateTime
+  status   VerificationStatus @default(PENDING)
+
+  user User @relation(fields: [userId], references: [uid])
+
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  deletedAt                   DateTime?
+  User_Reset_Password_History User_Reset_Password_History[]
 
   @@map("user_reset_password")
+}
+
+model User_Reset_Password_History {
+  id      Int                @id @default(autoincrement())
+  userId  String
+  resetId Int
+  status  VerificationStatus @default(PENDING)
+
+  user          User                @relation(fields: [userId], references: [uid])
+  resetPassword User_Reset_Password @relation(fields: [resetId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Category {
@@ -111,12 +175,11 @@ model Product {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  ProductImages   Product_Images[]
-  Categories      Category?        @relation(fields: [categoryId], references: [id])
-  CartItems       Cart_Items[]
-  WarehouseStocks WarehouseStock[]
   OrderItems      OrderItem[]
   Carts           Carts[]
+  ProductImages Product_Images[]
+  Categories    Category?        @relation(fields: [categoryId], references: [id])
+  stockHistory  stockHistory[]
 
   @@map("products")
 }
@@ -149,24 +212,6 @@ model Carts {
   Product Product @relation(fields: [productId], references: [id])
 
   @@map("carts")
-}
-
-model Warehouse {
-  id        Int              @id @default(autoincrement())
-  name      String
-  latitude  Float
-  longitude Float
-  stocks    WarehouseStock[]
-  orders    Order[]
-}
-
-model WarehouseStock {
-  id          Int       @id @default(autoincrement())
-  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
-  warehouseId Int
-  product     Product   @relation(fields: [productId], references: [id])
-  productId   Int
-  stock       Int
 }
 
 model Order {
@@ -203,18 +248,75 @@ model Payment {
   createdAt DateTime @default(now())
 }
 
-model Cart_Items {
-  id        Int  @id @default(autoincrement())
-  cartId    Int?
-  productId Int?
-  qty       Int
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+model stockHistory {
+  id        Int         @id @default(autoincrement())
+  fromId    Int
+  toId      Int
+  quantity  Int
+  status    StockStatus @default(PENDING)
+  productId Int
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   deletedAt DateTime?
 
-  Product Product? @relation(fields: [productId], references: [id])
+  Product Product       @relation(fields: [productId], references: [id])
+  from    Mutation_Type @relation("StockHistoryFrom", fields: [fromId], references: [id])
+  to      Mutation_Type @relation("StockHistoryTo", fields: [toId], references: [id])
 
-  @@unique([cartId, productId])
-  @@map("cart_items")
+  @@map("stock_history")
+}
+
+enum StockStatus {
+  ACCEPTED
+  PENDING
+  REJECTED
+}
+
+model admin {
+  uid         String    @id @default(uuid())
+  adminRole   adminRole
+  fullname    String
+  email       String    @unique
+  password    String
+  warehouseId Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  Warehouse Warehouse? @relation(fields: [warehouseId], references: [id])
+
+  @@map("admins")
+}
+
+enum adminRole {
+  WAREHOUSEADMIN
+  SUPERADMIN
+}
+
+model Warehouse {
+  id         Int    @id @default(autoincrement())
+  name       String
+  province   String
+  city       String
+  detail     String
+  postalCode String
+  longitude  Float
+  latitude   Float
+
+  Admin         admin[]
+  Mutation_Type Mutation_Type[]
+
+  @@map("warehouses")
+}
+
+model Mutation_Type {
+  id          Int    @id @default(autoincrement())
+  name        String
+  warehouseId Int?
+
+  warehouse        Warehouse?     @relation(fields: [warehouseId], references: [id])
+  stockHistoryFrom stockHistory[] @relation("StockHistoryFrom")
+  stockHistoryTo   stockHistory[] @relation("StockHistoryTo")
+
+  @@map("mutation_types")
 }

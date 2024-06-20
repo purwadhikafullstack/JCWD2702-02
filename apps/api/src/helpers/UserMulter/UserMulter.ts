@@ -35,7 +35,7 @@ const fileFilter = (req: any, file: any, cb: any) => {
   cb(null, true);
 };
 
-export const multerUpload = multer({
+export const multerUserImageUrlUpload = multer({
   storage: storage,
   fileFilter: fileFilter,
 });

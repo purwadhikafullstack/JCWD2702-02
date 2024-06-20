@@ -8,32 +8,8 @@ import { useEffect } from 'react'
 import { deleteCookie } from '@/config/cookie'
 import { useRouter } from 'next/navigation'
 
-export default function NavbarMobile() {
+export default function NavbarMobile(props: any) {
   const { userData, setUserData }: any = useContext(UserContext)
-  const [isLogin, setIsLogin]: any = useState(false)
-
-  const navigate = useRouter()
-
-  const { mutationKeepLogin } = useKeepLogin()
-
-  const handleLogout = async () => {
-    await deleteCookie()
-    setUserData(null)
-    navigate.push('/')
-    setIsLogin(false)
-  }
-
-  const handleKeepLogin = () => {
-    if (isLogin == false) {
-      mutationKeepLogin()
-      setIsLogin(false)
-    }
-  }
-
-  useEffect(() => {
-    handleKeepLogin()
-    setIsLogin(true)
-  }, [])
 
   return (
     <div className='relative flex h-[60px] w-screen items-center justify-center border-b-2 px-3 shadow-md'>
@@ -56,7 +32,7 @@ export default function NavbarMobile() {
                 <Link href='/'>Home</Link>
               </li>
               <li>
-                <Link className='hover:text-eggplant text-bouquet' href='/shop'>
+                <Link className='text-bouquet hover:text-eggplant' href='/shop'>
                   Shop
                 </Link>
               </li>
@@ -73,9 +49,9 @@ export default function NavbarMobile() {
               <li>
                 <div
                   className='text-bouquet hover:text-eggplant'
-                  onClick={handleLogout}
+                  onClick={props.handleLogout}
                 >
-                  Item
+                  Logout
                 </div>
               </li>
               {/* Close button */}

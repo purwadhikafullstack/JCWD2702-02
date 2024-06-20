@@ -53,7 +53,7 @@ const main = async () => {
     await tx.user.createMany({
       data: [
         {
-          fullname: 'Aplha Test',
+          fullname: 'Alpha Test',
           email: 'alpha@test.com',
           verify: 'VERIFIED',
           password: await HashingPassword({ password: 'test1234' }),
@@ -69,6 +69,10 @@ const main = async () => {
           email: 'gamma@test.com',
           verify: 'VERIFIED',
           password: await HashingPassword({ password: 'test1234' }),
+        },
+        {
+          fullname: 'Charlie Test',
+          email: 'charlie@test.com',
         },
       ],
     });

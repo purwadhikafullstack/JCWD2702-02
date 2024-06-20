@@ -41,7 +41,7 @@ export default function Register() {
                   </div>
                   <div className='text-[15px]'>
                     <a
-                      href='/auth/verification'
+                      href='/register/verification'
                       className='text-eggplant underline underline-offset-2 hover:text-hover_eggplant'
                     >
                       Verify Your Account

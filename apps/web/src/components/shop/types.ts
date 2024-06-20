@@ -19,7 +19,7 @@ export interface IDataProducts {
 }
 
 export interface IDataProductCategories {
-    id: number;
+    id: string;
     name: string;
     categoryUrl: string;
 }
