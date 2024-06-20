@@ -7,12 +7,20 @@ import SearchBox from "@/components/shop/SearchBox";
 import { FaShoppingCart, FaMinus, FaPlus, FaFacebookF, FaLinkedin, FaWhatsapp, FaPinterest, FaEnvelope } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { useContext } from "react";
+import { CartContext } from "@/config/context/cartContext";
+import { useAddToCart } from "@/helpers/cart/hooks/useAddToCart";
 import ActiveImageModal from "@/components/shop/ActiveImageModal";
 
 export default function ProductDetail({ params }: { params: { productDetail: string } }) {
     const { productDetail } = useGetProductDetail(params.productDetail);
+    console.log(params)
+    console.log(productDetail)
     const [activeImg, setActiveImg] = useState<string | null>(null);
-    const [quantity, setQuantity] = useState(0);
+
+    const [quantity, setQuantity] = useState(1);
+    const { cartData, setCartData }: any = useContext(CartContext)
+    const { mutationAddToCart } = useAddToCart()
     const [showModal, setShowModal] = useState(false);
 
     const handleIncrement = () => {
@@ -24,6 +32,11 @@ export default function ProductDetail({ params }: { params: { productDetail: str
             setQuantity(quantity - 1);
         }
     };
+
+    // const handleAddToCart = (productId: number) => {
+    //     console.log(productId)
+    //     addToCart(productId, quantity);
+    // };
 
     useEffect(() => {
         if (productDetail?.productImages) {
@@ -96,7 +109,7 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                             <div className="text-gray-500 font-medium">
                                 Stock left: {productDetail?.totalStockAllWarehouse}
                             </div>
-                            <button className='border-eggplant hover:border-hover_eggplant hover:bg-hover_eggplant bg-eggplant lg:text-[16px] text-[14px] flex h-[30px] lg:h-[40px] w-[200px] items-center justify-center gap-5 rounded-md border-2 font-medium text-white'>
+                            <button className='border-eggplant hover:border-hover_eggplant hover:bg-hover_eggplant bg-eggplant lg:text-[16px] text-[14px] flex h-[30px] lg:h-[40px] w-[200px] items-center justify-center gap-5 rounded-md border-2 font-medium text-white' onClick={() => mutationAddToCart({productId: Number(params.productDetail), qty: Number(quantity)})}>
                                 <FaShoppingCart /> Add to Cart
                             </button>
                         </div>
