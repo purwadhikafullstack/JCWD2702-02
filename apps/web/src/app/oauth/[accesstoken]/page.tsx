@@ -17,8 +17,6 @@ export default function Verification({ params }: any) {
     }
   })
 
-  console.log(data?.data?.data.accesstoken)
-
   return (
     <div className='flex h-screen items-center justify-center p-[100px]'>
       <div className='flex h-[200px] w-[500px] flex-col items-start justify-between rounded-md border-2 border-white p-10 shadow-xl'>

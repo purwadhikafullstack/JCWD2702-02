@@ -67,7 +67,7 @@ enum VerificationStatus {
 }
 
 model Address {
-  id          Int    @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   userId      String
   recipients  String
   address     String
@@ -79,6 +79,7 @@ model Address {
   postalCode  String
   latitude    String
   longitude   String
+  main        UserAddress @default(FALSE)
 
   user User @relation(fields: [userId], references: [uid])
 
@@ -87,6 +88,11 @@ model Address {
   deletedAt DateTime?
 
   @@map("user_address")
+}
+
+enum UserAddress {
+  TRUE
+  FALSE
 }
 
 model User_Email_Verification {

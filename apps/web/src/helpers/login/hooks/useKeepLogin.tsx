@@ -1,6 +1,7 @@
 import { useKeepLoginMutation } from '../api/useKeepLoginMutation'
 import { UserContext } from '@/config/context/userContext'
 import { useContext } from 'react'
+import { deleteCookie } from '@/config/cookie'
 
 export const useKeepLogin = () => {
   const { userData, setUserData }: any = useContext(UserContext)
@@ -17,7 +18,7 @@ export const useKeepLogin = () => {
         email: response.email,
       })
     },
-    onError: (err: any) => {
+    onError: async (err: any) => {
       //   toast.error('Something went wrong please login again', {
       //     position: 'top-right',
       //     autoClose: 1500,
@@ -30,6 +31,12 @@ export const useKeepLogin = () => {
       //     transition: Slide,
       //   })
       // console.log(err)
+
+      localStorage.removeItem('auth')
+      await deleteCookie()
+      setUserData(null)
+      // navigate.push('/')
+      // setIsLogin(false)
     },
   })
 

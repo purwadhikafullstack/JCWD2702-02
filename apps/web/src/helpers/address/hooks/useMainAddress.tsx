@@ -1,15 +1,11 @@
 import { toast } from 'react-toastify'
 import { Slide } from 'react-toastify'
-import { useCreateUserAddressMutation } from '../api/useCreateUserAddressMutation'
 import { getUserAddress } from './getUserAddress'
-import { useContext } from 'react'
-import { SideBarContext } from '@/config/context/sideBarContext'
+import { useMainAddressMutation } from '../api/useMainAddressMutation'
 
-export const useCreateUserAddress = () => {
-  const { sideBar, setSideBar }: any = useContext(SideBarContext)
-
+export const useMainAddress = () => {
   const { refetch } = getUserAddress()
-  const { mutate: mutationCreateAddress } = useCreateUserAddressMutation({
+  const { mutate: mutationMainAddress } = useMainAddressMutation({
     onSuccess: (res: any) => {
       toast.success(res.data.message, {
         position: 'top-right',
@@ -23,7 +19,6 @@ export const useCreateUserAddress = () => {
         transition: Slide,
       })
       refetch()
-      location.reload()
     },
     onError: (err: any) => {
       toast.error(err.response.data.message, {
@@ -41,6 +36,6 @@ export const useCreateUserAddress = () => {
   })
 
   return {
-    mutationCreateAddress,
+    mutationMainAddress,
   }
 }

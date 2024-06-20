@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import axios from 'axios';
 
 axios.defaults.baseURL = 'https://api.rajaongkir.com/starter';
-axios.defaults.headers.common['key'] = '9893a1ee86c04676e760c8481ef179fa';
+axios.defaults.headers.common['key'] = process.env.RAJA_ONGKIR_API_KEY;
 axios.defaults.headers.post['Content-Type'] =
   'application/x-www-form-urlencoded';
 
@@ -13,8 +13,6 @@ export const getProvince = async (
 ) => {
   try {
     const response = await axios.get('/province');
-
-    // console.log(response);
 
     res.status(201).send({
       error: false,
@@ -53,13 +51,9 @@ export const getCityDetail = async (
   try {
     const { cityId, provinceId } = req.query;
 
-    console.log(req.query);
-
     const response = await axios.get(
       `/city?province=${provinceId}&id=${cityId}`,
     );
-
-    console.log(response.data.rajaongkir.results);
 
     res.status(201).send({
       error: false,
