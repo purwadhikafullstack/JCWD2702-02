@@ -5,12 +5,10 @@ import { getCities } from '@/helpers/rajaOngkir/hooks/getCities'
 import { getCityDetailed } from '@/helpers/rajaOngkir/hooks/getCityDetailed'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import Loading from './../../../../components/cores/Loading'
 import { useCreateUserAddress } from '@/helpers/address/hooks/useCreateUserAddress'
 import { Form, Formik, Field, ErrorMessage } from 'formik'
 import { createUserAddressSchema } from '@/helpers/address/schema/createUserAddressSchema'
-import { useRouter } from 'next/navigation'
-import { IoMdClose } from 'react-icons/io'
+import { getUserAddress } from './../../../../helpers/address/hooks/getUserAddress'
 
 interface ILocation {
   lat: number
@@ -18,10 +16,12 @@ interface ILocation {
 }
 
 export default function UserAddress() {
-  const navigate = useRouter()
   const { mutationCreateAddress } = useCreateUserAddress()
+  const { dataUserAddress, UserAddressLoading } = getUserAddress()
 
-  const { dataProvince, provinceLoading } = getProvince()
+  const userAddressData = dataUserAddress?.data?.data
+
+  const { dataProvince } = getProvince()
   const [selectedProvince, setSelectedProvince] = useState('')
   const [selectedProvinceName, setSelectedProvinceName] = useState('')
   const provinceData = dataProvince?.data?.data
@@ -48,11 +48,11 @@ export default function UserAddress() {
     selectedProvince,
     selectedCity
   )
-  const [detailCityName, setDetailCityName] = useState('')
+
   const detailedCityData = dataDetailedCity?.data?.data
 
   const [cityLocation, setCityLocation] = useState<ILocation | null>(null)
-  const [isLoading, setIsLoading] = useState<any>(false)
+  const [isLoading, setIsLoading] = useState<any>(true)
 
   const handleSearch = async () => {
     setIsLoading(true)
@@ -82,7 +82,7 @@ export default function UserAddress() {
         phoneNumber: '',
       }}
       validationSchema={createUserAddressSchema}
-      onSubmit={(values) => {
+      onSubmit={(values, { resetForm }) => {
         mutationCreateAddress({
           recipients: values.recipients,
           address: values.address,
@@ -95,7 +95,7 @@ export default function UserAddress() {
           longitude: cityLocation?.lng.toString() as any,
           latitude: cityLocation?.lat.toString() as any,
         })
-        // location.reload()
+        resetForm()
       }}
     >
       {({ dirty, isValid }) => {
@@ -110,7 +110,7 @@ export default function UserAddress() {
                 <div>
                   <label
                     htmlFor='my_modal_7'
-                    className='btn bg-eggplant text-white'
+                    className='btn bg-eggplant text-white hover:bg-hover_eggplant'
                   >
                     <FiPlus /> Create New Address
                   </label>
@@ -133,12 +133,6 @@ export default function UserAddress() {
                           name='recipients'
                         />
                       </label>
-                      <ErrorMessage
-                        name='recipients'
-                        component='div'
-                        className='text-red-500'
-                      />
-
                       <label className='input input-bordered flex w-full items-center gap-2'>
                         <Field
                           type='text'
@@ -188,18 +182,15 @@ export default function UserAddress() {
                           name='address'
                         />
                       </label>
-                      {/* <div className='modal-action absolute right-0 top-0'>
-                        <label
-                          htmlFor='my_modal_7'
-                          className='btn bg-eggplant text-white hover:bg-hover_eggplant'
-                        >
-                          <IoMdClose />
-                        </label>
-                      </div> */}
                       <button
                         type='submit'
                         className='rounded-m bg-azureBlue btn flex w-full justify-center bg-eggplant text-white hover:bg-hover_eggplant'
-                        disabled={!(dirty && isValid) || isLoading == true}
+                        disabled={
+                          !(dirty && isValid) ||
+                          isLoading == true ||
+                          selectedCityName == 'Indonesia' ||
+                          detailedCityLoading
+                        }
                       >
                         Add Address
                       </button>
@@ -212,8 +203,23 @@ export default function UserAddress() {
               </div>
               <div className='divider w-full'></div>
               <div className='flex w-full'>
-                <div className='flex w-full flex-col gap-2'>
-                  <AddressBox />
+                <div className='flex h-[400px] w-full snap-y snap-mandatory flex-col gap-5 overflow-y-scroll p-10'>
+                  {userAddressData?.map((x: any, i: any) => {
+                    return (
+                      <div key={i}>
+                        <AddressBox
+                          id={x?.id}
+                          main={x?.main}
+                          html={`address_${x?.id}`}
+                          recipients={x?.recipients}
+                          province={x?.province}
+                          city={x?.city}
+                          phoneNumber={x?.phoneNumber}
+                          address={x?.address}
+                        />
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>
