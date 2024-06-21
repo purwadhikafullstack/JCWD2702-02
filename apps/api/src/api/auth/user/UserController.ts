@@ -3,6 +3,10 @@ import { findUserByIdService } from '../cores/AuthService';
 import {
   userImageUploadService,
   createUserAddressService,
+  findUserAddressService,
+  mainUserAddressService,
+  findUserAddressDetailService,
+  deleteUserAddressService,
 } from './UserService';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
 import fs from 'fs';
@@ -49,7 +53,7 @@ export const userImageUpload = async (
   }
 };
 
-export const userAddress = async (
+export const createUserAddress = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -87,6 +91,105 @@ export const userAddress = async (
     res.status(201).send({
       error: false,
       message: 'Create User Address Success',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const findUserAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+
+    const findUserAddressResult = await findUserAddressService({ uid });
+
+    res.status(201).send({
+      error: false,
+      message: 'Get User Address',
+      data: findUserAddressResult,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const mainUserAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+    const { addressId } = req.body;
+
+    const addressValidator = await findUserAddressDetailService({
+      uid,
+      addressId,
+    });
+
+    console.log(addressValidator);
+    if (addressValidator?.main == 'TRUE')
+      throw new Error('This Address Already Main Address');
+
+    await mainUserAddressService({ uid, addressId });
+
+    res.status(201).send({
+      error: false,
+      message: 'Main User Address Change',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const findUserAddressDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+    const { addressId } = req.query;
+
+    const findAddressDetailResult = await findUserAddressDetailService({
+      uid,
+      addressId: Number(addressId),
+    });
+
+    res.status(201).send({
+      error: false,
+      message: 'Get Address Detail',
+      data: findAddressDetailResult,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUserAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+    const { addressId } = req.query;
+
+    await deleteUserAddressService({ uid, addressId: Number(addressId) });
+
+    res.status(201).send({
+      error: false,
+      message: 'Delete Address Success',
       data: null,
     });
   } catch (error) {

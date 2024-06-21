@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { getProductCategoriesQuery, deleteCategoryAndCategoryImagesQuery, softDeleteCategoryAndCategoryImagesQuery, createCategoryAndCategoryImagesQuery, getCategoryByIdQuery, updateCategoryAndCategoryImagesQuery } from './ProductCategoriesService';
 
+
 // Controller for get all categories
 export const getProductCategories = async (
   req: Request,

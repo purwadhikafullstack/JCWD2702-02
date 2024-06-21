@@ -41,9 +41,9 @@ export default function UserInfo() {
   }
 
   return (
-    <div className='flex h-max w-full flex-col items-start justify-between rounded-md border-2 border-white bg-white p-10 shadow-md'>
+    <div className='flex h-[800px] w-full flex-col items-start justify-around rounded-md border-2 border-white bg-white p-10 shadow-md'>
       <div className='flex w-full flex-col items-center justify-center gap-3'>
-        <div className='avatar flex w-full items-center justify-center'>
+        <div className='avatar mb-5 flex w-full items-center justify-center'>
           <div className='w-[200px] rounded-full'>
             {userImage ? (
               <Image
@@ -64,27 +64,34 @@ export default function UserInfo() {
             )}
           </div>
         </div>
-        <div className='flex w-[70%] items-center justify-center rounded-md bg-eggplant text-white'>
+        <div className='flex w-[50%] items-center justify-center rounded-md bg-eggplant text-white'>
           <details className='collapse collapse-arrow'>
             <summary className='collapse-title flex items-center justify-center text-xl font-medium'>
               Change Image
             </summary>
-            <div className='collapse-content flex gap-3'>
+            <div className='collapse-content flex items-center justify-center gap-5'>
               <input
                 type='file'
                 onChange={(event) => handleFileChange(event)}
                 className='file-input w-full max-w-xs border-eggplant text-black'
               />
-              <button onClick={handleSubmit} className='btn'>
-                Button
+              <button
+                onClick={handleSubmit}
+                className='btn border-ebony bg-ebony text-bouquet hover:border-eggplant hover:bg-second_ebony'
+              >
+                Submit
               </button>
             </div>
           </details>
         </div>
       </div>
-      <div className='divider w-full'></div>
-      <div className='flex text-xl font-bold'>User Information</div>
-      <div className='divider w-full'></div>
+      <div className='w-full'>
+        <div className='divider w-full'></div>
+        <div className='flex items-center justify-center text-xl font-bold'>
+          User Information
+        </div>
+        <div className='divider w-full'></div>
+      </div>
       <div className='flex w-full'>
         <div className='flex w-full flex-col gap-2'>
           <div className='font-bold'>Name :</div>
