@@ -52,7 +52,6 @@ export const getProductsPerWarehouseQuery = async (warehouseId?: string) => {
 
     const productsWithTotalStock = products.map(product => {
         let totalStock = 0;
-
         for (let stock of product.stockHistory) {
             if (stock.fromId === Number(warehouseId)) {
                 totalStock -= stock.quantity;
@@ -124,6 +123,31 @@ export const getStockRequestByWarehouseIdQuery = async (warehouseId: string) => 
         where: {
             AND: [
                 { fromId: Number(warehouseId) },
+                { status: 'PENDING' }
+            ]
+        },
+        include: {
+            Product: true,
+            from: {
+                include: {
+                    warehouse: true
+                }
+            },
+            to: {
+                include: {
+                    warehouse: true
+                }
+            }
+        }
+    })
+}
+
+// Query for get outgoing stock request by warehouseId
+export const getOutgoingStockRequestByWarehouseIdQuery = async (warehouseId: string) => {
+    return await prisma.stockHistory.findMany({
+        where: {
+            AND: [
+                { toId: Number(warehouseId) },
                 { status: 'PENDING' }
             ]
         },
