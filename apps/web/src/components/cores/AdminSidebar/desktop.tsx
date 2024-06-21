@@ -3,6 +3,7 @@ import Image from 'next/image';
 import {
     MdProductionQuantityLimits, MdCategory, MdDashboardCustomize, MdApps, MdOutlineWarehouse
 } from 'react-icons/md';
+import { CiDeliveryTruck } from "react-icons/ci";
 
 export default function AdminSidebarDesktop() {
     return (
@@ -74,6 +75,18 @@ export default function AdminSidebarDesktop() {
                             <MdOutlineWarehouse className="w-5 h-5 fill-current" />
                             <div className="font-sans font-semibold tracking-wide hover:text-red-600">
                                 WAREHOUSE
+                            </div>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            rel="noopener noreferrer"
+                            href={'/admin/all-stock-request'}
+                            className="flex items-center p-2 mt-[15px] space-x-3 rounded-md"
+                        >
+                            <CiDeliveryTruck className="w-5 h-5 fill-current" />
+                            <div className="font-sans font-semibold tracking-wide hover:text-red-600">
+                                ALL STOCK REQUESTS
                             </div>
                         </Link>
                     </li>

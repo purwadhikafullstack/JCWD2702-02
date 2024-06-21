@@ -34,7 +34,7 @@ export default function Adminproduct() {
                 <div className="text-2xl font-semibold">Products</div>
                 <div className="flex gap-5">
                     <Link href="/admin/product/restore-product">
-                        <button className="flex items-center gap-2 text-white bg-green-600 px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
+                        <button className="flex items-center gap-2 text-black bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors">
                             <FaTrashRestoreAlt />Restore
                         </button>
                     </Link>

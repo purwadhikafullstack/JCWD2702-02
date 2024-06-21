@@ -109,7 +109,10 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                             <div className="text-gray-500 font-medium">
                                 Stock left: {productDetail?.totalStockAllWarehouse}
                             </div>
-                            <button className='border-eggplant hover:border-hover_eggplant hover:bg-hover_eggplant bg-eggplant lg:text-[16px] text-[14px] flex h-[30px] lg:h-[40px] w-[200px] items-center justify-center gap-5 rounded-md border-2 font-medium text-white' onClick={() => mutationAddToCart({productId: Number(params.productDetail), qty: Number(quantity)})}>
+                            <button
+                              onClick={() => mutationAddToCart({productId: Number(params.productDetail), qty: Number(quantity)})}
+                                className={`border-eggplant hover:border-hover_eggplant hover:bg-hover_eggplant bg-eggplant lg:text-[16px] text-[14px] flex h-[30px] lg:h-[40px] w-[200px] items-center justify-center gap-5 rounded-md border-2 font-medium text-white ${productDetail?.totalStockAllWarehouse <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={productDetail?.totalStockAllWarehouse <= 0}>
                                 <FaShoppingCart /> Add to Cart
                             </button>
                         </div>

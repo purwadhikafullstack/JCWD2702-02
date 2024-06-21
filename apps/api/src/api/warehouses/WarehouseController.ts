@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { getWarehousesQuery, getStockMutationTypeQuery, getStockRequestByWarehouseIdQuery, getStockHistoryByProductIdAndWarehouseIdQuery, getWarehouseByIdQuery, getProductsPerWarehouseQuery } from './WarehouseService';
+import { getWarehousesQuery, getOutgoingStockRequestByWarehouseIdQuery, getStockMutationTypeQuery, getStockRequestByWarehouseIdQuery, getStockHistoryByProductIdAndWarehouseIdQuery, getWarehouseByIdQuery, getProductsPerWarehouseQuery } from './WarehouseService';
 
 // Controller for get all warehouses
 export const getWarehouses = async (req: Request, res: Response, next: NextFunction) => {
@@ -88,6 +88,21 @@ export const getStockRequestByWarehouseId = async (req: Request, res: Response, 
             error: false,
             message: 'Get Stock Request',
             data: stockRequest
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// Controller for get outgoing stock request by warehouseId
+export const getOutgoingStockRequestByWarehouseId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { warehouseId } = req.params
+        const outgoingStockRequest = await getOutgoingStockRequestByWarehouseIdQuery(warehouseId);
+        res.status(200).send({
+            error: false,
+            message: 'Get Stock Request',
+            data: outgoingStockRequest
         });
     } catch (error) {
         next(error);
