@@ -13,7 +13,6 @@ export default function VerifyEmailPage() {
       }}
       validationSchema={verifyEmailSchema}
       onSubmit={(values, { resetForm }) => {
-        console.log(values)
         mutationForgotPassword({
           email: values.email,
         })

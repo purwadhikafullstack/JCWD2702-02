@@ -27,25 +27,23 @@ export default function RootLayout({
 
   return (
     <CartContext.Provider value={{ cartData, setCartData }}>
-    <SideBarContext.Provider value={{ sideBar, setSideBar }}>
-      <UserContext.Provider value={{ userData, setUserData }}>
-        <html lang='en'>
-          <body className={inter.className}>
-            <ToastContainer />
-            <TanstackProvider>
-              <Navbar />
-              <div className="flex min-h-screen">
-                <AdminSidebar />
-                <main className="flex-1 p-4">
-                  {children}
-                </main>
-              </div>
-              <Footer />
-            </TanstackProvider>
-          </body>
-        </html>
-      </UserContext.Provider>
-    </SideBarContext.Provider>
-   </CartContext.Provider>
+      <SideBarContext.Provider value={{ sideBar, setSideBar }}>
+        <UserContext.Provider value={{ userData, setUserData }}>
+          <html lang='en'>
+            <body className={inter.className}>
+              <ToastContainer />
+              <TanstackProvider>
+                <Navbar />
+                <div className='flex min-h-screen'>
+                  <AdminSidebar />
+                  <main className='flex-1 p-4'>{children}</main>
+                </div>
+                <Footer />
+              </TanstackProvider>
+            </body>
+          </html>
+        </UserContext.Provider>
+      </SideBarContext.Provider>
+    </CartContext.Provider>
   )
 }

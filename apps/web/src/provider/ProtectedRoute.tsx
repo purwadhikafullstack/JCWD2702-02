@@ -45,7 +45,7 @@ export default function ProtectedRouteProvider({
       } else {
         setLoading(false)
       }
-    })
+    }, 2000)
     return () => clearTimeout(timer)
   }, [pathname, userRole])
 

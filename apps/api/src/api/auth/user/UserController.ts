@@ -134,7 +134,6 @@ export const mainUserAddress = async (
       addressId,
     });
 
-    console.log(addressValidator);
     if (addressValidator?.main == 'TRUE')
       throw new Error('This Address Already Main Address');
 

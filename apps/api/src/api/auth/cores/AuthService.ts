@@ -276,3 +276,11 @@ export const findUserByEmailService = async ({ email }: { email: string }) => {
     },
   });
 };
+
+export const findAdminByUidService = async (uid: string) => {
+  return await prisma.admin.findUnique({
+    where: {
+      uid: uid,
+    },
+  });
+};

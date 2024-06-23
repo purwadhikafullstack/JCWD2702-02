@@ -2,12 +2,13 @@ import { usePathname } from 'next/navigation'
 import AdminSidebarDesktop from './desktop'
 
 export default function AdminSidebar() {
-    const pathname = usePathname()
+  const pathname = usePathname()
 
-    if (!pathname.includes('/admin')) return null;
-    return (
-        <div>
-            <AdminSidebarDesktop />
-        </div>
-    )
+  if (!pathname.includes('/admin')) return null
+  return <div>{pathname == '/admin' ? null : <AdminSidebarDesktop />}</div>
+  // return (
+  //   <div>
+  //     <AdminSidebarDesktop />
+  //   </div>
+  // )
 }

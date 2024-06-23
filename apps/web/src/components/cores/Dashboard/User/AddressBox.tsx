@@ -23,7 +23,6 @@ export default function AddressBox(props: any) {
 
   return (
     <div key={props.key} className='card card-side bg-base-100 shadow-xl'>
-      <figure></figure>
       <div className='card-body'>
         <h2 className='card-title'>
           {props.recipients}{' '}

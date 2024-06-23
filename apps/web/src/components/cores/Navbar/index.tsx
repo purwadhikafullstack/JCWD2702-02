@@ -46,7 +46,7 @@ export default function Navbar() {
   useEffect(() => {
     handleKeepLogin()
   }, [])
-  
+
   const pathname = usePathname()
 
   if (pathname.includes('/admin')) return null

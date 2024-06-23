@@ -26,13 +26,13 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  Orders                  Order[]
-  Carts                   Carts[]
+  Orders                          Order[]
   User_Reset_Password             User_Reset_Password[]
   User_Email_Verification         User_Email_Verification[]
   User_Reset_Password_History     User_Reset_Password_History[]
   User_Email_Verification_History User_Email_Verification_History[]
   Address                         Address[]
+  Carts                           Carts[]
 
   @@map("users")
 }
@@ -55,7 +55,8 @@ model Role {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  User User[]
+  User  User[]
+  admin admin[]
 
   @@map("roles")
 }
@@ -181,11 +182,11 @@ model Product {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  OrderItems      OrderItem[]
-  Carts           Carts[]
+  OrderItems    OrderItem[]
   ProductImages Product_Images[]
   Categories    Category?        @relation(fields: [categoryId], references: [id])
   stockHistory  stockHistory[]
+  Carts         Carts[]
 
   @@map("products")
 }
@@ -214,18 +215,17 @@ model Carts {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  User    User    @relation(fields: [userId], references: [uid])
+  user    User    @relation(fields: [userId], references: [uid])
   Product Product @relation(fields: [productId], references: [id])
 
   @@map("carts")
 }
 
 model Order {
-  id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [uid])
+  id          Int    @id @default(autoincrement())
+  user        User   @relation(fields: [userId], references: [uid])
   userId      String
   address     String
-  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
   warehouseId Int
   status      String
 
@@ -280,7 +280,7 @@ enum StockStatus {
 
 model admin {
   uid         String    @id @default(uuid())
-  adminRole   adminRole
+  adminRole   Int
   fullname    String
   email       String    @unique
   password    String
@@ -290,6 +290,7 @@ model admin {
   deletedAt   DateTime?
 
   Warehouse Warehouse? @relation(fields: [warehouseId], references: [id])
+  Role      Role       @relation(fields: [adminRole], references: [id])
 
   @@map("admins")
 }
