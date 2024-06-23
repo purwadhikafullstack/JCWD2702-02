@@ -17,6 +17,7 @@ interface IReqcreateUserAddressService {
   cityId: number;
   longitude: string;
   latitude: string;
+  addressId?: number;
 }
 
 interface IReqUserAddress {
@@ -92,8 +93,6 @@ export const mainUserAddressService = async ({
       },
     });
 
-    // console.log(findMainAddress);
-
     if (findMainAddress) {
       await tx.address.update({
         where: {
@@ -139,6 +138,48 @@ export const deleteUserAddressService = async ({
     },
     data: {
       deletedAt: new Date(),
+    },
+  });
+};
+
+export const findAddressDetailService = async (addressId: number) => {
+  return await prisma.address.findUnique({
+    where: {
+      id: addressId,
+    },
+  });
+};
+
+export const updateUserAddressService = async ({
+  addressId,
+  uid,
+  recipients,
+  address,
+  province,
+  provinceId,
+  city,
+  cityId,
+  phoneNumber,
+  postalCode,
+  longitude,
+  latitude,
+}: IReqcreateUserAddressService) => {
+  await prisma.address.update({
+    where: {
+      id: Number(addressId),
+      userId: uid,
+    },
+    data: {
+      recipients: recipients,
+      address: address,
+      province: province,
+      provinceId: Number(provinceId),
+      city: city,
+      cityId: Number(cityId),
+      phoneNumber: phoneNumber,
+      postalCode: postalCode,
+      latitude: latitude,
+      longitude: longitude,
     },
   });
 };

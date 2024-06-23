@@ -36,6 +36,7 @@ export const getWarehouseAdminDetailService = async ({
   return await prisma.admin.findUnique({
     where: {
       uid: uid,
+      deletedAt: null,
     },
     include: {
       Warehouse: true,
@@ -71,5 +72,31 @@ export const assignWarehouseAdminService = async ({
         warehouseId: warehouseId,
       },
     });
+  });
+};
+
+export const getAllUserService = async () => {
+  const getAllAdminResult = await prisma.admin.findMany({
+    where: {
+      adminRole: 2,
+    },
+  });
+
+  const getAllUserResult = await prisma.user.findMany();
+
+  return {
+    getAllAdminResult,
+    getAllUserResult,
+  };
+};
+
+export const getUserDetailService = async ({ uid }: { uid: string }) => {
+  return await prisma.user.findUnique({
+    where: {
+      uid: uid,
+    },
+    include: {
+      Address: true,
+    },
   });
 };

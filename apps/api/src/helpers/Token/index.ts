@@ -37,7 +37,6 @@ export const tokenVerify = (
   try {
     const reqToken = req as IReqAccessToken;
     const { accesstoken } = req.headers;
-    // console.log(accesstoken);
 
     if (!accesstoken) throw new Error('Please login first!');
 
@@ -45,9 +44,9 @@ export const tokenVerify = (
       accesstoken as string,
       process.env.JWT_SECRET_KEY as string,
     );
-    // console.log(decodedPayload);
+
     reqToken.payload = decodedPayload;
-    // console.log(reqToken.payload);
+
     next();
   } catch (error) {
     next(error);
@@ -62,8 +61,6 @@ export const KeepLoginTokenVerify = (
   try {
     const reqToken = req as IReqAccessToken;
     const { accesstoken } = req.headers;
-    // console.log(req.headers);
-    // console.log(accesstoken);
 
     if (!accesstoken) return;
 
@@ -71,9 +68,9 @@ export const KeepLoginTokenVerify = (
       accesstoken as string,
       process.env.JWT_SECRET_KEY as string,
     );
-    // console.log(decodedPayload);
+
     reqToken.payload = decodedPayload;
-    // console.log(reqToken.payload);
+
     next();
   } catch (error) {
     next(error);

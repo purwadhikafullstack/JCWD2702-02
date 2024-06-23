@@ -68,9 +68,6 @@ export const keepLogin = async (
     const findUserByIdResult = await findUserByIdService({ uid });
     const findAdminByIdResult = await findAdminByUidService(uid);
 
-    console.log(findAdminByIdResult);
-    console.log(findUserByIdResult);
-
     if (!findUserByIdResult) {
       const accesstoken = createToken({ uid: findAdminByIdResult?.uid! });
 

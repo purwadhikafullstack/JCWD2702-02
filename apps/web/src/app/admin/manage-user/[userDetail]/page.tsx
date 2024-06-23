@@ -6,55 +6,51 @@ import { useFormik } from 'formik'
 import Loading from '@/components/cores/Loading'
 import { useState, useEffect } from 'react'
 import { useUpdateWarehouseAdmin } from '@/helpers/admin/hooks/useUpdateWarehouseAdmin'
+import { getUserDetail } from '@/helpers/admin/hooks/getUserDetail'
+import AddressBox from '@/components/cores/Dashboard/User/AddressBox'
 
-export default function AdminDetail({
+export default function UserDetail({
   params,
 }: {
-  params: { adminDetail: string }
+  params: { adminDetail: string; userDetail: string }
 }) {
-  const { dataWarehouseAdminDetail, warehouseAdminDetailLoading } =
-    getWarehouseAdminDetail(params.adminDetail)
-  const { dataWarehouse } = getWarehouse()
+  const { dataUserDetail, userDetailLoading } = getUserDetail(params.userDetail)
 
-  const warehouseAdminData = dataWarehouseAdminDetail?.data?.data
-  const warehouseData = dataWarehouse?.data?.data
+  const userDetailData = dataUserDetail?.data?.data
+  const userAddressData = userDetailData?.Address
+
+  // console.log(userDetailData)
+  // console.log(userAddressData)
 
   const [initialValues, setInitialValues] = useState({
     name: '',
     email: '',
-    warehouse: '',
+    verify: '',
   })
 
-  const { mutationUpdateWarehouseAdmin } = useUpdateWarehouseAdmin()
-
   useEffect(() => {
-    if (warehouseAdminData) {
+    if (userDetailData) {
       setInitialValues({
-        name: warehouseAdminData?.fullname || '',
-        email: warehouseAdminData?.email || '',
-        warehouse: warehouseAdminData?.Warehouse?.id,
+        name: userDetailData?.fullname || '',
+        email: userDetailData?.email || '',
+        verify: userDetailData?.verify || '',
       })
     }
-  }, [warehouseAdminData])
+  }, [userDetailData])
 
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
     onSubmit: (values) => {
-      mutationUpdateWarehouseAdmin({
-        uid: params.adminDetail,
-        name: values.name,
-        email: values.email,
-        warehouseId: Number(values.warehouse),
-      })
+      alert('test')
     },
   })
 
-  const handleWarehouseChange = (event: any) => {
+  const handleVerifyChange = (event: any) => {
     formik.setFieldValue('warehouse', event.target.value)
   }
 
-  if (warehouseAdminDetailLoading) return <Loading></Loading>
+  if (userDetailLoading) return <Loading></Loading>
 
   return (
     <div>
@@ -105,26 +101,62 @@ export default function AdminDetail({
               </div>
               <div className='flex flex-col'>
                 <label htmlFor='categoryId' className='mb-1 text-black'>
-                  Warehouse
+                  Verification Status
                 </label>
                 <select
                   name='warehouse'
                   className='select w-full text-[20px]'
-                  onChange={handleWarehouseChange}
-                  value={formik.values.warehouse}
+                  onChange={handleVerifyChange}
+                  value={formik.values.verify}
                 >
-                  <option disabled={true}>Warehouse List</option>
-                  {warehouseData?.map((x: any, i: any) => {
-                    return (
-                      <option key={i} value={x?.id}>
-                        {x?.name}
-                      </option>
-                    )
-                  })}
+                  <option disabled={true}>Verification Status</option>
+                  <option value={'VERIFIED'}>VERIFIED</option>
+                  <option value={'UNVERIFY'}>UNVERIFY</option>
                 </select>
               </div>
             </div>
           </form>
+          <div className='flex flex-col gap-3'>
+            <label htmlFor='user_address' className='mb-1 text-black'>
+              User Address
+            </label>
+            <div className='container flex w-full rounded-xl border border-gray-300 shadow-lg hover:border-eggplant'>
+              <div className='flex h-[400px] w-full snap-y snap-mandatory flex-col gap-5 overflow-y-scroll p-5'>
+                {/* {userAddressData?.map((x: any, i: any) => {
+                return (
+                  <div key={i}>
+                    <AddressBox
+                      id={x?.id}
+                      main={x?.main}
+                      html={`address_${x?.id}`}
+                      recipients={x?.recipients}
+                      province={x?.province}
+                      city={x?.city}
+                      phoneNumber={x?.phoneNumber}
+                      address={x?.address}
+                    />
+                  </div>
+                )
+              })} */}
+                {userAddressData?.map((x: any, i: any) => {
+                  return (
+                    <div key={i}>
+                      <AddressBox
+                        id={x?.id}
+                        main={x?.main}
+                        html={`address_${x?.id}`}
+                        recipients={x?.recipients}
+                        province={x?.province}
+                        city={x?.city}
+                        phoneNumber={x?.phoneNumber}
+                        address={x?.address}
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
           <div className='flex justify-end'>
             <button className='mt-4 rounded-md border border-red-300 px-4 py-2 text-red-600 transition-colors hover:bg-red-100'>
               Erase Product

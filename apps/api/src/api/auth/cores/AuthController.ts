@@ -341,7 +341,6 @@ export const forgotPassword = async (
     const expireInOneHour = await defaultExpireTime(1);
 
     const findUserByEmailResult = await findUserByEmailService({ email });
-    console.log('1');
     const findUserResetPasswordInfoResult =
       await findUserResetPasswordInfoService({
         uid: findUserByEmailResult?.uid!,

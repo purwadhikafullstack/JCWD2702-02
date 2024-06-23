@@ -7,8 +7,10 @@ import {
 } from 'react-icons/md'
 import { useMainAddress } from './../../../../helpers/address/hooks/useMainAddress'
 import { useDeleteAddress } from '@/helpers/address/hooks/useDeleteMutation'
+import { useRouter } from 'next/navigation'
 
 export default function AddressBox(props: any) {
+  const navigate = useRouter()
   const addressId = props.id
   const { mutationMainAddress } = useMainAddress()
   const { mutationDeleteAddress } = useDeleteAddress()
@@ -62,6 +64,13 @@ export default function AddressBox(props: any) {
               >
                 <MdDeleteForever size={20} />
                 Delete Address
+              </div>
+              <div
+                onClick={() => navigate.push(`/dashboard/address/${addressId}`)}
+                className='btn w-[200px] bg-eggplant text-white hover:bg-hover_eggplant'
+              >
+                <MdOutlineModeEditOutline size={20} />
+                Edit Address Data
               </div>
             </div>
             <label className='modal-backdrop' htmlFor={props.html}>

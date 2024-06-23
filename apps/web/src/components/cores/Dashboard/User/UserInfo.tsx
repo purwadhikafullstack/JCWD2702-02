@@ -51,7 +51,7 @@ export default function UserInfo() {
                 height={100}
                 alt='test'
                 priority={true}
-                src={`http://localhost:8000/${userInfo?.userImageUrl}`}
+                src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${userInfo?.userImageUrl}`}
               />
             ) : (
               <Image
@@ -59,7 +59,7 @@ export default function UserInfo() {
                 height={100}
                 alt='test'
                 priority={true}
-                src={`http://localhost:8000/src/public/userImage/image/DefaultUserImage.jpg`}
+                src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/src/public/userImage/image/DefaultUserImage.jpg`}
               />
             )}
           </div>

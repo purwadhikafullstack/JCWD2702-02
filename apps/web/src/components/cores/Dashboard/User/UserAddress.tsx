@@ -102,13 +102,13 @@ export default function UserAddress() {
   }, [isSuccess])
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <div className='flex h-max w-full flex-col items-start justify-between rounded-md border-2 border-white bg-white p-10 shadow-md'>
-        <div className='flex w-full flex-col items-center justify-center gap-3'>
-          <div className='flex w-[70%] items-center justify-center rounded-md bg-eggplant text-white'></div>
-        </div>
-        <div className='flex w-full items-center justify-between'>
-          <div className='flex text-xl font-bold'>User Address</div>
+    <div className='flex h-max w-full flex-col items-start justify-between rounded-md border-2 border-white bg-white p-10 shadow-md'>
+      <div className='flex w-full flex-col items-center justify-center gap-3'>
+        <div className='flex w-[70%] items-center justify-center rounded-md bg-eggplant text-white'></div>
+      </div>
+      <div className='flex w-full items-center justify-between'>
+        <div className='flex text-xl font-bold'>User Address</div>
+        <form onSubmit={formik.handleSubmit}>
           <div>
             <label
               htmlFor='my_modal_7'
@@ -152,7 +152,7 @@ export default function UserAddress() {
                     defaultValue={'DEFAULT'}
                     className={`select select-bordered w-full ${formik.errors.province ? 'border-red-500' : ''}`}
                   >
-                    <option value={'DEFAULT'} disabled selected>
+                    <option value={'DEFAULT'} disabled>
                       Provinsi
                     </option>
                     {provinceData?.map((x: any, i: any) => {
@@ -180,7 +180,7 @@ export default function UserAddress() {
                     className={`select select-bordered w-full ${formik.errors.city ? 'border-red-500' : ''}`}
                     disabled={!formik.values.provinceId || citiesLoading}
                   >
-                    <option value={'DEFAULT'} disabled selected>
+                    <option value={'DEFAULT'} disabled>
                       Kota
                     </option>
                     {citiesData?.map((x: any, i: any) => {
@@ -221,29 +221,29 @@ export default function UserAddress() {
               </label>
             </div>
           </div>
-        </div>
-        <div className='divider w-full'></div>
-        <div className='flex w-full'>
-          <div className='flex h-[400px] w-full snap-y snap-mandatory flex-col gap-5 overflow-y-scroll p-10'>
-            {userAddressData?.map((x: any, i: any) => {
-              return (
-                <div key={i}>
-                  <AddressBox
-                    id={x?.id}
-                    main={x?.main}
-                    html={`address_${x?.id}`}
-                    recipients={x?.recipients}
-                    province={x?.province}
-                    city={x?.city}
-                    phoneNumber={x?.phoneNumber}
-                    address={x?.address}
-                  />
-                </div>
-              )
-            })}
-          </div>
+        </form>
+      </div>
+      <div className='divider w-full'></div>
+      <div className='flex w-full'>
+        <div className='flex h-[400px] w-full snap-y snap-mandatory flex-col gap-5 overflow-y-scroll p-10'>
+          {userAddressData?.map((x: any, i: any) => {
+            return (
+              <div key={i}>
+                <AddressBox
+                  id={x?.id}
+                  main={x?.main}
+                  html={`address_${x?.id}`}
+                  recipients={x?.recipients}
+                  province={x?.province}
+                  city={x?.city}
+                  phoneNumber={x?.phoneNumber}
+                  address={x?.address}
+                />
+              </div>
+            )
+          })}
         </div>
       </div>
-    </form>
+    </div>
   )
 }

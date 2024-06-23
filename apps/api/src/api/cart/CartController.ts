@@ -12,8 +12,6 @@ export const addToCart = async (
     const { uid } = reqToken.payload;
     const { productId, qty } = req.body;
 
-    // console.log(typeof qty);
-
     if (qty < 1) throw new Error('Please input valid quantity');
 
     await addToCartQuery(uid, productId, qty);

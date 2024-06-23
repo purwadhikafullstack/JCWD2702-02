@@ -8,6 +8,8 @@ import {
   mainUserAddress,
   findUserAddressDetail,
   deleteUserAddress,
+  getAddressDetail,
+  updateUserAddress,
 } from './UserController';
 
 const router = Router();
@@ -23,5 +25,7 @@ router.get('/address', tokenVerify, findUserAddress);
 router.post('/main-address', tokenVerify, mainUserAddress);
 router.get('/address-detail', tokenVerify, findUserAddressDetail);
 router.post('/delete-address', tokenVerify, deleteUserAddress);
+router.get('/detail-address', tokenVerify, getAddressDetail);
+router.post('/update-address', tokenVerify, updateUserAddress);
 
 export default router;

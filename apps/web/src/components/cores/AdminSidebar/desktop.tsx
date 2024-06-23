@@ -8,6 +8,7 @@ import {
   MdOutlineWarehouse,
   MdOutlineLogout,
   MdAdminPanelSettings,
+  MdSupervisedUserCircle,
 } from 'react-icons/md'
 import { useKeepLogin } from '@/helpers/login/hooks/useKeepLogin'
 import { useState, useContext, useEffect } from 'react'
@@ -126,6 +127,16 @@ export default function AdminSidebarDesktop() {
                       <MdAdminPanelSettings className='h-5 w-5 fill-current' />
                       <div className='font-sans font-semibold tracking-wide hover:text-red-600'>
                         ADMIN
+                      </div>
+                    </Link>
+                    <Link
+                      rel='noopener noreferrer'
+                      href={'/admin/manage-user'}
+                      className='flex items-center space-x-3 rounded-md p-2'
+                    >
+                      <MdSupervisedUserCircle className='h-5 w-5 fill-current' />
+                      <div className='font-sans font-semibold tracking-wide hover:text-red-600'>
+                        USER
                       </div>
                     </Link>
                   </div>

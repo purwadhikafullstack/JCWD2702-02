@@ -1,20 +1,20 @@
 'use client'
 
-import AdminCard from '@/components/admin/AdminCard'
 import { useRouter } from 'next/navigation'
-import { getWarehouseAdmin } from '@/helpers/admin/hooks/getWarehouseAdmin'
-import Loading from '@/components/cores/Loading'
+import { getAllUser } from '@/helpers/admin/hooks/getAllUser'
 
-export default function ManageAdmin() {
+export default function ManageUser() {
   const navigate = useRouter()
-  const { dataWarehouseAdmin, warehouseAdminLoading } = getWarehouseAdmin()
+  const { dataAllUser } = getAllUser()
 
-  const warehouseAdminData = dataWarehouseAdmin?.data?.data
+  const allUserData = dataAllUser?.data?.data
+
+  console.log(allUserData)
 
   return (
     <div className='container mx-auto max-h-[95vh] overflow-y-auto rounded-md border border-gray-300 p-4 shadow-lg'>
       <div className='mb-4 flex items-center justify-between'>
-        <div className='text-2xl font-semibold'>Manage Admin</div>
+        <div className='text-2xl font-semibold'>Manage User</div>
       </div>
       <div className='flex h-[400px] w-full snap-y snap-mandatory flex-col gap-5 overflow-y-scroll p-10'>
         <div className='w-full overflow-x-auto'>
@@ -26,15 +26,14 @@ export default function ManageAdmin() {
                 <th>Uid</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Warehouse</th>
               </tr>
             </thead>
             <tbody>
-              {warehouseAdminData?.map((x: any, i: any) => {
+              {allUserData?.map((x: any, i: any) => {
                 return (
                   <tr
                     onClick={() =>
-                      navigate.push(`/admin/manage-admin/${x?.uid}`)
+                      navigate.push(`/admin/manage-user/${x?.uid}`)
                     }
                     className='hover'
                     key={i}
@@ -43,7 +42,6 @@ export default function ManageAdmin() {
                     <td>{x?.uid}</td>
                     <td>{x?.fullname}</td>
                     <td>{x?.email}</td>
-                    <td>{x?.Warehouse?.name}</td>
                   </tr>
                 )
               })}

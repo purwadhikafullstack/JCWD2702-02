@@ -7,6 +7,8 @@ import {
   getWarehouseAdminDetailService,
   getWarehouseService,
   assignWarehouseAdminService,
+  getAllUserService,
+  getUserDetailService,
 } from './AdminService';
 
 export const adminLogin = async (
@@ -117,6 +119,48 @@ export const assignWarehouseAdmin = async (
       error: false,
       message: 'Update Success',
       data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { getAllUserResult } = await getAllUserService();
+
+    res.status(201).send({
+      error: false,
+      message: 'Get All User',
+      data: getAllUserResult,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.query;
+
+    // console.log(userId);
+
+    const getUserDetailResult = await getUserDetailService({
+      uid: userId as string,
+    });
+
+    res.status(201).send({
+      error: false,
+      message: 'Get User Detail',
+      data: getUserDetailResult,
     });
   } catch (error) {
     next(error);
