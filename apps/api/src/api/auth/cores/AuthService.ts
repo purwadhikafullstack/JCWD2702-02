@@ -221,6 +221,7 @@ export const updateUserEmailService = async ({
       },
       data: {
         email: email,
+        verify: 'UNVERIFY',
       },
     });
 

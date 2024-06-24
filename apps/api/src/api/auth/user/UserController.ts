@@ -207,7 +207,6 @@ export const getAddressDetail = async (
       Number(addressId),
     );
 
-    console.log(findAddressDetailResult);
     return res.status(201).send({
       error: false,
       message: 'Get Address Detail',
@@ -253,6 +252,12 @@ export const updateUserAddress = async (
       postalCode,
       longitude,
       latitude,
+    });
+
+    res.status(201).send({
+      error: false,
+      message: 'Update Success',
+      data: null,
     });
   } catch (error) {
     next(error);

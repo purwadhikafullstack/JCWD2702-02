@@ -9,6 +9,7 @@ import {
   assignWarehouseAdminService,
   getAllUserService,
   getUserDetailService,
+  createUserService,
 } from './AdminService';
 
 export const adminLogin = async (
@@ -151,8 +152,6 @@ export const getUserDetail = async (
   try {
     const { userId } = req.query;
 
-    // console.log(userId);
-
     const getUserDetailResult = await getUserDetailService({
       uid: userId as string,
     });
@@ -161,6 +160,26 @@ export const getUserDetail = async (
       error: false,
       message: 'Get User Detail',
       data: getUserDetailResult,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { fullname, email, password } = req.body;
+
+    await createUserService({ fullname, email, password });
+
+    res.status(201).send({
+      error: false,
+      message: 'Create User Success',
+      data: null,
     });
   } catch (error) {
     next(error);

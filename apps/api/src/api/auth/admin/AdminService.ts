@@ -1,5 +1,8 @@
 import { prisma } from '@/lib/PrismaClient';
-import { IReqAssignWarehouseAdminService } from './AdminType';
+import {
+  IReqAssignWarehouseAdminService,
+  IReqCreateUserService,
+} from './AdminType';
 
 export const findAdminByEmailService = async (email: string) => {
   return await prisma.admin.findFirst({
@@ -97,6 +100,20 @@ export const getUserDetailService = async ({ uid }: { uid: string }) => {
     },
     include: {
       Address: true,
+    },
+  });
+};
+
+export const createUserService = async ({
+  fullname,
+  email,
+  password,
+}: IReqCreateUserService) => {
+  await prisma.user.create({
+    data: {
+      fullname: fullname,
+      email: email,
+      password: password,
     },
   });
 };

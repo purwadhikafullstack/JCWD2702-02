@@ -7,6 +7,7 @@ import {
   assignWarehouseAdmin,
   getAllUser,
   getUserDetail,
+  createUser,
 } from './AdminController';
 import { tokenVerify } from '@/helpers/Token';
 import { roleVerifySuperAdmin } from '@/middlewares/RoleVerify';
@@ -35,5 +36,6 @@ router.post(
 );
 router.get('/all-user', tokenVerify, roleVerifySuperAdmin, getAllUser);
 router.get('/user-detail', tokenVerify, roleVerifySuperAdmin, getUserDetail);
+router.post('/user', tokenVerify, roleVerifySuperAdmin, createUser);
 
 export default router;

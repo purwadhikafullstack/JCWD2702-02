@@ -4,3 +4,9 @@ export interface IReqAssignWarehouseAdminService {
   email: string;
   warehouseId: number;
 }
+
+export interface IReqCreateUserService {
+  fullname: string;
+  email: string;
+  password: string;
+}

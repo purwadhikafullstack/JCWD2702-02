@@ -7,6 +7,8 @@ import { createUserAddressSchema } from '@/helpers/address/schema/createUserAddr
 import { getAddressDetail } from '@/helpers/address/hooks/getAddressDetail'
 import { getProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
 import { getCities } from '@/helpers/rajaOngkir/hooks/getCities'
+import { useUpdateAddress } from '@/helpers/address/hooks/useUpdateAddress'
+import { getCityDetailed } from '@/helpers/rajaOngkir/hooks/getCityDetailed'
 import axios from 'axios'
 
 interface ILocation {
@@ -19,6 +21,7 @@ export default function AddressDetail({
 }: {
   params: { adminDetail: string; userDetail: string; addressDetail: string }
 }) {
+  const { mutationUpdateAddress, isSuccess } = useUpdateAddress()
   const { dataAddressDetail, addressDetailLoading } = getAddressDetail(
     params.addressDetail
   )
@@ -58,12 +61,33 @@ export default function AddressDetail({
     validationSchema: createUserAddressSchema,
     validateOnChange: false,
     onSubmit: (values) => {
-      alert('test')
+      mutationUpdateAddress({
+        addressId: params.addressDetail,
+        recipients: values.recipients,
+        address: values.address,
+        phoneNumber: values.phoneNumber,
+        province: values.province,
+        provinceId: Number(values.provinceId),
+        city: values.city,
+        cityId: Number(values.cityId),
+        postalCode: detailedCityData?.postal_code,
+        longitude: cityLocation?.lng.toString() as any,
+        latitude: cityLocation?.lat.toString() as any,
+      })
+      //   alert('test')
+      //   location.reload()
     },
   })
 
   const { dataCities } = getCities(formik.values.provinceId)
   const citiesData = dataCities?.data?.data
+
+  const { dataDetailedCity } = getCityDetailed(
+    formik.values.provinceId,
+    formik.values.cityId
+  )
+
+  const detailedCityData = dataDetailedCity?.data?.data
 
   const handleProvinceChange = (event: any) => {
     const values = event.target.value.split(',')
@@ -91,8 +115,6 @@ export default function AddressDetail({
       const { lat, lng } = response.data.results[0].geometry
       setCityLocation({ lat, lng })
       setIsLoading(false)
-      console.log(lat)
-      console.log(lng)
     } catch (error) {
       setIsLoading(false)
     }
@@ -103,6 +125,12 @@ export default function AddressDetail({
   }, [formik.values.city])
 
   if (addressDetailLoading) return <Loading></Loading>
+
+  if (isSuccess) {
+    setTimeout(() => {
+      location.reload()
+    }, 1000)
+  }
 
   return (
     <div className='flex h-screen flex-col items-center justify-center'>
@@ -122,6 +150,7 @@ export default function AddressDetail({
                 <button
                   type='submit'
                   className='flex h-[40px] items-center justify-center rounded-md border-2 border-[#704b66] px-4 py-2 text-black transition-all hover:border-black hover:bg-[#704b66] hover:text-white'
+                  disabled={!formik.dirty || formik.isSubmitting || isLoading}
                 >
                   Update
                 </button>
@@ -193,12 +222,12 @@ export default function AddressDetail({
               </div>
               <div className='flex flex-col'>
                 <label htmlFor='description' className='mb-1 text-black'>
-                  Phone Number
+                  Address
                 </label>
                 <input
                   className='rounded-t-md border-b border-transparent p-2 text-[20px] transition-all hover:border-gray-300 focus:border-b-2 focus:border-[#704b66] focus:outline-none'
                   type='text'
-                  name='email'
+                  name='address'
                   placeholder='Enter Here'
                   onChange={formik.handleChange}
                   value={formik.values.address}
