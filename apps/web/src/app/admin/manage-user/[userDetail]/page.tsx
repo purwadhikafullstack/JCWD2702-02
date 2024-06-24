@@ -1,26 +1,22 @@
 'use client'
 
-import { getWarehouseAdminDetail } from '@/helpers/admin/hooks/getWarehouseAdminDetail'
-import { getWarehouse } from '@/helpers/admin/hooks/getWarehouse'
 import { useFormik } from 'formik'
 import Loading from '@/components/cores/Loading'
 import { useState, useEffect } from 'react'
-import { useUpdateWarehouseAdmin } from '@/helpers/admin/hooks/useUpdateWarehouseAdmin'
 import { getUserDetail } from '@/helpers/admin/hooks/getUserDetail'
 import AddressBox from '@/components/cores/Dashboard/User/AddressBox'
+import { useUpdateUserData } from '@/helpers/admin/hooks/useUpdateUserData'
 
 export default function UserDetail({
   params,
 }: {
   params: { adminDetail: string; userDetail: string }
 }) {
+  const { mutationUpdateUserData } = useUpdateUserData()
   const { dataUserDetail, userDetailLoading } = getUserDetail(params.userDetail)
 
   const userDetailData = dataUserDetail?.data?.data
   const userAddressData = userDetailData?.Address
-
-  // console.log(userDetailData)
-  // console.log(userAddressData)
 
   const [initialValues, setInitialValues] = useState({
     name: '',
@@ -42,12 +38,17 @@ export default function UserDetail({
     initialValues,
     enableReinitialize: true,
     onSubmit: (values) => {
-      alert('test')
+      mutationUpdateUserData({
+        userId: params.userDetail,
+        fullname: values.name,
+        email: values.email,
+        verify: values.verify,
+      })
     },
   })
 
   const handleVerifyChange = (event: any) => {
-    formik.setFieldValue('warehouse', event.target.value)
+    formik.setFieldValue('verify', event.target.value)
   }
 
   if (userDetailLoading) return <Loading></Loading>
@@ -104,14 +105,14 @@ export default function UserDetail({
                   Verification Status
                 </label>
                 <select
-                  name='warehouse'
+                  name='verify'
                   className='select w-full text-[20px]'
                   onChange={handleVerifyChange}
                   value={formik.values.verify}
                 >
                   <option disabled={true}>Verification Status</option>
-                  <option value={'VERIFIED'}>VERIFIED</option>
                   <option value={'UNVERIFY'}>UNVERIFY</option>
+                  <option value={'VERIFIED'}>VERIFIED</option>
                 </select>
               </div>
             </div>
@@ -122,22 +123,6 @@ export default function UserDetail({
             </label>
             <div className='container flex w-full rounded-xl border border-gray-300 shadow-lg hover:border-eggplant'>
               <div className='flex h-[400px] w-full snap-y snap-mandatory flex-col gap-5 overflow-y-scroll p-5'>
-                {/* {userAddressData?.map((x: any, i: any) => {
-                return (
-                  <div key={i}>
-                    <AddressBox
-                      id={x?.id}
-                      main={x?.main}
-                      html={`address_${x?.id}`}
-                      recipients={x?.recipients}
-                      province={x?.province}
-                      city={x?.city}
-                      phoneNumber={x?.phoneNumber}
-                      address={x?.address}
-                    />
-                  </div>
-                )
-              })} */}
                 {userAddressData?.map((x: any, i: any) => {
                   return (
                     <div key={i}>

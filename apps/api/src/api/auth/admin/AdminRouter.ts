@@ -8,6 +8,7 @@ import {
   getAllUser,
   getUserDetail,
   createUser,
+  updateUserData,
 } from './AdminController';
 import { tokenVerify } from '@/helpers/Token';
 import { roleVerifySuperAdmin } from '@/middlewares/RoleVerify';
@@ -37,5 +38,6 @@ router.post(
 router.get('/all-user', tokenVerify, roleVerifySuperAdmin, getAllUser);
 router.get('/user-detail', tokenVerify, roleVerifySuperAdmin, getUserDetail);
 router.post('/user', tokenVerify, roleVerifySuperAdmin, createUser);
+router.post('/update-user', tokenVerify, roleVerifySuperAdmin, updateUserData);
 
 export default router;

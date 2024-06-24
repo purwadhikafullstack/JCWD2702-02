@@ -10,7 +10,10 @@ import {
   getAllUserService,
   getUserDetailService,
   createUserService,
+  updateUserService,
 } from './AdminService';
+import { HashingPassword } from '@/helpers/HashingPassword';
+import { findUserByEmailService } from '../cores/AuthService';
 
 export const adminLogin = async (
   req: Request,
@@ -174,11 +177,38 @@ export const createUser = async (
   try {
     const { fullname, email, password } = req.body;
 
-    await createUserService({ fullname, email, password });
+    const findUserByEmailResult = await findUserByEmailService({ email });
+
+    if (findUserByEmailResult) throw new Error('Email has been used');
+
+    const HashedPassword = await HashingPassword({ password: password });
+
+    await createUserService({ fullname, email, password: HashedPassword });
 
     res.status(201).send({
       error: false,
       message: 'Create User Success',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.query;
+    const { fullname, email, verify } = req.body;
+
+    await updateUserService({ uid: userId as string, fullname, email, verify });
+
+    return res.status(201).send({
+      error: false,
+      message: 'Update Success',
       data: null,
     });
   } catch (error) {

@@ -2,7 +2,9 @@ import { prisma } from '@/lib/PrismaClient';
 import {
   IReqAssignWarehouseAdminService,
   IReqCreateUserService,
+  IReqUpdateUserService,
 } from './AdminType';
+import { UserVerify } from '@prisma/client';
 
 export const findAdminByEmailService = async (email: string) => {
   return await prisma.admin.findFirst({
@@ -114,6 +116,24 @@ export const createUserService = async ({
       fullname: fullname,
       email: email,
       password: password,
+    },
+  });
+};
+
+export const updateUserService = async ({
+  uid,
+  fullname,
+  email,
+  verify,
+}: IReqUpdateUserService) => {
+  await prisma.user.update({
+    where: {
+      uid: uid,
+    },
+    data: {
+      fullname: fullname,
+      email: email,
+      verify: verify as UserVerify,
     },
   });
 };
