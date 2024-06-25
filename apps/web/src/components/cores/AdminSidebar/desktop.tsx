@@ -11,6 +11,7 @@ import {
   MdSupervisedUserCircle,
   MdWarehouse,
 } from 'react-icons/md'
+import { CiDeliveryTruck } from 'react-icons/ci'
 import { useKeepLogin } from '@/helpers/login/hooks/useKeepLogin'
 import { useState, useContext, useEffect } from 'react'
 import { UserContext } from '@/config/context/userContext'
@@ -162,6 +163,18 @@ export default function AdminSidebarDesktop() {
                   <MdOutlineWarehouse className='h-5 w-5 fill-current' />
                   <div className='font-sans font-semibold tracking-wide hover:text-red-600'>
                     WAREHOUSE
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  rel='noopener noreferrer'
+                  href={'/admin/all-stock-request'}
+                  className='mt-[15px] flex items-center space-x-3 rounded-md p-2'
+                >
+                  <CiDeliveryTruck className='h-5 w-5 fill-current' />
+                  <div className='font-sans font-semibold tracking-wide hover:text-red-600'>
+                    ALL STOCK REQUESTS
                   </div>
                 </Link>
               </li>
