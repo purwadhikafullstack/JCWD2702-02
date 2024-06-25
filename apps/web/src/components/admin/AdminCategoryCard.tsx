@@ -34,7 +34,7 @@ export default function AdminCategoryCard({ category, onUpdate, isUpdating, onFo
                     </button>
                 </div>
             </div>
-            <div className={`transition-all duration-300 ${isUpdating ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+            <div className={`transition-all duration-500 ${isUpdating ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
                 <UpdateCategoryForm category={category} onClose={onFormClose} />
             </div>
         </div>

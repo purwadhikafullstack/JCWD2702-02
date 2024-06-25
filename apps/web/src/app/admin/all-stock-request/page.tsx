@@ -12,7 +12,6 @@ export default function AllStockRequest() {
         const timeOptions: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
         return `${date.toLocaleDateString(undefined, dateOptions)} ${date.toLocaleTimeString(undefined, timeOptions)}`;
     }
-    console.log(dataAllStockRequests)
     if (dataAllStockRequests === undefined) return <div>Loading...</div>
     return (
         <div className="container mx-auto p-4 border border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh]">

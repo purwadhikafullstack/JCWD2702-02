@@ -10,17 +10,17 @@ import { FaHistory } from "react-icons/fa";
 import CreateRequestModal from '@/components/admin/CreateManualRequestModal';
 import AddStockModal from '@/components/admin/AddStockModal';
 import ReduceStockModal from '@/components/admin/ReduceStockModal';
+import SearchBoxWarehouseDetail from '@/components/admin/SearchBoxWarehouseDetail';
 import Link from "next/link";
 
-export default function WarehouseDetail({ params }: { params: { warehouseDetail: string } }) {
-    const { dataProductsStockPerWarehouse } = useGetProductsStockPerWarehouse(params.warehouseDetail);
+export default function WarehouseDetail({ params, searchParams }: { params: { warehouseDetail: string } } & { searchParams: { search: string, sort: string, page: string } }) {
+    const { search = '', sort = '', page = '1' } = searchParams;
+    const query = { search, sort, page };
+    const { dataProductsStockPerWarehouse, refetchDataProductsStockPerWarehouse, totalDataProductsStockPerWarehouse } = useGetProductsStockPerWarehouse(params.warehouseDetail, query);
     const { dataWarehouseDetail } = useGetWarehouseDetail(params.warehouseDetail);
     const { dataStockMutationTypeLists } = useGetStockMutationTypeLists(params.warehouseDetail);
     const { dataStockRequestPerWarehouse } = useGetStockRequestPerWarehouse(params.warehouseDetail);
     const { dataOutgoingStockRequestPerWarehouse } = useGetOutgoingStockRequestPerWarehouse(params.warehouseDetail);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'default'>('default');
-    const [sortedProducts, setSortedProducts] = useState<any[]>([]);
     const [isCreateRequestModalOpen, setIsCreateRequestModalOpen] = useState(false);
     const [isAddStockModalOpen, setIsAddStockModalOpen] = useState(false);
     const [isReduceStockModalOpen, setIsReduceStockModalOpen] = useState(false);
@@ -28,10 +28,10 @@ export default function WarehouseDetail({ params }: { params: { warehouseDetail:
     const [pendingIncomingRequests, setPendingIncomingRequests] = useState(0);
 
     useEffect(() => {
-        if (dataProductsStockPerWarehouse?.products) {
-            setSortedProducts(dataProductsStockPerWarehouse.products.sort((a: any, b: any) => a.name.localeCompare(b.name)));
-        }
-    }, [dataProductsStockPerWarehouse]);
+        setTimeout(() => {
+            refetchDataProductsStockPerWarehouse();
+        }, 10);
+    }, [search, sort, page, refetchDataProductsStockPerWarehouse]);
 
     useEffect(() => {
         if (dataStockRequestPerWarehouse) {
@@ -39,19 +39,13 @@ export default function WarehouseDetail({ params }: { params: { warehouseDetail:
         }
     }, [dataStockRequestPerWarehouse, dataOutgoingStockRequestPerWarehouse]);
 
-    const formatDate = (dateString: string) => new Date(dateString).toLocaleString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(event.target.value);
-    const handleSort = () => setSortOrder(sortOrder === 'default' ? 'asc' : sortOrder === 'asc' ? 'desc' : 'default');
-
-    useEffect(() => {
-        let updatedProducts = [...dataProductsStockPerWarehouse?.products || []];
-        if (sortOrder === 'asc') updatedProducts.sort((a, b) => a.totalStock - b.totalStock);
-        else if (sortOrder === 'desc') updatedProducts.sort((a, b) => b.totalStock - a.totalStock);
-
-        if (searchTerm) updatedProducts = updatedProducts.filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
-        setSortedProducts(updatedProducts);
-    }, [searchTerm, sortOrder, dataProductsStockPerWarehouse]);
+    const formatDate = (dateString: string) => new Date(dateString).toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 
     const openModal = (product: { id: number, name: string }, setModalState: React.Dispatch<React.SetStateAction<boolean>>) => {
         setSelectedProduct(product);
@@ -93,15 +87,7 @@ export default function WarehouseDetail({ params }: { params: { warehouseDetail:
                         </Link>
                     </div>
                 </div>
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                        <input type="text" placeholder="Search Product" value={searchTerm} onChange={handleSearch} className="px-4 py-2 border rounded-md" />
-                        <button onClick={handleSort} className="px-4 py-2 w-[185px] bg-gray-100 hover:bg-gray-300 border rounded-md flex justify-center items-center gap-2">
-                            Sort by Stock {sortOrder === 'asc' ? <HiSortAscending className='text-[#704b66]' /> : sortOrder === 'desc' ? <HiSortDescending className='text-[#704b66]' /> : '↔️'}
-                        </button>
-                    </div>
-                    <div>INI PAGINATION</div>
-                </div>
+                <SearchBoxWarehouseDetail initialSearchParams={searchParams} refetchDataProducts={refetchDataProductsStockPerWarehouse} totalProducts={totalDataProductsStockPerWarehouse} warehouseId={params.warehouseDetail} />
             </div>
             <table className="min-w-full">
                 <thead className="bg-gray-100">
@@ -116,7 +102,7 @@ export default function WarehouseDetail({ params }: { params: { warehouseDetail:
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedProducts.map((item, index) => (
+                    {dataProductsStockPerWarehouse?.products.map((item: { id: number, name: string, totalStock: number, updatedAt: string, deletedAt: string }, index: number) => (
                         <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-200'}>
                             <td className="px-4 py-2">{item.name}</td>
                             <td className="px-4 py-2 text-right flex justify-end items-center gap-3">

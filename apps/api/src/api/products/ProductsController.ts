@@ -2,18 +2,21 @@ import { Request, Response, NextFunction } from 'express';
 import { DeletedProductUrlFiles } from '../../helpers/DeleteProductUrlFiles';
 import fs from 'fs';
 import path from 'path';
+import { prisma } from '@/lib/PrismaClient';
 import { createProductAndProductImagesQuery, softDeleteProductQuery, getErasedProductsQuery, restoreProductQuery, updateProductImageQuery, getProductImageByIdQuery, updateProductDataQuery, getProductsQuery, getProductByIdQuery, getProductImagesQuery, deleteProductQuery } from '../products/ProductService';
 
 // Controller for get all products
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { sort, minPrice, maxPrice, categoryId, search } = req.query;
+        const { sort, minPrice, maxPrice, categoryId, search, page } = req.query;
         const minPriceNum = minPrice ? parseInt(minPrice as string) : undefined;
         const maxPriceNum = maxPrice ? parseInt(maxPrice as string) : undefined;
         const categoryIdNum = categoryId ? parseInt(categoryId as string) : undefined;
-        const products = await getProductsQuery(sort as string, minPriceNum, maxPriceNum, categoryIdNum, search as string);
+        const pageNum = page ? parseInt(page as string) : 1;
+        const products = await getProductsQuery(sort as string, minPriceNum, maxPriceNum, categoryIdNum, search as string, pageNum);
+        const productsCount = await prisma.product.count();
         res.status(200).send({
-            count: products.length,
+            count: productsCount,
             error: false,
             message: 'Get Products',
             data: products

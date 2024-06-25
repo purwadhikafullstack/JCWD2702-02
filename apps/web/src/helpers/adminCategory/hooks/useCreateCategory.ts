@@ -10,7 +10,6 @@ export const useCreateCategory = () => {
             refetchProductCategories()
         },
         onError: (error: any) => {
-            console.log(error.response?.data.message)
             toast.error('Failed to create category')
         }
     })
