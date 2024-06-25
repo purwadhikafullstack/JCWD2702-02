@@ -33,6 +33,7 @@ model User {
   User_Reset_Password_History     User_Reset_Password_History[]
   User_Email_Verification_History User_Email_Verification_History[]
   Address                         Address[]
+  Carts                           Carts[]
 
   @@map("users")
 }
@@ -55,7 +56,8 @@ model Role {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  User User[]
+  User  User[]
+  admin admin[]
 
   @@map("roles")
 }
@@ -187,6 +189,7 @@ model Product {
   ProductImages Product_Images[]
   Categories    Category?        @relation(fields: [categoryId], references: [id])
   stockHistory  stockHistory[]
+  Carts         Carts[]
 
   @@map("products")
 }
@@ -215,7 +218,7 @@ model Carts {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  User    User    @relation(fields: [userId], references: [uid])
+  user    User    @relation(fields: [userId], references: [uid])
   Product Product @relation(fields: [productId], references: [id])
 
   @@map("carts")
@@ -285,7 +288,7 @@ enum StockStatus {
 
 model admin {
   uid         String    @id @default(uuid())
-  adminRole   adminRole
+  adminRole   Int
   fullname    String
   email       String    @unique
   password    String
@@ -295,6 +298,7 @@ model admin {
   deletedAt   DateTime?
 
   Warehouse Warehouse? @relation(fields: [warehouseId], references: [id])
+  Role      Role       @relation(fields: [adminRole], references: [id])
 
   @@map("admins")
 }
@@ -308,7 +312,9 @@ model Warehouse {
   id         Int    @id @default(autoincrement())
   name       String
   province   String
+  provinceId Int?
   city       String
+  cityId     Int?
   detail     String
   postalCode String
   longitude  Float

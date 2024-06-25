@@ -23,7 +23,7 @@ export const useCreateUserAddressMutation = ({
   onSuccess: any
   onError: any
 }) => {
-  const { mutate } = useMutation({
+  const { mutate, isSuccess } = useMutation({
     mutationFn: async ({
       recipients,
       address,
@@ -55,5 +55,6 @@ export const useCreateUserAddressMutation = ({
 
   return {
     mutate,
+    isSuccess,
   }
 }

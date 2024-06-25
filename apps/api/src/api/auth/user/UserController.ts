@@ -7,6 +7,8 @@ import {
   mainUserAddressService,
   findUserAddressDetailService,
   deleteUserAddressService,
+  findAddressDetailService,
+  updateUserAddressService,
 } from './UserService';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
 import fs from 'fs';
@@ -19,9 +21,6 @@ export const userImageUpload = async (
   try {
     const reqToken = req as IReqAccessToken;
     const { uid } = reqToken.payload;
-
-    console.log(req.files);
-    // console.log('>>>');
 
     let uploadedUserImageUrl;
     if (req.files) {
@@ -134,7 +133,6 @@ export const mainUserAddress = async (
       addressId,
     });
 
-    console.log(addressValidator);
     if (addressValidator?.main == 'TRUE')
       throw new Error('This Address Already Main Address');
 
@@ -190,6 +188,75 @@ export const deleteUserAddress = async (
     res.status(201).send({
       error: false,
       message: 'Delete Address Success',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAddressDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { addressId } = req.query;
+
+    const findAddressDetailResult = await findAddressDetailService(
+      Number(addressId),
+    );
+
+    return res.status(201).send({
+      error: false,
+      message: 'Get Address Detail',
+      data: findAddressDetailResult,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+    const {
+      recipients,
+      address,
+      province,
+      provinceId,
+      city,
+      cityId,
+      phoneNumber,
+      postalCode,
+      longitude,
+      latitude,
+    } = req.body;
+    const { addressId } = req.query;
+
+    await updateUserAddressService({
+      addressId: Number(addressId),
+      uid,
+      recipients,
+      address,
+      province,
+      provinceId,
+      city,
+      cityId,
+      phoneNumber,
+      postalCode,
+      longitude,
+      latitude,
+    });
+
+    res.status(201).send({
+      error: false,
+      message: 'Update Success',
       data: null,
     });
   } catch (error) {

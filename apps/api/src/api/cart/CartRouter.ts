@@ -5,8 +5,8 @@ import { tokenVerify } from '@/helpers/Token';
 const router = Router();
 
 // router.get('/count', cartController.getCartItem.bind(cartController))
-router.post('/', tokenVerify, addToCart)
-router.get('/', tokenVerify, getUserCart)
+router.post('/', tokenVerify, addToCart);
+router.get('/', tokenVerify, getUserCart);
 // router.delete('/', cartController.deleteCartItem.bind(cartController))
 // router.put('/', cartController.updateCartItem.bind(cartController))
 

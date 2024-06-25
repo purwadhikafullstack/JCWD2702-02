@@ -38,11 +38,6 @@ export default function NavbarDesktop(props: any) {
               <Link href={`/cart`}>
                 <MdShoppingCart size={20} />
               </Link>
-              {/* {cartCount > 0 && (
-                <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs px-2">
-                  {cartCount}
-                </span>
-              )} */}
             </div>
             <Link
               href={'/dashboard/user'}

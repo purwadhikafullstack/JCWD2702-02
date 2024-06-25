@@ -10,4 +10,8 @@ export const createUserAddressSchema = Yup.object().shape({
     .min(8, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required'),
+  province: Yup.string().required('Required'),
+  provinceId: Yup.string().required('Required'),
+  city: Yup.string().required('Required'),
+  cityId: Yup.string().required('Required'),
 })

@@ -3,7 +3,10 @@ import { userLoginByEmailService } from './LoginService';
 import { ComparePassword } from '@/helpers/HashingPassword';
 import { createToken } from '@/helpers/Token';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
-import { findUserByIdService } from '../cores/AuthService';
+import {
+  findUserByIdService,
+  findAdminByUidService,
+} from '../cores/AuthService';
 
 export const userLoginByEmail = async (
   req: Request,
@@ -15,7 +18,7 @@ export const userLoginByEmail = async (
 
     const findUserByEmailResult = await userLoginByEmailService({ email });
 
-    if (!findUserByEmailResult) {
+    if (!findUserByEmailResult || findUserByEmailResult.deletedAt) {
       throw new Error('User Not Found Please Register First!');
     }
 
@@ -62,22 +65,36 @@ export const keepLogin = async (
     const reqToken = req as IReqAccessToken;
     const { uid } = reqToken.payload;
 
-    // console.log(uid);
-
     const findUserByIdResult = await findUserByIdService({ uid });
+    const findAdminByIdResult = await findAdminByUidService(uid);
 
-    const accesstoken = await createToken({ uid });
+    if (!findUserByIdResult) {
+      const accesstoken = createToken({ uid: findAdminByIdResult?.uid! });
 
-    res.status(201).send({
-      error: false,
-      message: 'Keep Login',
-      data: {
-        accesstoken: accesstoken,
-        role: findUserByIdResult?.roleId,
-        email: findUserByIdResult?.email,
-        name: findUserByIdResult?.fullname,
-      },
-    });
+      return res.status(201).send({
+        error: false,
+        message: 'Keep Login Admin',
+        data: {
+          accesstoken: accesstoken,
+          role: findAdminByIdResult?.adminRole,
+          email: findAdminByIdResult?.email,
+          name: findAdminByIdResult?.fullname,
+          warehouse: findAdminByIdResult?.warehouseId,
+        },
+      });
+    } else if (!findAdminByIdResult) {
+      const accesstoken = await createToken({ uid });
+      return res.status(201).send({
+        error: false,
+        message: 'Keep Login User',
+        data: {
+          accesstoken: accesstoken,
+          role: findUserByIdResult?.roleId,
+          email: findUserByIdResult?.email,
+          name: findUserByIdResult?.fullname,
+        },
+      });
+    }
   } catch (error) {
     next(error);
   }

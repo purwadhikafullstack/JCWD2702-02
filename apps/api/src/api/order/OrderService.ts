@@ -12,7 +12,6 @@ export class OrderService {
     if (!nearestWarehouse) {
       throw new Error('No warehouse found near the provided address');
     }
-
     // const createdOrder = await prisma.order.create({
     //   data: {
     //     userId: order.userId,

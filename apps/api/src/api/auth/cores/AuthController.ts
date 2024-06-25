@@ -230,6 +230,8 @@ export const updateEmail = async (
 
     if (email != confirmEmail) throw new Error("Email Doesn't Match");
 
+    const findUserByIdResult = await findUserByIdService({ uid });
+
     const findEmailVerificationResult =
       await findEmailVerificationHistoryResult({ uid });
 
@@ -244,6 +246,16 @@ export const updateEmail = async (
       throw new Error('Please Request New Link');
     }
 
+    const accesstoken = await createVerificationToken({ uid });
+
+    await sendMail({
+      accesstoken: accesstoken,
+      username: email,
+      email: email,
+      link: 'confirm-email',
+      subject: 'Change Email Confirmation',
+    });
+
     await updateUserEmailService({
       uid,
       email: email,
@@ -251,10 +263,24 @@ export const updateEmail = async (
 
     res.status(201).send({
       error: false,
-      message: 'Update Email Success',
+      message: 'Link Change Email Has Been Sent To Your Email',
       data: null,
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const changeEmailConfirmation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+  } catch (error) {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+    const { email, confirmEmail } = req.body;
     next(error);
   }
 };
@@ -341,7 +367,6 @@ export const forgotPassword = async (
     const expireInOneHour = await defaultExpireTime(1);
 
     const findUserByEmailResult = await findUserByEmailService({ email });
-    console.log('1');
     const findUserResetPasswordInfoResult =
       await findUserResetPasswordInfoService({
         uid: findUserByEmailResult?.uid!,

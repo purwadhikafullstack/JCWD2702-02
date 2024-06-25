@@ -16,6 +16,7 @@ export const useKeepLogin = () => {
         firstname: nameResult[0],
         role: response.role,
         email: response.email,
+        warehouse: response.warehouse,
       })
     },
     onError: async (err: any) => {

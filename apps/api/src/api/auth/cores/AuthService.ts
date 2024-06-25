@@ -221,6 +221,7 @@ export const updateUserEmailService = async ({
       },
       data: {
         email: email,
+        verify: 'UNVERIFY',
       },
     });
 
@@ -273,6 +274,14 @@ export const findUserByEmailService = async ({ email }: { email: string }) => {
   return await prisma.user.findUnique({
     where: {
       email: email,
+    },
+  });
+};
+
+export const findAdminByUidService = async (uid: string) => {
+  return await prisma.admin.findUnique({
+    where: {
+      uid: uid,
     },
   });
 };

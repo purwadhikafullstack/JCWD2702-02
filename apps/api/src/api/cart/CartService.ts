@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/PrismaClient";
-import { ICartItems } from "./CartTypes";
+import { prisma } from '@/lib/PrismaClient';
+import { ICartItems } from './CartTypes';
 
 // export class CartService {
 //     async addToCart(userId: string, productId: number, qty: number): Promise<ICartItems | any> {
@@ -104,38 +104,47 @@ import { ICartItems } from "./CartTypes";
 //     }
 // }
 
-export const addToCartQuery = async (userId: string, productId: number, qty: number) => {
-    return await prisma.$transaction(async (tx) => {
-        const findCart = await tx.carts.findFirst({
-            where: {
-                userId: userId,
-                productId: productId
-            }
-        })
-        if (!findCart) {
-            return await tx.carts.create({
-                data: {
-                    userId: userId,
-                    productId: productId,
-                    qty: qty
-                }
-            })
-        }
-        return await tx.carts.update({
-            where: {
-                id: findCart?.id
-            },
-            data: {
-                qty: findCart?.qty! + qty
-            }
-        })
-    })
-}
+export const addToCartQuery = async (
+  userId: string,
+  productId: number,
+  qty: number,
+) => {
+  return await prisma.$transaction(async (tx) => {
+    const findCart = await tx.carts.findFirst({
+      where: {
+        userId: userId,
+        productId: productId,
+      },
+    });
+
+    if (!findCart) {
+      await tx.carts.create({
+        data: {
+          userId: userId,
+          productId: productId,
+          qty: qty,
+        },
+      });
+    } else if (findCart) {
+      await tx.carts.update({
+        where: {
+          id: findCart?.id,
+        },
+        data: {
+          qty: findCart.qty + qty,
+        },
+      });
+    }
+  });
+};
 
 export const getUserCartQuery = async (userId: string) => {
-    return await prisma.carts.findMany({
-        where: {
-            userId: userId
-        }
-    })
-}
+  return await prisma.carts.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      Product: true,
+    },
+  });
+};

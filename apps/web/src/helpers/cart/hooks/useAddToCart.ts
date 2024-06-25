@@ -23,22 +23,22 @@ export const useAddToCart = () => {
         theme: 'colored',
         transition: Slide,
       })
-    //   navigate.push('/')
-    console.log(res)
+      //   navigate.push('/')
+      console.log(res)
     },
     onError: (err: any) => {
-    //   toast.error(err.response.data.message, {
-    //     position: 'top-right',
-    //     autoClose: 2000,
-    //     hideProgressBar: true,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: 'colored',
-    //     transition: Slide,
-    //   })
-    console.log(err)
+      toast.error(err.response.data.message, {
+        position: 'top-right',
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Slide,
+      })
+      console.log(err)
     },
   })
 
