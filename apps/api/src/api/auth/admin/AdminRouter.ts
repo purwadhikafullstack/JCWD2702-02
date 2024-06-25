@@ -13,7 +13,14 @@ import {
   getWarehouseDetail,
   updateWarehouseDetail,
   createAdmin,
+  deleteAdmin,
+  deleteUser,
 } from './AdminController';
+import {
+  deleteAdminValidator,
+  deleteUserValidator,
+} from './../../../middlewares/validator/Admin';
+import { handleErrorExpressValidator } from './../../../middlewares/validator/HandleErrorExpressValidator';
 import { tokenVerify } from '@/helpers/Token';
 import { roleVerifySuperAdmin } from '@/middlewares/RoleVerify';
 
@@ -57,5 +64,21 @@ router.post(
   updateWarehouseDetail,
 );
 router.post('/warehouse-admin', tokenVerify, roleVerifySuperAdmin, createAdmin);
+router.post(
+  '/erase-admin',
+  tokenVerify,
+  roleVerifySuperAdmin,
+  deleteAdminValidator,
+  handleErrorExpressValidator,
+  deleteAdmin,
+);
+router.post(
+  '/erase-user',
+  tokenVerify,
+  roleVerifySuperAdmin,
+  deleteUserValidator,
+  handleErrorExpressValidator,
+  deleteUser,
+);
 
 export default router;

@@ -6,14 +6,21 @@ import { useFormik } from 'formik'
 import Loading from '@/components/cores/Loading'
 import { useState, useEffect } from 'react'
 import { useUpdateWarehouseAdmin } from '@/helpers/admin/hooks/useUpdateWarehouseAdmin'
+import { useDeleteAdmin } from '@/helpers/admin/hooks/useDeleteAdmin'
+import { useRouter } from 'next/navigation'
 
 export default function AdminDetail({
   params,
 }: {
   params: { adminDetail: string }
 }) {
+  const navigate = useRouter()
+
+  const { mutationDeleteAdmin, isSuccess } = useDeleteAdmin()
+
   const { dataWarehouseAdminDetail, warehouseAdminDetailLoading } =
     getWarehouseAdminDetail(params.adminDetail)
+
   const { dataWarehouse } = getWarehouse()
 
   const warehouseAdminData = dataWarehouseAdminDetail?.data?.data
@@ -53,6 +60,18 @@ export default function AdminDetail({
   const handleWarehouseChange = (event: any) => {
     formik.setFieldValue('warehouse', event.target.value)
   }
+
+  const handleDeleteAdmin = () => {
+    mutationDeleteAdmin({
+      userId: params.adminDetail,
+    })
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (isSuccess) navigate.push('/admin/manage-admin')
+    }, 1000)
+  })
 
   if (warehouseAdminDetailLoading) return <Loading></Loading>
 
@@ -126,8 +145,11 @@ export default function AdminDetail({
             </div>
           </form>
           <div className='flex justify-end'>
-            <button className='mt-4 rounded-md border border-red-300 px-4 py-2 text-red-600 transition-colors hover:bg-red-100'>
-              Erase Product
+            <button
+              onClick={handleDeleteAdmin}
+              className='mt-4 rounded-md border border-red-300 px-4 py-2 text-red-600 transition-colors hover:bg-red-100'
+            >
+              Erase Admin
             </button>
           </div>
         </div>

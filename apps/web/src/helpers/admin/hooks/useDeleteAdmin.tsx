@@ -1,16 +1,15 @@
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import { Slide } from 'react-toastify'
-import { useCreateAdminMutation } from '../api/useCreateAdminMutation'
+import { useDeleteAdminMutation } from '../api/useDeleteAdminMutation'
 
-export const useCreateAdmin = () => {
+export const useDeleteAdmin = () => {
   const {
-    mutate: mutationCreateAdmin,
+    mutate: mutationDeleteAdmin,
     isSuccess,
-    data: createAdminData,
-  } = useCreateAdminMutation({
+    data: deleteAdmin,
+  } = useDeleteAdminMutation({
     onSuccess: (res: any) => {
-      // console.log(res)
       toast.success(res.data.message, {
         position: 'top-right',
         autoClose: 2000,
@@ -24,7 +23,6 @@ export const useCreateAdmin = () => {
       })
     },
     onError: (err: any) => {
-      // console.log(err)
       toast.error(err.response.data.message, {
         position: 'top-right',
         autoClose: 1500,
@@ -40,8 +38,8 @@ export const useCreateAdmin = () => {
   })
 
   return {
-    mutationCreateAdmin,
+    mutationDeleteAdmin,
     isSuccess,
-    createAdminData,
+    deleteAdmin,
   }
 }

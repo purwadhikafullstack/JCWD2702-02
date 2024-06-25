@@ -6,12 +6,19 @@ import { useState, useEffect } from 'react'
 import { getUserDetail } from '@/helpers/admin/hooks/getUserDetail'
 import AddressBox from '@/components/cores/Dashboard/User/AddressBox'
 import { useUpdateUserData } from '@/helpers/admin/hooks/useUpdateUserData'
+import { useDeleteUser } from '@/helpers/admin/hooks/useDeleteUser'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
+import { Slide } from 'react-toastify'
 
 export default function UserDetail({
   params,
 }: {
   params: { adminDetail: string; userDetail: string }
 }) {
+  const navigate = useRouter()
+  const { mutationDeleteUser, isSuccess } = useDeleteUser()
+
   const { mutationUpdateUserData } = useUpdateUserData()
   const { dataUserDetail, userDetailLoading } = getUserDetail(params.userDetail)
 
@@ -50,6 +57,18 @@ export default function UserDetail({
   const handleVerifyChange = (event: any) => {
     formik.setFieldValue('verify', event.target.value)
   }
+
+  const handleDeleteUser = () => {
+    mutationDeleteUser({ userId: params.userDetail })
+  }
+
+  const notify = () => toast.success('Test Notification')
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (isSuccess) navigate.push('/admin/manage-user')
+    }, 1000)
+  }, [isSuccess])
 
   if (userDetailLoading) return <Loading></Loading>
 
@@ -143,8 +162,11 @@ export default function UserDetail({
             </div>
           </div>
           <div className='flex justify-end'>
-            <button className='mt-4 rounded-md border border-red-300 px-4 py-2 text-red-600 transition-colors hover:bg-red-100'>
-              Erase Product
+            <button
+              onClick={handleDeleteUser}
+              className='mt-4 rounded-md border border-red-300 px-4 py-2 text-red-600 transition-colors hover:bg-red-100'
+            >
+              Erase User
             </button>
           </div>
         </div>

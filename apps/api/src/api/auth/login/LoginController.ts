@@ -18,7 +18,7 @@ export const userLoginByEmail = async (
 
     const findUserByEmailResult = await userLoginByEmailService({ email });
 
-    if (!findUserByEmailResult) {
+    if (!findUserByEmailResult || findUserByEmailResult.deletedAt) {
       throw new Error('User Not Found Please Register First!');
     }
 

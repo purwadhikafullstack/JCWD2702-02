@@ -15,6 +15,8 @@ import {
   getWarehouseDetailService,
   updateWarehouseDetailService,
   createAdminService,
+  deleteAdminService,
+  deleteUserService,
 } from './AdminService';
 import { HashingPassword } from '@/helpers/HashingPassword';
 import { findUserByEmailService } from '../cores/AuthService';
@@ -28,7 +30,9 @@ export const adminLogin = async (
     const { email, password } = req.body;
 
     const findAdminByEmailResult = await findAdminByEmailService(email);
-    if (!findAdminByEmailResult) throw new Error('User Not Found');
+
+    if (!findAdminByEmailResult || findAdminByEmailResult.deletedAt)
+      throw new Error('User Not Found');
 
     const comparePassword = await ComparePassword({
       passwordFromClient: password,
@@ -346,6 +350,46 @@ export const createAdmin = async (
     res.status(201).send({
       error: false,
       message: 'Create Admin Success',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.query;
+
+    await deleteAdminService(userId as string);
+
+    res.status(201).send({
+      error: false,
+      message: 'Delete Admin Success',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.query;
+
+    await deleteUserService(userId as string);
+
+    res.status(201).send({
+      error: false,
+      messsage: 'Delete User Success',
       data: null,
     });
   } catch (error) {

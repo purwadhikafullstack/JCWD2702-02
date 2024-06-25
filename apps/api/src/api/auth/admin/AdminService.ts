@@ -28,6 +28,7 @@ export const getWarehouseAdminService = async () => {
   return await prisma.admin.findMany({
     where: {
       adminRole: 2,
+      deletedAt: null,
     },
     include: {
       Warehouse: true,
@@ -89,7 +90,11 @@ export const getAllUserService = async () => {
     },
   });
 
-  const getAllUserResult = await prisma.user.findMany();
+  const getAllUserResult = await prisma.user.findMany({
+    where: {
+      deletedAt: null,
+    },
+  });
 
   return {
     getAllAdminResult,
@@ -215,6 +220,36 @@ export const createAdminService = async ({
       email: email,
       password: password,
       adminRole: 2,
+    },
+  });
+};
+
+export const deleteAdminService = async (uid: string) => {
+  await prisma.admin.update({
+    where: {
+      uid: uid,
+    },
+    data: {
+      deletedAt: new Date(),
+    },
+  });
+};
+
+export const deleteUserService = async (uid: string) => {
+  const findUser = await prisma.user.findUnique({
+    where: {
+      uid: uid,
+    },
+  });
+
+  if (!findUser) throw new Error('User not found');
+
+  await prisma.user.update({
+    where: {
+      uid: uid,
+    },
+    data: {
+      deletedAt: new Date(),
     },
   });
 };

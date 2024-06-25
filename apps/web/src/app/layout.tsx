@@ -31,7 +31,6 @@ export default function RootLayout({
         <UserContext.Provider value={{ userData, setUserData }}>
           <html lang='en'>
             <body className={inter.className}>
-              <ToastContainer />
               <TanstackProvider>
                 <Navbar />
                 <div className='flex min-h-screen'>
@@ -40,6 +39,7 @@ export default function RootLayout({
                 </div>
                 <Footer />
               </TanstackProvider>
+              <ToastContainer />
             </body>
           </html>
         </UserContext.Provider>
