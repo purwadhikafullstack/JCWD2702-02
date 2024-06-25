@@ -14,8 +14,6 @@ import ActiveImageModal from "@/components/shop/ActiveImageModal";
 
 export default function ProductDetail({ params }: { params: { productDetail: string } }) {
     const { productDetail } = useGetProductDetail(params.productDetail);
-    console.log(params)
-    console.log(productDetail)
     const [activeImg, setActiveImg] = useState<string | null>(null);
 
     const [quantity, setQuantity] = useState(1);
@@ -32,11 +30,6 @@ export default function ProductDetail({ params }: { params: { productDetail: str
             setQuantity(quantity - 1);
         }
     };
-
-    // const handleAddToCart = (productId: number) => {
-    //     console.log(productId)
-    //     addToCart(productId, quantity);
-    // };
 
     useEffect(() => {
         if (productDetail?.productImages) {
@@ -110,7 +103,7 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                                 Stock left: {productDetail?.totalStockAllWarehouse}
                             </div>
                             <button
-                              onClick={() => mutationAddToCart({productId: Number(params.productDetail), qty: Number(quantity)})}
+                                onClick={() => mutationAddToCart({ productId: Number(params.productDetail), qty: Number(quantity) })}
                                 className={`border-eggplant hover:border-hover_eggplant hover:bg-hover_eggplant bg-eggplant lg:text-[16px] text-[14px] flex h-[30px] lg:h-[40px] w-[200px] items-center justify-center gap-5 rounded-md border-2 font-medium text-white ${productDetail?.totalStockAllWarehouse <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 disabled={productDetail?.totalStockAllWarehouse <= 0}>
                                 <FaShoppingCart /> Add to Cart

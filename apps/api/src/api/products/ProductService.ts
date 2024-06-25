@@ -3,17 +3,8 @@ import { prisma } from './../../lib/PrismaClient';
 import { IProduct } from './ProductsTypes';
 
 // Query for get all products
-export const getProductsQuery = async (
-    sortBy?: string,
-    minPrice?: number,
-    maxPrice?: number,
-    categoryId?: number,
-    search?: string,
-) => {
-    const sortCriteriaMap: Record<
-        string,
-        Prisma.ProductOrderByWithRelationInput
-    > = {
+export const getProductsQuery = async (sortBy?: string, minPrice?: number, maxPrice?: number, categoryId?: number, search?: string, page?: number,) => {
+    const sortCriteriaMap: Record<string, Prisma.ProductOrderByWithRelationInput> = {
         name: { name: 'asc' },
         newest: { createdAt: 'desc' },
         price_low_high: { price: 'asc' },
@@ -41,9 +32,15 @@ export const getProductsQuery = async (
         };
     }
 
+    const itemsPerPage = 8;
+    let skip = (Number(page) - 1) * itemsPerPage;
+    let take = itemsPerPage;
+
     const products = await prisma.product.findMany({
         orderBy: sortCriteria,
         where: { ...whereCriteria },
+        skip: skip,
+        take: take,
     });
     const productsWithOneImage = [];
     for (const product of products) {

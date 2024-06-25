@@ -6,22 +6,22 @@ import { useGetAllProducts } from "../../helpers/shop/hooks/useGetAllProducts";
 import SearchBox from "@/components/shop/SearchBox";
 import Link from "next/link";
 
-export default function ShopPage({ searchParams }: { searchParams: { search: string, sort: string, minPrice: string, maxPrice: string, categoryId: string } }) {
-    const { search = '', sort = '', minPrice = '', maxPrice = '', categoryId = '' } = searchParams;
-    const query = { search, sort, minPrice, maxPrice, categoryId };
+export default function ShopPage({ searchParams }: { searchParams: { search: string, sort: string, minPrice: string, maxPrice: string, categoryId: string, page: string } }) {
+    const { search = '', sort = '', minPrice = '', maxPrice = '', categoryId = '', page = '1' } = searchParams;
+    const query = { search, sort, minPrice, maxPrice, categoryId, page };
 
-    const { dataProducts, refetchDataProducts, isLoading } = useGetAllProducts(query);
+    const { dataProducts, refetchDataProducts, isLoading, totalProducts } = useGetAllProducts(query);
 
     useEffect(() => {
         setTimeout(() => {
             refetchDataProducts();
         }, 10);
-    }, [search, sort, minPrice, maxPrice, categoryId]);
+    }, [search, sort, minPrice, maxPrice, categoryId, page]);
 
     return (
-        <div className="bg-[#ffffff] mt-[3%] mb-[5%] min-h-screen w-auto">
+        <div className="bg-[#ffffff] mt-[0%] mb-[5%] min-h-screen w-auto">
             <div className="flex lg:flex-nowrap flex-wrap my-[1%] mx-[50px] gap-3 justify-center w-auto">
-                <SearchBox showAdditionalFilters={true} applyFilters={() => { }} initialSearchParams={searchParams} refetchDataProducts={refetchDataProducts} />
+                <SearchBox showAdditionalFilters={true} applyFilters={() => { }} initialSearchParams={searchParams} refetchDataProducts={refetchDataProducts} totalProducts={totalProducts} />
             </div>
             {isLoading ? (
                 <div className="flex flex-col items-center justify-start mt-[80px] min-h-screen">

@@ -1,19 +1,21 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { useGetAllProductCategories } from '@/helpers/shop/hooks/useGetAllProductCategories';
 import { IDataProductCategories } from './types';
 import ProductCategoryCard from './ProductCategoryCard';
+import { Pagination } from 'antd';
 
 interface Props {
     applyFilters: (minPrice: number, maxPrice: number) => void;
     showAdditionalFilters?: boolean;
     initialSearchParams: any;
     refetchDataProducts: any;
+    totalProducts?: number;
 }
 
-export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters = true, initialSearchParams, refetchDataProducts }: Props) {
+export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters = true, initialSearchParams, refetchDataProducts, totalProducts }: Props) {
     const router = useRouter();
     const { dataProductCategories } = useGetAllProductCategories();
     const [search, setSearch] = useState<string>(initialSearchParams?.search || '');
@@ -21,39 +23,41 @@ export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters
     const [minPrice, setMinPrice] = useState<string>(initialSearchParams?.minPrice || '');
     const [maxPrice, setMaxPrice] = useState<string>(initialSearchParams?.maxPrice || '');
     const [categoryId, setCategoryId] = useState<string>(initialSearchParams?.categoryId || '');
+    const [page, setPage] = useState<number>(1);
     const [error, setError] = useState<string>('');
 
-    const updateURL = async (search: string, sort: string, minPrice: string, maxPrice: string, categoryId: string): Promise<void> => {
+    const updateURL = async (search: string, sort: string, minPrice: string, maxPrice: string, categoryId: string, page: number): Promise<void> => {
         const params = new URLSearchParams();
         if (search) params.set('search', search);
         if (sort) params.set('sort', sort);
         if (minPrice) params.set('minPrice', minPrice);
         if (maxPrice) params.set('maxPrice', maxPrice);
         if (categoryId) params.set('categoryId', categoryId);
+        if (page) params.set('page', page.toString());
         const queryString = params.toString();
         router.push(`/shop?${queryString}`);
     };
 
     const handleSearch = async (search: string) => {
         setSearch(search);
-        await updateURL(search, sort, minPrice, maxPrice, categoryId);
+        await updateURL(search, sort, minPrice, maxPrice, categoryId, page);
         refetchDataProducts
     };
 
     const handleSort = async (sort: string) => {
         setSort(sort);
-        await updateURL(search, sort, minPrice, maxPrice, categoryId);
+        await updateURL(search, sort, minPrice, maxPrice, categoryId, page);
         refetchDataProducts()
     };
 
     const handleCategory = async (categoryIdMap: string) => {
         if (categoryIdMap == categoryId) {
             setCategoryId('');
-            await updateURL(search, sort, minPrice, maxPrice, '');
+            await updateURL(search, sort, minPrice, maxPrice, '', page);
             refetchDataProducts()
         } else {
             setCategoryId(categoryIdMap);
-            await updateURL(search, sort, minPrice, maxPrice, categoryIdMap);
+            await updateURL(search, sort, minPrice, maxPrice, categoryIdMap, page);
             refetchDataProducts()
         }
     };
@@ -65,7 +69,7 @@ export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters
         if ((!isNaN(minPriceValue) && minPriceValue >= 0) || (!isNaN(maxPriceValue) && maxPriceValue >= 0)) {
             applyFilters(minPriceValue, maxPriceValue);
         }
-        await updateURL(search, sort, minPrice || '', maxPrice || '', categoryId);
+        await updateURL(search, sort, minPrice || '', maxPrice || '', categoryId, page);
         refetchDataProducts();
     };
 
@@ -87,6 +91,12 @@ export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters
         } else {
             setError('Please enter valid numeric values for prices.');
         }
+    };
+
+    const handlePageChange = async (page: number) => {
+        setPage(page);
+        await updateURL(search, sort, minPrice, maxPrice, categoryId, page);
+        refetchDataProducts();
     };
 
     return (
@@ -137,6 +147,11 @@ export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters
                             </button>
                         ))}
                     </div>
+                </div>
+            )}
+            {showAdditionalFilters && (
+                <div className='flex items-end justify-end w-[75%] mt-[40px]'>
+                    <Pagination className='flex items-end justify-end' simple defaultCurrent={page} total={totalProducts} onChange={handlePageChange} />
                 </div>
             )}
         </div>

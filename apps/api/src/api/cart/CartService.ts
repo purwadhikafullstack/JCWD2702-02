@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/PrismaClient";
 import { ICartItems } from "./CartTypes";
-import { Cart_Items } from "@prisma/client";
 
 // export class CartService {
 //     async addToCart(userId: string, productId: number, qty: number): Promise<ICartItems | any> {
@@ -125,7 +124,7 @@ export const addToCartQuery = async (userId: string, productId: number, qty: num
         return await tx.carts.update({
             where: {
                 id: findCart?.id
-            }, 
+            },
             data: {
                 qty: findCart?.qty! + qty
             }
@@ -133,7 +132,7 @@ export const addToCartQuery = async (userId: string, productId: number, qty: num
     })
 }
 
-export const getUserCartQuery = async(userId: string) => {
+export const getUserCartQuery = async (userId: string) => {
     return await prisma.carts.findMany({
         where: {
             userId: userId
