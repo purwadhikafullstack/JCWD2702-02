@@ -19,3 +19,22 @@ export interface IReqUpdateUserService {
   email: string;
   verify: UserVerify;
 }
+
+export interface IReqCreateWarehouseService {
+  id?: number;
+  name: string;
+  province: string;
+  provinceId: string;
+  city: string;
+  cityId: string;
+  detail: string;
+  postalCode: string;
+  longitude: string;
+  latitude: string;
+}
+
+export interface IReqCreateAdminService {
+  fullname: string;
+  email: string;
+  password: string;
+}

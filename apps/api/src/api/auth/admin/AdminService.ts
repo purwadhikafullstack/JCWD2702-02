@@ -3,6 +3,8 @@ import {
   IReqAssignWarehouseAdminService,
   IReqCreateUserService,
   IReqUpdateUserService,
+  IReqCreateWarehouseService,
+  IReqCreateAdminService,
 } from './AdminType';
 import { UserVerify } from '@prisma/client';
 
@@ -134,6 +136,85 @@ export const updateUserService = async ({
       fullname: fullname,
       email: email,
       verify: verify as UserVerify,
+    },
+  });
+};
+
+export const createWarehouseService = async ({
+  name,
+  province,
+  provinceId,
+  city,
+  cityId,
+  detail,
+  postalCode,
+  longitude,
+  latitude,
+}: IReqCreateWarehouseService) => {
+  await prisma.warehouse.create({
+    data: {
+      name,
+      province,
+      provinceId: Number(provinceId),
+      city,
+      cityId: Number(cityId),
+      detail,
+      postalCode,
+      longitude: Number(longitude),
+      latitude: Number(latitude),
+    },
+  });
+};
+
+export const getWarehouseDetailService = async (id: number) => {
+  return await prisma.warehouse.findUnique({
+    where: {
+      id: id,
+    },
+  });
+};
+
+export const updateWarehouseDetailService = async ({
+  id,
+  name,
+  province,
+  provinceId,
+  city,
+  cityId,
+  detail,
+  postalCode,
+  longitude,
+  latitude,
+}: IReqCreateWarehouseService) => {
+  await prisma.warehouse.update({
+    where: {
+      id: id,
+    },
+    data: {
+      name,
+      province,
+      provinceId: Number(provinceId),
+      city,
+      cityId: Number(cityId),
+      detail,
+      postalCode,
+      longitude: Number(longitude),
+      latitude: Number(latitude),
+    },
+  });
+};
+
+export const createAdminService = async ({
+  fullname,
+  email,
+  password,
+}: IReqCreateAdminService) => {
+  await prisma.admin.create({
+    data: {
+      fullname: fullname,
+      email: email,
+      password: password,
+      adminRole: 2,
     },
   });
 };

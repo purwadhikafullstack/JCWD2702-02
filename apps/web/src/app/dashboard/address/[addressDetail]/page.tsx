@@ -74,8 +74,6 @@ export default function AddressDetail({
         longitude: cityLocation?.lng.toString() as any,
         latitude: cityLocation?.lat.toString() as any,
       })
-      //   alert('test')
-      //   location.reload()
     },
   })
 

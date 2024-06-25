@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { getAllUser } from '@/helpers/admin/hooks/getAllUser'
 import { FiPlus } from 'react-icons/fi'
-import { useCreateUser } from '@/helpers/admin/hooks/useCreateUserAddress'
+import { useCreateUser } from '@/helpers/admin/hooks/useCreateUser'
 import { useFormik } from 'formik'
 import { createUserSchema } from '@/helpers/admin/schema/createUserSchema'
 import { useEffect } from 'react'
@@ -96,101 +96,6 @@ export default function ManageUser() {
                 />
                 <p className='text-red-500'>{formik.errors.password}</p>
               </label>
-              {/* <label
-              className={`input input-bordered flex w-full items-center gap-2 ${formik.errors.recipients ? 'border-red-500' : ''}`}
-            >
-              <input
-                type='text'
-                className='grow'
-                placeholder='Recipients'
-                name='recipients'
-                onChange={formik.handleChange}
-                value={formik.values.recipients}
-              />
-              <p className='text-red-500'>{formik.errors.recipients}</p>
-            </label>
-            <label
-              className={`input input-bordered flex w-full items-center gap-2 ${formik.errors.phoneNumber ? 'border-red-500' : ''}`}
-            >
-              <input
-                type='text'
-                className='grow'
-                placeholder='Phone Number'
-                name='phoneNumber'
-                onChange={formik.handleChange}
-                value={formik.values.phoneNumber}
-              />
-              <p className='text-red-500'>{formik.errors.phoneNumber}</p>
-            </label>
-            <div className='w-full'>
-              <select
-                onChange={handleProvinceChange}
-                defaultValue={'DEFAULT'}
-                className={`select select-bordered w-full ${formik.errors.province ? 'border-red-500' : ''}`}
-              >
-                <option value={'DEFAULT'} disabled>
-                  Provinsi
-                </option>
-                {provinceData?.map((x: any, i: any) => {
-                  return (
-                    <option
-                      onClick={() => {
-                        console.log('>>')
-                      }}
-                      key={i}
-                      value={[x.province_id, x.province]}
-                    >
-                      {x.province}
-                    </option>
-                  )
-                })}
-              </select>
-              <p className='mt-3 flex w-full justify-end text-red-500'>
-                {formik.errors.province}
-              </p>
-            </div>
-            <div className='w-full'>
-              <select
-                onChange={handleCityChange}
-                defaultValue={'DEFAULT'}
-                className={`select select-bordered w-full ${formik.errors.city ? 'border-red-500' : ''}`}
-                disabled={!formik.values.provinceId || citiesLoading}
-              >
-                <option value={'DEFAULT'} disabled>
-                  Kota
-                </option>
-                {citiesData?.map((x: any, i: any) => {
-                  return (
-                    <option key={i} value={[x.city_id, x.city_name]}>
-                      {`${x.city_name} ${x.type}`}
-                    </option>
-                  )
-                })}
-              </select>
-              <p className='mt-3 flex w-full justify-end text-red-500'>
-                {formik.errors.city}
-              </p>
-            </div>
-            <label
-              className={`input input-bordered flex w-full items-center gap-2 ${formik.errors.address ? 'border-red-500' : ''}`}
-            >
-              <input
-                type='text'
-                className='grow'
-                placeholder='Address'
-                name='address'
-                onChange={formik.handleChange}
-                value={formik.values.address}
-              />
-              <p className='text-red-500'>{formik.errors.address}</p>
-            </label>
-            <button
-              type='submit'
-              className='rounded-m bg-azureBlue btn flex w-full justify-center bg-eggplant text-white hover:bg-hover_eggplant'
-              disabled={isLoading}
-            >
-              Add Address
-            </button> */}
               <button
                 type='submit'
                 className='rounded-m bg-azureBlue btn flex w-full justify-center bg-eggplant text-white hover:bg-hover_eggplant'

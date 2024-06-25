@@ -11,6 +11,10 @@ import {
   getUserDetailService,
   createUserService,
   updateUserService,
+  createWarehouseService,
+  getWarehouseDetailService,
+  updateWarehouseDetailService,
+  createAdminService,
 } from './AdminService';
 import { HashingPassword } from '@/helpers/HashingPassword';
 import { findUserByEmailService } from '../cores/AuthService';
@@ -209,6 +213,139 @@ export const updateUserData = async (
     return res.status(201).send({
       error: false,
       message: 'Update Success',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createWarehouse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const {
+      name,
+      province,
+      provinceId,
+      city,
+      cityId,
+      detail,
+      postalCode,
+      longitude,
+      latitude,
+    } = req.body;
+
+    await createWarehouseService({
+      name,
+      province,
+      provinceId,
+      city,
+      cityId,
+      detail,
+      postalCode,
+      longitude,
+      latitude,
+    });
+
+    res.status(201).send({
+      error: false,
+      message: 'Create Warehouse Success',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getWarehouseDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.query;
+
+    const getWarehouseDetailResult = await getWarehouseDetailService(
+      Number(id),
+    );
+
+    res.status(201).send({
+      error: false,
+      message: 'Get Warehouse Detail Service',
+      data: getWarehouseDetailResult,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateWarehouseDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.query;
+    const {
+      name,
+      province,
+      provinceId,
+      city,
+      cityId,
+      detail,
+      postalCode,
+      longitude,
+      latitude,
+    } = req.body;
+
+    await updateWarehouseDetailService({
+      id: Number(id),
+      name,
+      province,
+      provinceId,
+      city,
+      cityId,
+      detail,
+      postalCode,
+      longitude,
+      latitude,
+    });
+    res.status(201).send({
+      error: false,
+      message: 'Update Success',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { fullname, email, password, warehouseId } = req.body;
+
+    const HashedPassword = await HashingPassword({ password: password });
+
+    const findAdminByEmailResult = await findAdminByEmailService(email);
+
+    if (findAdminByEmailResult) throw new Error('Email Has Been Used');
+
+    await createAdminService({
+      fullname,
+      email,
+      password: HashedPassword,
+    });
+
+    res.status(201).send({
+      error: false,
+      message: 'Create Admin Success',
       data: null,
     });
   } catch (error) {

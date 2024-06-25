@@ -304,7 +304,9 @@ model Warehouse {
   id         Int    @id @default(autoincrement())
   name       String
   province   String
+  provinceId Int?
   city       String
+  cityId     Int?
   detail     String
   postalCode String
   longitude  Float

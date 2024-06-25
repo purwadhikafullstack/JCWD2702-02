@@ -9,6 +9,10 @@ import {
   getUserDetail,
   createUser,
   updateUserData,
+  createWarehouse,
+  getWarehouseDetail,
+  updateWarehouseDetail,
+  createAdmin,
 } from './AdminController';
 import { tokenVerify } from '@/helpers/Token';
 import { roleVerifySuperAdmin } from '@/middlewares/RoleVerify';
@@ -39,5 +43,19 @@ router.get('/all-user', tokenVerify, roleVerifySuperAdmin, getAllUser);
 router.get('/user-detail', tokenVerify, roleVerifySuperAdmin, getUserDetail);
 router.post('/user', tokenVerify, roleVerifySuperAdmin, createUser);
 router.post('/update-user', tokenVerify, roleVerifySuperAdmin, updateUserData);
+router.post('/warehouse', tokenVerify, roleVerifySuperAdmin, createWarehouse);
+router.get(
+  '/warehouse-detail',
+  tokenVerify,
+  roleVerifySuperAdmin,
+  getWarehouseDetail,
+);
+router.post(
+  '/warehouse-detail',
+  tokenVerify,
+  roleVerifySuperAdmin,
+  updateWarehouseDetail,
+);
+router.post('/warehouse-admin', tokenVerify, roleVerifySuperAdmin, createAdmin);
 
 export default router;
