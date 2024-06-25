@@ -27,6 +27,7 @@ model User {
   deletedAt DateTime?
 
   Orders                          Order[]
+  Carts                           Carts[]
   User_Reset_Password             User_Reset_Password[]
   User_Email_Verification         User_Email_Verification[]
   User_Reset_Password_History     User_Reset_Password_History[]
@@ -87,6 +88,7 @@ model Address {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  Order     Order[]
 
   @@map("user_address")
 }
@@ -183,6 +185,7 @@ model Product {
   deletedAt DateTime?
 
   OrderItems    OrderItem[]
+  Carts         Carts[]
   ProductImages Product_Images[]
   Categories    Category?        @relation(fields: [categoryId], references: [id])
   stockHistory  stockHistory[]
@@ -222,12 +225,14 @@ model Carts {
 }
 
 model Order {
-  id          Int    @id @default(autoincrement())
-  user        User   @relation(fields: [userId], references: [uid])
-  userId      String
-  address     String
-  warehouseId Int
-  status      String
+  id               Int    @id @default(autoincrement())
+  user             User   @relation(fields: [userId], references: [uid])
+  userId           String
+  status           String
+  addressId        Int
+  totalOrderAmount Int    @default(0)
+
+  address Address @relation(fields: [addressId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -238,12 +243,15 @@ model Order {
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
-  order     Order   @relation(fields: [orderId], references: [id])
-  orderId   Int
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int
-  quantity  Int
+  id           Int      @id @default(autoincrement())
+  order        Order    @relation(fields: [orderId], references: [id])
+  orderId      Int
+  product      Product  @relation(fields: [productId], references: [id])
+  productId    Int
+  quantity     Int
+  currentPrice Int      @default(0)
+  totalAmount  Int      @default(0)
+  createdAt    DateTime @default(now())
 }
 
 model Payment {

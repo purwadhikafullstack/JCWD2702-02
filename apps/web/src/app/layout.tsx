@@ -31,15 +31,17 @@ export default function RootLayout({
         <UserContext.Provider value={{ userData, setUserData }}>
           <html lang='en'>
             <body className={inter.className}>
+              <ToastContainer />
               <TanstackProvider>
                 <Navbar />
-                <div className='flex min-h-screen'>
+                <div className="flex min-h-screen">
                   <AdminSidebar />
-                  <main className='flex-1 p-4'>{children}</main>
+                  <main className="flex-1 p-4">
+                    {children}
+                  </main>
                 </div>
                 <Footer />
               </TanstackProvider>
-              <ToastContainer />
             </body>
           </html>
         </UserContext.Provider>

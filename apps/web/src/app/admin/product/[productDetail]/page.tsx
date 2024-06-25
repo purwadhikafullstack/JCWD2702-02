@@ -36,7 +36,6 @@ export default function ProductDetail({ params }: { params: { productDetail: str
             if (files.length > 1) throw { message: `You cannot select more than 1 image` }
 
             formData.append('producturl', files[0])
-            console.log(files[0])
             const updatedProductImage = mutationUpdateProductImage({
                 data: formData,
                 id: String(imageId)

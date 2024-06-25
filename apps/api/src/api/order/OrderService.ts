@@ -12,26 +12,24 @@ export class OrderService {
     if (!nearestWarehouse) {
       throw new Error('No warehouse found near the provided address');
     }
+    // const createdOrder = await prisma.order.create({
+    //   data: {
+    //     userId: order.userId,
+    //     address: order.address,
+    //     status: 'pending',
+    //     items: {
+    //       create: order.items.map((item) => ({
+    //         productId: item.productId,
+    //         quantity: item.qty,
+    //       })),
+    //     },
+    //   },
+    //   include: {
+    //     items: true,
+    //   },
+    // });
 
-    const createdOrder = await prisma.order.create({
-      data: {
-        userId: order.userId,
-        address: order.address,
-        warehouseId: nearestWarehouse.id,
-        status: 'pending',
-        items: {
-          create: order.items.map((item) => ({
-            productId: item.productId,
-            quantity: item.qty,
-          })),
-        },
-      },
-      include: {
-        items: true,
-      },
-    });
-
-    return createdOrder;
+    // return createdOrder;
   }
 
   // async checkStock(items: OrderItem[]): Promise<boolean> {
@@ -85,9 +83,9 @@ export class OrderService {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRad(loc1.latitude)) *
-        Math.cos(toRad(loc2.latitude)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(toRad(loc2.latitude)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }

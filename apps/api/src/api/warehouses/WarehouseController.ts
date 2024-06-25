@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { getWarehousesQuery, getStockMutationTypeQuery, getStockRequestByWarehouseIdQuery, getStockHistoryByProductIdAndWarehouseIdQuery, getWarehouseByIdQuery, getProductsPerWarehouseQuery } from './WarehouseService';
+import { getWarehousesQuery, getOutgoingStockRequestByWarehouseIdQuery, getStockMutationTypeQuery, getStockRequestByWarehouseIdQuery, getStockHistoryByProductIdAndWarehouseIdQuery, getWarehouseByIdQuery, getProductsPerWarehouseQuery } from './WarehouseService';
+import { prisma } from '@/lib/PrismaClient';
 
 // Controller for get all warehouses
 export const getWarehouses = async (req: Request, res: Response, next: NextFunction) => {
@@ -34,9 +35,13 @@ export const getStockMutationType = async (req: Request, res: Response, next: Ne
 // Controller for get all products (stock per warehouse)
 export const getProductsPerWarehouse = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { warehouseId } = req.query
-        const productsWithStocksPerWarehouse = await getProductsPerWarehouseQuery(warehouseId as string | undefined);
+        const { warehouseId } = req.params
+        const { sort, search, page } = req.query
+        const pageNum = page ? parseInt(page as string) : 1;
+        const productsWithStocksPerWarehouse = await getProductsPerWarehouseQuery(warehouseId as string | undefined, sort as string, search as string, pageNum);
+        const productsCount = await prisma.product.count();
         res.status(200).send({
+            count: productsCount,
             error: false,
             message: 'Get Products with stocks per warehouse',
             data: productsWithStocksPerWarehouse
@@ -88,6 +93,21 @@ export const getStockRequestByWarehouseId = async (req: Request, res: Response, 
             error: false,
             message: 'Get Stock Request',
             data: stockRequest
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// Controller for get outgoing stock request by warehouseId
+export const getOutgoingStockRequestByWarehouseId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { warehouseId } = req.params
+        const outgoingStockRequest = await getOutgoingStockRequestByWarehouseIdQuery(warehouseId);
+        res.status(200).send({
+            error: false,
+            message: 'Get Stock Request',
+            data: outgoingStockRequest
         });
     } catch (error) {
         next(error);
