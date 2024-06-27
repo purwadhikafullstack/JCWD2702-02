@@ -13,6 +13,7 @@ import { useState } from 'react'
 import { SideBarContext } from '@/config/context/sideBarContext'
 import { CartContext } from '@/config/context/cartContext'
 import ProtectedRouteProvider from '@/provider/ProtectedRoute'
+import { ThemeProvider } from '@material-tailwind/react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -31,17 +32,19 @@ export default function RootLayout({
         <UserContext.Provider value={{ userData, setUserData }}>
           <html lang='en'>
             <body className={inter.className}>
-              <ToastContainer />
-              <TanstackProvider>
-                <Navbar />
-                <div className="flex min-h-screen">
-                  <AdminSidebar />
-                  <main className="flex-1 p-4">
-                    {children}
-                  </main>
-                </div>
-                <Footer />
-              </TanstackProvider>
+              <ProtectedRouteProvider>
+                <ThemeProvider>
+                  <ToastContainer />
+                  <TanstackProvider>
+                    <Navbar />
+                    <div className='flex min-h-screen'>
+                      <AdminSidebar />
+                      <main className='flex-1 p-4'>{children}</main>
+                    </div>
+                    <Footer />
+                  </TanstackProvider>
+                </ThemeProvider>
+              </ProtectedRouteProvider>
             </body>
           </html>
         </UserContext.Provider>

@@ -17,7 +17,6 @@ export const useAdminLogin = () => {
     data: adminLoginData,
   } = useAdminLoginMutation({
     onSuccess: (res: any) => {
-      console.log(res)
       const response = res.data.data
       setUserData({
         fullname: response.name,

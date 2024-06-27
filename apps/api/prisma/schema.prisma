@@ -33,7 +33,6 @@ model User {
   User_Reset_Password_History     User_Reset_Password_History[]
   User_Email_Verification_History User_Email_Verification_History[]
   Address                         Address[]
-  Carts                           Carts[]
 
   @@map("users")
 }
@@ -189,7 +188,6 @@ model Product {
   ProductImages Product_Images[]
   Categories    Category?        @relation(fields: [categoryId], references: [id])
   stockHistory  stockHistory[]
-  Carts         Carts[]
 
   @@map("products")
 }

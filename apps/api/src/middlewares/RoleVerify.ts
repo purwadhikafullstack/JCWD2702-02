@@ -1,35 +1,10 @@
 import { NextFunction, Response, Request } from 'express';
-// import { findEmployeeByUid } from '../services/AuthService';
 import { findAdminByIdService } from '@/api/auth/admin/AdminService';
+import { IReqAccessToken } from '@/helpers/Token/TokenType';
 
 interface IReqPayload extends Request {
   payload: any;
 }
-
-// export const roleVerifyHRAndManager = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   try {
-//     const reqPayload = req as IReqPayload;
-//     const payload = reqPayload.payload;
-
-//     const findEmployeeByUidResult = await findEmployeeByUid({
-//       uid: payload.uid,
-//     });
-//     if (!findEmployeeByUidResult) throw new Error('User Not Found!');
-
-//     const authorized = ['HR', 'Manager'];
-//     if (authorized.includes(findEmployeeByUidResult?.position.name)) {
-//       next();
-//     } else {
-//       throw new Error('Unauthorized User');
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 
 export const roleVerifySuperAdmin = async (
   req: Request,
@@ -49,6 +24,30 @@ export const roleVerifySuperAdmin = async (
     } else {
       throw new Error('Unauthorized User');
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const warehouseAdminVerify = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqPayload = req as IReqPayload;
+    const payload = reqPayload.payload;
+    const { id } = req.params;
+
+    const findAdminResult = await findAdminByIdService({ uid: payload.uid });
+
+    if (findAdminResult?.Role.id == 1) {
+      next();
+    } else if ((findAdminResult?.warehouseId as any) != id) {
+      throw new Error('Unauthorized User');
+    }
+
+    next()
   } catch (error) {
     next(error);
   }

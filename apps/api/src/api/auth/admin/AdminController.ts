@@ -333,7 +333,7 @@ export const createAdmin = async (
   next: NextFunction,
 ) => {
   try {
-    const { fullname, email, password, warehouseId } = req.body;
+    const { fullname, email, password } = req.body;
 
     const HashedPassword = await HashingPassword({ password: password });
 

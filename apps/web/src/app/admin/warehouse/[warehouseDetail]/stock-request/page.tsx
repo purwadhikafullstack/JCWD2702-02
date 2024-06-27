@@ -4,13 +4,20 @@ import { useGetWarehouseDetail } from "@/helpers/adminWarehouse/hooks/useGetWare
 import { useAcceptStockRequest } from "@/helpers/adminWarehouse/hooks/useAcceptStockRequest"
 import { useRejectStockRequest } from "@/helpers/adminWarehouse/hooks/useRejectStockRequest"
 import Link from "next/link"
+import { useRouter } from 'next/navigation'
 import { IoIosArrowBack } from "react-icons/io"
+import { useEffect } from 'react'
 
 export default function StockRequest({ params }: { params: { warehouseDetail: string } }) {
+    const navigate = useRouter()
     const { dataStockRequestPerWarehouse } = useGetStockRequestPerWarehouse(params.warehouseDetail)
-    const { dataWarehouseDetail } = useGetWarehouseDetail(params.warehouseDetail)
+    const { dataWarehouseDetail,isError } = useGetWarehouseDetail(params.warehouseDetail)
     const { mutationAcceptStockRequest } = useAcceptStockRequest(params.warehouseDetail)
     const { mutationRejectStockRequest } = useRejectStockRequest(params.warehouseDetail)
+
+    useEffect(()=>{
+        if(isError) navigate.back()
+    },[isError])
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);

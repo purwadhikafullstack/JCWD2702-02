@@ -21,6 +21,9 @@ export const findAdminByIdService = async ({ uid }: { uid: string }) => {
     where: {
       uid: uid,
     },
+    include: {
+      Role: true,
+    },
   });
 };
 
