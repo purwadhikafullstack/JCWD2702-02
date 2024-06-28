@@ -4,6 +4,9 @@ import {
   getUserCartQuery,
   getCartDetailService,
   addToCartDetailService,
+  deleteCartService,
+  setSelectedCartService,
+  selectAllService,
 } from './CartService';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
 
@@ -42,10 +45,20 @@ export const getUserCart = async (
 
     const getUserCartResult = await getUserCartQuery(uid);
 
+    let totalPrice = 0;
+    for (let i = 0; i < getUserCartResult.length; i++) {
+      if (getUserCartResult[i].selected == true) {
+        totalPrice += getUserCartResult[i].price;
+      }
+    }
+
     res.status(201).send({
       error: false,
       message: 'Get User Cart',
-      data: getUserCartResult,
+      data: {
+        userCart: getUserCartResult,
+        totalPrice,
+      },
     });
   } catch (error) {
     next(error);
@@ -102,6 +115,70 @@ export const addToCartDetail = async (
       message: 'OK',
       data: null,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { cartId } = req.query;
+
+    await deleteCartService(Number(cartId));
+
+    res.status(201).send({
+      error: false,
+      message: 'Delete Success',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const setSelectedCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { isChecked } = req.query;
+    const { productId } = req.body;
+
+    await setSelectedCartService(isChecked as any, productId);
+
+    res.status(201).send({
+      error: false,
+      message: 'OK',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const selectAll = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const reqToken = req as IReqAccessToken;
+  const { uid } = reqToken.payload;
+
+  const { isChecked } = req.query;
+
+  await selectAllService(isChecked, uid);
+
+  res.status(201).send({
+    error: false,
+    message: 'OK',
+    data: null,
+  });
+  try {
   } catch (error) {
     next(error);
   }

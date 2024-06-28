@@ -26,6 +26,7 @@ export const addToCartQuery = async (
           userId: userId,
           productId: productId,
           qty: qty,
+          price: qty * findProduct?.price!,
         },
       });
     } else if (findCart) {
@@ -86,7 +87,6 @@ export const addToCartDetailService = async ({
   productId,
   qty,
 }: IAddToCartDetailService) => {
-  console.log('??');
   await prisma.$transaction(async (tx) => {
     const findCart = await tx.carts.findFirst({
       where: {
@@ -97,13 +97,68 @@ export const addToCartDetailService = async ({
 
     if (!findCart) throw new Error('Cart not found');
 
+    const findProuct = await tx.product.findUnique({
+      where: {
+        id: productId,
+      },
+    });
+
+    if (!findProuct) throw new Error('Product not found');
+
     await tx.carts.update({
       where: {
         id: findCart.id,
       },
       data: {
         qty: qty,
+        price: qty * findProuct.price,
       },
     });
   });
+};
+
+export const deleteCartService = async (id: number) => {
+  await prisma.carts.delete({
+    where: {
+      id: id,
+    },
+  });
+};
+
+export const setSelectedCartService = async (
+  isChecked: any,
+  productId: number,
+) => {
+  if (isChecked == 'false') {
+    await prisma.carts.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        selected: false,
+      },
+    });
+  } else if (isChecked == 'true') {
+    await prisma.carts.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        selected: true,
+      },
+    });
+  }
+};
+
+export const selectAllService = async (isChecked: any, uid: string) => {
+  if (isChecked == 'true') {
+    await prisma.carts.updateMany({
+      where: {
+        userId: uid,
+      },
+      data: {
+        selected: true,
+      },
+    });
+  }
 };

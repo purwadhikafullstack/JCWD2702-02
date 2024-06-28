@@ -208,10 +208,12 @@ model Product_Images {
 }
 
 model Carts {
-  id        Int    @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   userId    String
   productId Int
   qty       Int
+  price     Int
+  selected  Boolean @default(true)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -221,6 +223,11 @@ model Carts {
   Product Product @relation(fields: [productId], references: [id])
 
   @@map("carts")
+}
+
+enum cartSelect {
+  TRUE
+  FALSE
 }
 
 model Order {
