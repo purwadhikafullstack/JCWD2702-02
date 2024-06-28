@@ -4,12 +4,12 @@ import { useRouter } from 'next/navigation'
 import { Slide, Zoom, Flip, Bounce } from 'react-toastify'
 
 export const useAddToCart = () => {
-  const navigate = useRouter()
   const {
     mutate: mutationAddToCart,
     data: dataRegister,
     isSuccess,
     isPending,
+    isError,
   } = useAddToCartMutation({
     onSuccess: (res: any) => {
       toast.success(res.data.message, {
@@ -23,8 +23,6 @@ export const useAddToCart = () => {
         theme: 'colored',
         transition: Slide,
       })
-      //   navigate.push('/')
-      console.log(res)
     },
     onError: (err: any) => {
       toast.error(err.response.data.message, {
@@ -38,7 +36,6 @@ export const useAddToCart = () => {
         theme: 'colored',
         transition: Slide,
       })
-      console.log(err)
     },
   })
 
@@ -46,5 +43,6 @@ export const useAddToCart = () => {
     mutationAddToCart,
     isSuccess,
     isPending,
+    isError,
   }
 }

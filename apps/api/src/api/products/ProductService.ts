@@ -60,6 +60,11 @@ export const getErasedProductsQuery = async () => {
     });
 };
 
+// Query for checking existing product
+export const getExistingProductQuery = async () => {
+    return await prisma.product.findMany();
+};
+
 // Query for get product by id (total stock from all warehouse)
 export const getProductByIdQuery = async (id: string) => {
     const products = await prisma.product.findUnique({

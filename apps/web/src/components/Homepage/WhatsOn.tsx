@@ -5,19 +5,17 @@ export default function WhatsOn() {
     <div className='h-full w-full py-16'>
       <div className='grid place-items-center'>
         <hr className='h-[3px] w-[50px] bg-ebony' />
-        <p className='text-[25px] font-bold text-eggplant'>
-          Whats on
-        </p>
+        <p className='text-[25px] font-bold text-eggplant'>Whats on</p>
       </div>
 
       <div className='flex flex-row justify-center gap-10 pt-10'>
         <div className='h-[413px] w-[380px]'>
           <Image
-            src='/test.jpg'
+            src='/card/cd4.jpeg'
             className='absolute z-10 h-[228px] w-[380px]'
             alt={'Tst'}
-            width={380}
-            height={413}
+            width={10000}
+            height={10000}
           />
           <p className='h-[228px] w-[380px] translate-x-2 translate-y-2 border-[3px] border-eggplant'></p>
           <div className='flex flex-col gap-5 pt-[20px]'>
@@ -41,11 +39,11 @@ export default function WhatsOn() {
         </div>
         <div className='h-[413px] w-[380px]'>
           <Image
-            src='/layanan.jpeg'
+            src='/card/cd5.jpeg'
             className='absolute z-10 h-[228px] w-[380px]'
             alt={'Tst'}
-            width={380}
-            height={413}
+            width={1000}
+            height={1000}
           />
           <p className='h-[228px] w-[380px] translate-x-2 translate-y-2 border-[3px] border-eggplant'></p>
           <div className='flex flex-col gap-5 pt-[20px]'>
@@ -70,7 +68,7 @@ export default function WhatsOn() {
         </div>
         <div className='h-[413px] w-[380px]'>
           <Image
-            src='/tlpon.jpeg'
+            src='/card/cd3.jpeg'
             className='absolute z-10 h-[228px] w-[380px]'
             alt={'Tst'}
             width={380}

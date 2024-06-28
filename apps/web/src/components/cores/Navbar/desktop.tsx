@@ -8,7 +8,7 @@ export default function NavbarDesktop(props: any) {
 
   return (
     <div className='2xl:px-60 flex h-[70px] w-screen items-center justify-between border-b-2 bg-ebony px-3 shadow-md lg:px-10 xl:px-36'>
-      <div className='flex w-[45%] justify-between text-xl text-bouquet lg:w-[35%]'>
+      <div className='flex w-[45%] justify-between text-xl text-white lg:w-[35%]'>
         <div className='flex w-full'>
           <a href='/'>Logo</a>
         </div>

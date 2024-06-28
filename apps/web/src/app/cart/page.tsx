@@ -4,14 +4,15 @@ import { useRouter } from 'next/navigation'
 import useCartStore from '@/zustand/cart/cartStore'
 import { getUserCart } from '@/helpers/cart/hooks/getUserCart'
 import Cart from '@/components/cart'
+import { getCartDetail } from '@/helpers/cart/hooks/getCartDetail'
 
 const CartPage: React.FC = () => {
   const { dataUserCart } = getUserCart()
+
   const router = useRouter()
 
   const userCartData = dataUserCart?.data?.data
   console.log(userCartData)
-  // console.log(typeof userCartData)
 
   const handleCheckout = () => {
     router.push('/checkout/[checkoutDetail]')
@@ -33,6 +34,8 @@ const CartPage: React.FC = () => {
                       id={x?.id}
                       qty={x?.qty}
                       price={x?.Product?.price}
+                      html={`cart_model${x?.id}`}
+                      desc={x?.Product?.description}
                     />
                   </div>
                 )

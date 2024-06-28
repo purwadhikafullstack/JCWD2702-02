@@ -45,9 +45,9 @@ export const warehouseAdminVerify = async (
       next();
     } else if ((findAdminResult?.warehouseId as any) != id) {
       throw new Error('Unauthorized User');
+    } else if ((findAdminResult?.warehouseId as any) == id) {
+      next();
     }
-
-    next()
   } catch (error) {
     next(error);
   }

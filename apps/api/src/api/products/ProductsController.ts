@@ -70,12 +70,12 @@ export const createProduct = async (
             uploadedProductUrl = Array.isArray(req.files)
                 ? req.files
                 : req.files['producturl'];
-            const getProductsQueryResult = await getProductsQuery();
-            for (const product of getProductsQueryResult) {
-                if (product.name === data.name) {
-                    throw new Error('Cannot Create Product, Product name already exists');
-                }
-            }
+            // const getProductsQueryResult = await getProductsQuery();
+            // for (const product of getProductsQueryResult) {
+            //     if (product.name === data.name) {
+            //         throw new Error('Cannot Create Product, Product name already exists');
+            //     }
+            // }
         }
         await createProductAndProductImagesQuery(data, uploadedProductUrl);
         res.status(201).send({

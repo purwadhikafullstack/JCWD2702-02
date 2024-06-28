@@ -7,7 +7,7 @@ interface IReqAddToCartMutation {
   qty: number
 }
 
-export const useAddToCartMutation = ({
+export const useAddToCartDetailMutation = ({
   onSuccess,
   onError,
 }: {
@@ -16,10 +16,12 @@ export const useAddToCartMutation = ({
 }) => {
   const { mutate, data, isSuccess, isPending, isError } = useMutation({
     mutationFn: async ({ productId, qty }: IReqAddToCartMutation) => {
-      return await axiosInstanceInterceptor.post('/carts/', {
-        productId,
-        qty,
-      })
+      return await axiosInstanceInterceptor.post(
+        `/carts/detail?productId=${productId}`,
+        {
+          qty,
+        }
+      )
     },
     onSuccess,
     onError,

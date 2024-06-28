@@ -177,6 +177,7 @@ model Product {
   description      String @db.LongText()
   price            Int    @default(0)
   reservedQuantity Int    @default(0)
+  weight           Int?   @default(1000)
   categoryId       Int?
 
   createdAt DateTime  @default(now())
@@ -229,6 +230,7 @@ model Order {
   status           String
   addressId        Int
   totalOrderAmount Int    @default(0)
+  shippingCost     Int?   @default(0)
 
   address Address @relation(fields: [addressId], references: [id])
 

@@ -1,108 +1,5 @@
 import { prisma } from '@/lib/PrismaClient';
-import { ICartItems } from './CartTypes';
-
-// export class CartService {
-//     async addToCart(userId: string, productId: number, qty: number): Promise<ICartItems | any> {
-//         const user = await prisma.user.findFirst({ where: { uid: userId } })
-//         if (!user || !user.verify) {
-//             throw new Error('User is not registered or verified')
-//         }
-
-//         let cart = await prisma.carts.findFirst({
-//             where: {
-//                 userId
-//             }
-//         })
-//         if (!cart) {
-//             cart = await prisma.carts.create({
-//                 data: {
-//                     userId: user.uid
-//                 }
-//             })
-//         }
-
-//         let cartItems = await prisma.cart_Items.findUnique({
-//             where: {
-//                 cartId_productId: {
-//                     cartId: cart.id, productId
-//                 }
-//             }
-//         })
-
-//         if (cartItems) {
-//             cartItems = await prisma.cart_Items.update({
-//                 where: {
-//                     id: cartItems.id
-//                 },
-//                 data: {
-//                     qty: cartItems.qty + qty
-//                 }
-//             })
-//         } else {
-//             cartItems = await prisma.cart_Items.create({
-//                 data: {
-//                     cartId: cart.id, productId, qty
-//                 }
-//             })
-//         }
-//         return cartItems
-//     }
-
-//     async updateCartItem(userId: string, productId: number, qty: number): Promise<Cart_Items | any> {
-//         const cart = await prisma.carts.findFirst({
-//             where: {
-//                 userId
-//             }
-//         })
-//         if (!cart) throw new Error('Cart not found')
-//         const cartItem = await prisma.cart_Items.findUnique({
-//             where: {
-//                 cartId_productId: {
-//                     cartId: cart.id, productId
-//                 }
-//             }
-//         })
-//         if (!cartItem) throw new Error('Product not found in cart')
-//         return await prisma.cart_Items.update({
-//             where: {
-//                 id: cartItem.id
-//             },
-//             data: {
-//                 qty
-//             }
-//         })
-//     }
-
-//     async deleteCartItem(userId: string, productId: number): Promise<void> {
-//         const cart = await prisma.carts.findFirst({
-//             where: {
-//                 userId
-//             }
-//         })
-//         if (!cart) throw new Error('Cart not found')
-//         await prisma.cart_Items.deleteMany({
-//             where: {
-//                 cartId: cart.id, productId
-//             }
-//         })
-//     }
-
-//     async getCartItem(userId: string): Promise<number> {
-//         const cart = await prisma.carts.findFirst({
-//             where: { userId }
-//         })
-//         if (!cart) return 0
-//         const countItem = await prisma.cart_Items.aggregate({
-//             where: {
-//                 cartId: cart.id
-//             },
-//             _sum: {
-//                 qty: true
-//             }
-//         })
-//         return countItem._sum.qty || 0
-//     }
-// }
+import { ICartItems, IAddToCartDetailService } from './CartTypes';
 
 export const addToCartQuery = async (
   userId: string,
@@ -110,6 +7,12 @@ export const addToCartQuery = async (
   qty: number,
 ) => {
   return await prisma.$transaction(async (tx) => {
+    const findProduct = await tx.product.findUnique({
+      where: {
+        id: productId,
+      },
+    });
+
     const findCart = await tx.carts.findFirst({
       where: {
         userId: userId,
@@ -146,5 +49,61 @@ export const getUserCartQuery = async (userId: string) => {
     include: {
       Product: true,
     },
+  });
+};
+
+export const getCartDetailService = async ({
+  uid,
+  productId,
+}: {
+  uid: string;
+  productId: number;
+}) => {
+  const findCartDetail = await prisma.carts.findFirst({
+    where: {
+      userId: uid,
+      productId: productId,
+    },
+    include: {
+      Product: true,
+    },
+  });
+
+  const findProductImage = await prisma.product_Images.findMany({
+    where: {
+      productId: productId,
+    },
+  });
+
+  return {
+    findCartDetail,
+    findProductImage,
+  };
+};
+
+export const addToCartDetailService = async ({
+  uid,
+  productId,
+  qty,
+}: IAddToCartDetailService) => {
+  console.log('??');
+  await prisma.$transaction(async (tx) => {
+    const findCart = await tx.carts.findFirst({
+      where: {
+        userId: uid,
+        productId: productId,
+      },
+    });
+
+    if (!findCart) throw new Error('Cart not found');
+
+    await tx.carts.update({
+      where: {
+        id: findCart.id,
+      },
+      data: {
+        qty: qty,
+      },
+    });
   });
 };

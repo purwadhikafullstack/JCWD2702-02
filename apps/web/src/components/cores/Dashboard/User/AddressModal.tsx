@@ -12,7 +12,6 @@ export default function AddressModal(props: any) {
           htmlFor={props.html}
           className='flex h-full items-center justify-center font-bold text-eggplant hover:underline'
         >
-          {/* <MdOutlineModeEditOutline size={20} /> */}
           {props.head}
         </label>
         <input type='checkbox' id={props.html} className='modal-toggle' />
@@ -24,7 +23,6 @@ export default function AddressModal(props: any) {
               className='btn w-[200px] bg-eggplant text-white hover:bg-hover_eggplant'
             >
               {props.icon}
-              {/* <MdDeleteForever size={20} /> */}
               {props.body}
             </div>
           </div>
