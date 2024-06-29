@@ -2,7 +2,7 @@
 
 import { getUserAddress } from '@/helpers/address/hooks/getUserAddress'
 import { getCheckoutCart } from '@/helpers/cart/hooks/getCheckoutCart'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Loading from '@/components/cores/Loading'
 import { getUserCart } from '@/helpers/cart/hooks/getUserCart'
 import { getAddressDetail } from '@/helpers/address/hooks/getAddressDetail'
@@ -21,15 +21,14 @@ export default function Checkout() {
   const selectedCart = dataCheckoutCart?.data?.data
   const totalWeight = dataUserCart?.data?.data?.totalWeight
 
-  //   console.log(selectedCart)
-  //   console.log(totalWeight)
-
   const [totalPrice, setTotalPrice] = useState<number>(0)
   const [courier, setCourier]: any = useState()
   const [shippingCost, setShippingCost]: any = useState()
   const [shippingCostPrice, setShippingCostPrice] = useState<number>()
   const [etd, setEtd]: any = useState()
   const [totalAmount, setTotalAmout] = useState<number>()
+
+  const courierTypeRef = useRef<HTMLSelectElement>(null)
 
   useEffect(() => {
     if (totalPrice && shippingCostPrice) {
@@ -55,8 +54,6 @@ export default function Checkout() {
     if (shippingCostData) setShippingCost(shippingCostData?.data?.data)
   }, [shippingCostData])
 
-  console.log(shippingCost)
-
   const nearestWarehouse = nearestWarehouseData?.data?.data?.nearestPlace
 
   const handleAddressChange = (event: any) => {
@@ -66,19 +63,19 @@ export default function Checkout() {
   const handleCourierChange = (event: any) => {
     setShippingCostPrice(0)
     setCourier(event.target.value)
+    if (courierTypeRef.current) {
+      courierTypeRef.current.value = 'DEFAULT'
+    }
   }
 
   const handleShippingCostprice = (event: any) => {
     const values = event.target.value.split(',')
-    console.log(values)
     setShippingCostPrice(Number(values[0]))
     setEtd(values[1])
   }
 
   const { dataAddressDetail } = getAddressDetail(mainAddress as any)
   const addressDetailData = dataAddressDetail?.data?.data
-
-  // console.log(addressDetailData)
 
   useEffect(() => {
     mutationShippingCost({
@@ -170,6 +167,7 @@ export default function Checkout() {
                 </div>
                 <div className='flex w-[50%] flex-col gap-3'>
                   <select
+                    ref={courierTypeRef}
                     defaultValue={'DEFAULT'}
                     onChange={handleShippingCostprice}
                     className='select select-bordered w-[50%]'
