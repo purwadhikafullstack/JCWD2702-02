@@ -37,8 +37,6 @@ export default function ProductDetail({
   const { mutationAddToCart, isError } = useAddToCart()
   const [showModal, setShowModal] = useState(false)
 
-  console.log(isError)
-
   const handleIncrement = () => {
     setQuantity(quantity + 1)
   }

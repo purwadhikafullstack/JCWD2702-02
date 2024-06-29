@@ -7,6 +7,8 @@ import {
   deleteCart,
   setSelectedCart,
   selectAll,
+  getCheckoutCart,
+  getNearestWarehouse,
 } from './CartController';
 import { tokenVerify } from '@/helpers/Token';
 
@@ -20,6 +22,8 @@ router.post('/detail', tokenVerify, addToCartDetail);
 router.delete('/', tokenVerify, deleteCart);
 router.post('/selected', tokenVerify, setSelectedCart);
 router.post('/selected-all', tokenVerify, selectAll);
+router.get('/checkout', tokenVerify, getCheckoutCart);
+router.post('/nearest-warehouse', tokenVerify, getNearestWarehouse);
 // router.delete('/', cartController.deleteCartItem.bind(cartController))
 // router.put('/', cartController.updateCartItem.bind(cartController))
 

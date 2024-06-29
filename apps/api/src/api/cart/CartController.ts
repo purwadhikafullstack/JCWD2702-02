@@ -7,6 +7,8 @@ import {
   deleteCartService,
   setSelectedCartService,
   selectAllService,
+  getCheckoutCartService,
+  findNearestWarehouseService,
 } from './CartService';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
 
@@ -46,9 +48,17 @@ export const getUserCart = async (
     const getUserCartResult = await getUserCartQuery(uid);
 
     let totalPrice = 0;
+    let totalWeight = 0;
     for (let i = 0; i < getUserCartResult.length; i++) {
       if (getUserCartResult[i].selected == true) {
         totalPrice += getUserCartResult[i].price;
+      }
+    }
+
+    for (let i = 0; i < getUserCartResult.length; i++) {
+      if (getUserCartResult[i].selected == true) {
+        totalWeight +=
+          getUserCartResult[i].qty * getUserCartResult[i].Product.weight!;
       }
     }
 
@@ -58,6 +68,7 @@ export const getUserCart = async (
       data: {
         userCart: getUserCartResult,
         totalPrice,
+        totalWeight,
       },
     });
   } catch (error) {
@@ -179,6 +190,52 @@ export const selectAll = async (
     data: null,
   });
   try {
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCheckoutCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+
+    const getCheckoutCartResult = await getCheckoutCartService(uid);
+
+    res.status(201).send({
+      error: false,
+      message: 'Get Selected Carts',
+      data: getCheckoutCartResult,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getNearestWarehouse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+    const { addressId } = req.body;
+
+    const findNearestWarehouseResult = await findNearestWarehouseService({
+      uid,
+      addressId,
+    });
+
+    res.status(201).send({
+      error: false,
+      message: 'Get Nearest Warehouse',
+      data: findNearestWarehouseResult,
+    });
   } catch (error) {
     next(error);
   }

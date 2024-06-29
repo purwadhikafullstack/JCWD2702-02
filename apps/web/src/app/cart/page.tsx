@@ -18,7 +18,7 @@ const CartPage: React.FC = () => {
   const totalPrice = dataUserCart?.data?.data?.totalPrice
 
   const handleCheckout = () => {
-    router.push('/checkout/[checkoutDetail]')
+    router.push('/checkout')
   }
 
   const handleSelectAll = (event: any) => {

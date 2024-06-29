@@ -1,6 +1,26 @@
 import { prisma } from '@/lib/PrismaClient';
 import { ICartItems, IAddToCartDetailService } from './CartTypes';
 
+function haversine(lat1: any, lon1: any, lat2: any, lon2: any) {
+  function toRadians(degrees: any) {
+    return degrees * (Math.PI / 180);
+  }
+
+  const R = 6371;
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+  const rLat1 = toRadians(lat1);
+  const rLat2 = toRadians(lat2);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(rLat1) * Math.cos(rLat2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+
+  return distance;
+}
+
 export const addToCartQuery = async (
   userId: string,
   productId: number,
@@ -160,5 +180,68 @@ export const selectAllService = async (isChecked: any, uid: string) => {
         selected: true,
       },
     });
+  } else if (isChecked == 'false') {
+    await prisma.carts.updateMany({
+      where: {
+        userId: uid,
+      },
+      data: {
+        selected: false,
+      },
+    });
   }
+};
+
+export const getCheckoutCartService = async (uid: string) => {
+  return await prisma.carts.findMany({
+    where: {
+      userId: uid,
+      selected: true,
+    },
+  });
+};
+
+export const findNearestWarehouseService = async ({
+  uid,
+  addressId,
+}: {
+  uid: string;
+  addressId: number;
+}) => {
+  return await prisma.$transaction(async (tx) => {
+    const findAddress = await tx.address.findUnique({
+      where: {
+        id: addressId,
+      },
+    });
+
+    if (!findAddress) throw new Error('Address not found');
+
+    const { latitude, longitude } = findAddress;
+
+    const findWarehouse = await tx.warehouse.findMany();
+
+    if (!findWarehouse) throw new Error('Warehouse not found');
+
+    let nearestDistance = Infinity;
+    let nearestPlace = null;
+
+    findWarehouse.forEach((place) => {
+      const distance = haversine(
+        latitude,
+        longitude,
+        place.latitude,
+        place.longitude,
+      );
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestPlace = place;
+      }
+    });
+
+    if (!nearestPlace || !nearestDistance) throw new Error('');
+
+    return { nearestPlace };
+  });
 };

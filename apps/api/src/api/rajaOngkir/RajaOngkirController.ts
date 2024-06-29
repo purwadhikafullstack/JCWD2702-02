@@ -64,3 +64,30 @@ export const getCityDetail = async (
     next(error);
   }
 };
+
+export const shippingCost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { origin, destination, weight, courier } = req.query;
+
+    const response = await axios.post('/cost', {
+      origin: origin,
+      destination,
+      weight,
+      courier,
+    });
+
+    console.log(response.data.rajaongkir.results[0].costs);
+
+    res.status(201).send({
+      error: false,
+      message: 'Shipping Cost',
+      data: response.data.rajaongkir.results[0].costs,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
