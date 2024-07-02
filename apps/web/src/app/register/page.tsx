@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { useRegister } from '../../helpers/register/hooks/useRegister'
 import { userRegisterSchema } from '@/helpers/register/schema/userRegisterSchema'
 import { MdEmail, MdPeople } from 'react-icons/md'
+import GoogleSignUpButton from '../../components/cores/Google'
 
 export default function Register() {
   const { mutationRegister, isPending } = useRegister()
@@ -63,11 +64,6 @@ export default function Register() {
                           name='fullname'
                         />
                       </label>
-                      <ErrorMessage
-                        name='fullname'
-                        component='div'
-                        className='text-red-500'
-                      />
                     </div>
                   </div>
                   <div className='flex flex-col gap-2'>
@@ -84,11 +80,6 @@ export default function Register() {
                           name='email'
                         />
                       </label>
-                      <ErrorMessage
-                        name='email'
-                        component='div'
-                        className='text-red-500'
-                      />
                     </div>
                   </div>
                 </div>
@@ -101,6 +92,7 @@ export default function Register() {
                     Register
                   </button>
                   <div className='divider'></div>
+                  <GoogleSignUpButton subject={'Register in with Google'} />
                 </div>
               </div>
             </div>

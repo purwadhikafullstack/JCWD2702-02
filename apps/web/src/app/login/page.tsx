@@ -6,11 +6,16 @@ import { useUserLogin } from '../../helpers/login/hooks/useUserLogin'
 import { useRouter } from 'next/navigation'
 import { useForgotPassword } from '@/helpers/login/hooks/useForgotPassword'
 import GoogleSignUpButton from '../../components/cores/Google'
+import { useEffect } from 'react'
 
 export default function Login() {
-  const { mutationLogin, isPending } = useUserLogin()
+  const { mutationLogin, isPending, isSuccess } = useUserLogin()
   const { mutationForgotPassword } = useForgotPassword()
   const navigate = useRouter()
+
+  useEffect(() => {
+    if (isSuccess == true) navigate.back()
+  }, [isSuccess])
   return (
     <Formik
       initialValues={{
@@ -59,11 +64,6 @@ export default function Login() {
                           name='email'
                         />
                       </label>
-                      {/* <ErrorMessage
-                        name='email'
-                        component='div'
-                        className='text-red-500'
-                      /> */}
                     </div>
                   </div>
                   <div className='flex flex-col gap-2'>
@@ -80,11 +80,6 @@ export default function Login() {
                           name='password'
                         />
                       </label>
-                      {/* <ErrorMessage
-                        name='password'
-                        component='div'
-                        className='text-red-500'
-                      /> */}
                     </div>
                   </div>
                 </div>
@@ -105,7 +100,7 @@ export default function Login() {
                     LOG IN
                   </button>
                   <div className='divider'></div>
-                  <GoogleSignUpButton />
+                  <GoogleSignUpButton subject={'Sign in with Google'} />
                 </div>
               </div>
             </div>

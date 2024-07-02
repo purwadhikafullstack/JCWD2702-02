@@ -104,7 +104,7 @@ export const getAllStockRequestQuery = async () => {
 }
 
 // Function to calculate the Haversine distance between two points
-const haversineDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+export const haversineDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
     const toRad = (value: number): number => value * Math.PI / 180;
     const R = 6371;
     const dLat = toRad(lat2 - lat1);

@@ -75,7 +75,7 @@ export const getWarehouseById = async (req: Request, res: Response, next: NextFu
         const { id } = req.params;
         const warehouse = await getWarehouseByIdQuery(id);
         if (!warehouse) throw new Error('Cannot get warehouse, warehouse not found');
-        res.status(200).send({
+        return res.status(200).send({
             error: false,
             message: 'Get Warehouse',
             data: warehouse

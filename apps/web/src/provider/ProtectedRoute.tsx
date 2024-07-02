@@ -20,10 +20,6 @@ export default function ProtectedRouteProvider({
 
   const accessToken = accesstoken
 
-  // console.log(!accessToken)
-  // console.log(userRole)
-  //   console.log(loading)
-
   const adminPermittedRoute: any = ['/admin']
   const userPermittedRoute: any = ['/dashboard']
 

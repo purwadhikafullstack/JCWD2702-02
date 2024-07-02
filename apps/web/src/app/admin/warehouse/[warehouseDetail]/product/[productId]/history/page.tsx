@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { useGetWarehouseDetail } from "@/helpers/adminWarehouse/hooks/useGetWarehouseDetail"
 import { useGetStockHistoryByProductAndWarehouse } from "@/helpers/adminWarehouse/hooks/useGetStockHistoryByProductAndWarehouse"
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoIosArrowBack } from "react-icons/io";
@@ -11,6 +12,9 @@ import { Button, Popover } from 'antd';
 import Head from "next/head";
 
 export default function ProductHistoryPerWarehouse({ params }: { params: { warehouseDetail: string, productId: string } }) {
+    const navigate = useRouter()
+    const { dataStockHistoryByProductAndWarehouse } = useGetStockHistoryByProductAndWarehouse(params.productId, params.warehouseDetail)
+    const { dataWarehouseDetail,isError } = useGetWarehouseDetail(params.warehouseDetail)
     const { dataWarehouseDetail } = useGetWarehouseDetail(params.warehouseDetail)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [monthAndYear, setMonthAndYear] = useState<string>("");
@@ -38,6 +42,10 @@ export default function ProductHistoryPerWarehouse({ params }: { params: { wareh
         const timeOptions: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
         return `${date.toLocaleDateString(undefined, dateOptions)} ${date.toLocaleTimeString(undefined, timeOptions)}`;
     }
+
+    useEffect(()=>{
+        if(isError) navigate.back()
+    },[isError])
 
     if ((dataStockHistoryByProductAndWarehouse === undefined) || (dataWarehouseDetail === undefined) || (dataStockHistoryByProductAndWarehouse.stockHistory === undefined)) return <div>Loading...</div>
 

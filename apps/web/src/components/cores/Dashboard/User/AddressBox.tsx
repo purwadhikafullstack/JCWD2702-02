@@ -1,13 +1,11 @@
 'use client'
 
-import {
-  MdAddHomeWork,
-  MdOutlineModeEditOutline,
-  MdDeleteForever,
-} from 'react-icons/md'
+import { MdAddHomeWork, MdDeleteForever } from 'react-icons/md'
 import { useMainAddress } from './../../../../helpers/address/hooks/useMainAddress'
 import { useDeleteAddress } from '@/helpers/address/hooks/useDeleteMutation'
 import { useRouter } from 'next/navigation'
+import AddressModal from './AddressModal'
+import Loading from '../../Loading'
 
 export default function AddressBox(props: any) {
   const navigate = useRouter()
@@ -38,45 +36,39 @@ export default function AddressBox(props: any) {
         <p>{props.province}</p>
         <p>{props.city}</p>
         <p>{props.address}</p>
-        <div className='card-actions justify-end'>
+        <div className='flex justify-end gap-2'>
+          {props.main != 'TRUE' ? (
+            <>
+              <AddressModal
+                html={'main'}
+                head={'Make Main Address'}
+                subject={'Make main address'}
+                fn={handleMainAddressMutation}
+                body={'Submit'}
+                icon={<MdAddHomeWork size={20} />}
+              />
+              <div className='flex h-full items-center justify-center text-eggplant'>
+                |
+              </div>
+            </>
+          ) : null}
+          <AddressModal
+            html={'delete_address'}
+            head={'Delete'}
+            subject={'Are you sure want to delete?'}
+            fn={handleDeleteAddressMutation}
+            body={'Delete'}
+            icon={<MdDeleteForever size={20} />}
+          />
+          <div className='flex h-full items-center justify-center text-eggplant'>
+            |
+          </div>
           <label
-            htmlFor={props.html}
-            className='btn flex items-center justify-center bg-eggplant text-white hover:bg-hover_eggplant'
+            onClick={() => navigate.push(`/dashboard/address/${addressId}`)}
+            className='flex h-full items-center justify-center font-bold text-eggplant hover:underline'
           >
-            <MdOutlineModeEditOutline size={20} />
             Edit Address
           </label>
-          <input type='checkbox' id={props.html} className='modal-toggle' />
-          <div className='modal' role='dialog'>
-            <div className='modal-box flex w-[300px] flex-col items-center justify-center gap-3'>
-              <h1 className='font-bold'>Edit Your Address</h1>
-              {props.main == 'TRUE' ? null : (
-                <div
-                  onClick={handleMainAddressMutation}
-                  className='btn w-[200px] bg-eggplant text-white hover:bg-hover_eggplant'
-                >
-                  <MdAddHomeWork className='text-white' /> Make Main Address
-                </div>
-              )}
-              <div
-                onClick={handleDeleteAddressMutation}
-                className='btn w-[200px] bg-eggplant text-white hover:bg-hover_eggplant'
-              >
-                <MdDeleteForever size={20} />
-                Delete Address
-              </div>
-              <div
-                onClick={() => navigate.push(`/dashboard/address/${addressId}`)}
-                className='btn w-[200px] bg-eggplant text-white hover:bg-hover_eggplant'
-              >
-                <MdOutlineModeEditOutline size={20} />
-                Edit Address Data
-              </div>
-            </div>
-            <label className='modal-backdrop' htmlFor={props.html}>
-              Close
-            </label>
-          </div>
         </div>
       </div>
     </div>

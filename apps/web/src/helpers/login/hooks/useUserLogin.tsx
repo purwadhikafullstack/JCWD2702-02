@@ -11,7 +11,11 @@ export const useUserLogin = () => {
 
   const navigate = useRouter()
 
-  const { mutate: mutationLogin, isPending } = useUserLoginMutation({
+  const {
+    mutate: mutationLogin,
+    isPending,
+    isSuccess,
+  } = useUserLoginMutation({
     onSuccess: (res: any) => {
       const response = res.data.data
       let nameResult = response.name
@@ -38,7 +42,7 @@ export const useUserLogin = () => {
         theme: 'colored',
         transition: Slide,
       })
-      navigate.push('/')
+      // navigate.push('/')
     },
     onError: (err: any) => {
       toast.error(err.response.data.message, {
@@ -58,5 +62,6 @@ export const useUserLogin = () => {
   return {
     mutationLogin,
     isPending,
+    isSuccess,
   }
 }

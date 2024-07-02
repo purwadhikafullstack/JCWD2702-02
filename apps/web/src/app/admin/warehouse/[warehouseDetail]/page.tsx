@@ -10,14 +10,16 @@ import CreateRequestModal from '@/components/admin/CreateManualRequestModal';
 import AddStockModal from '@/components/admin/AddStockModal';
 import ReduceStockModal from '@/components/admin/ReduceStockModal';
 import SearchBoxWarehouseDetail from '@/components/admin/SearchBoxWarehouseDetail';
+import { useRouter } from 'next/navigation';
 import Link from "next/link";
 import Head from 'next/head';
 
 export default function WarehouseDetail({ params, searchParams }: { params: { warehouseDetail: string } } & { searchParams: { search: string, sort: string, page: string } }) {
+    const navigate = useRouter()
     const { search = '', sort = '', page = '1' } = searchParams;
     const query = { search, sort, page };
     const { dataProductsStockPerWarehouse, refetchDataProductsStockPerWarehouse, totalDataProductsStockPerWarehouse } = useGetProductsStockPerWarehouse(params.warehouseDetail, query);
-    const { dataWarehouseDetail } = useGetWarehouseDetail(params.warehouseDetail);
+    const { dataWarehouseDetail,isError } = useGetWarehouseDetail(params.warehouseDetail);
     const { dataStockMutationTypeLists } = useGetStockMutationTypeLists(params.warehouseDetail);
     const { dataStockRequestPerWarehouse } = useGetStockRequestPerWarehouse(params.warehouseDetail);
     const { dataOutgoingStockRequestPerWarehouse } = useGetOutgoingStockRequestPerWarehouse(params.warehouseDetail);
@@ -26,6 +28,10 @@ export default function WarehouseDetail({ params, searchParams }: { params: { wa
     const [isReduceStockModalOpen, setIsReduceStockModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [pendingIncomingRequests, setPendingIncomingRequests] = useState(0);
+
+    useEffect(()=>{
+        if(isError) navigate.back()
+    },[isError])
 
     useEffect(() => {
         setTimeout(() => {

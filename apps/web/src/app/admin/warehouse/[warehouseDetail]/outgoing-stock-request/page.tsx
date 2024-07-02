@@ -4,10 +4,13 @@ import { useGetOutgoingStockRequestPerWarehouse } from "@/helpers/adminWarehouse
 import Link from "next/link"
 import Head from "next/head"
 import { IoIosArrowBack } from "react-icons/io"
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function OutgoingStockRequest({ params }: { params: { warehouseDetail: string } }) {
+    const navigate = useRouter()
     const { dataOutgoingStockRequestPerWarehouse } = useGetOutgoingStockRequestPerWarehouse(params.warehouseDetail)
-    const { dataWarehouseDetail } = useGetWarehouseDetail(params.warehouseDetail)
+    const { dataWarehouseDetail,isError } = useGetWarehouseDetail(params.warehouseDetail)
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -15,6 +18,9 @@ export default function OutgoingStockRequest({ params }: { params: { warehouseDe
         const timeOptions: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
         return `${date.toLocaleDateString(undefined, dateOptions)} ${date.toLocaleTimeString(undefined, timeOptions)}`;
     }
+    useEffect(()=>{
+        if(isError) navigate.back()
+    },[isError])
     if (dataOutgoingStockRequestPerWarehouse === undefined) return <div>Loading...</div>
     return (
         <div className="container mx-auto p-4 border border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh]">

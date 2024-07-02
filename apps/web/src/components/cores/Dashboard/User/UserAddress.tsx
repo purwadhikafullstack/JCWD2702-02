@@ -98,7 +98,9 @@ export default function UserAddress() {
   }, [formik.values.city])
 
   useEffect(() => {
-    if (isSuccess) formik.resetForm()
+    setTimeout(() => {
+      if (isSuccess) location.reload()
+    }, 1000)
   }, [isSuccess])
 
   return (
