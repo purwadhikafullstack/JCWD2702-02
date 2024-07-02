@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useGetAllProductCategories } from '@/helpers/shop/hooks/useGetAllProductCategories';
 import { createProductSchema } from '@/helpers/adminProduct/schema/createProductSchema';
 import { useCreateProduct } from '@/helpers/adminProduct/hooks/useCreateProduct';
+import Head from 'next/head';
 
 export default function CreateProduct() {
     const router = useRouter();
@@ -38,6 +39,10 @@ export default function CreateProduct() {
 
     return (
         <div className="container mx-auto p-4 border border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh] bg-white">
+            <Head>
+                <title>Create Product</title>
+                <meta name="description" content="Create a new product with name, description, price, category, weight, and images." />
+            </Head>
             <div className="text-2xl font-bold mb-4 text-[#704b66]">Create Product</div>
             <div>
                 <Formik
@@ -45,7 +50,8 @@ export default function CreateProduct() {
                         name: '',
                         description: '',
                         price: 0,
-                        categoryId: ''
+                        categoryId: '',
+                        weight: ''
                     }}
                     validationSchema={createProductSchema}
                     onSubmit={async (values, { resetForm }) => {
@@ -55,7 +61,8 @@ export default function CreateProduct() {
                                 name: values.name,
                                 description: values.description,
                                 price: values.price,
-                                categoryId: parseInt(values.categoryId)
+                                categoryId: parseInt(values.categoryId),
+                                weight: Number(values.weight) * 1000
                             }));
                             for (let i = 0; i < productImages.length; i++) {
                                 fd.append('producturl', productImages[i]);
@@ -84,9 +91,14 @@ export default function CreateProduct() {
                                 <ErrorMessage name="description" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
                             <div className="flex flex-col">
-                                <label htmlFor="price" className="mb-1 text-black">Price</label>
+                                <label htmlFor="price" className="mb-1 text-black">Price (IDR)</label>
                                 <Field id="price" className="p-2 border-b border-gray-300 rounded-t-md focus:outline-none focus:border-b-2 focus:border-[#704b66]" type="number" name="price" placeholder="Enter Here" />
                                 <ErrorMessage name="price" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+                            <div className="flex flex-col">
+                                <label htmlFor="weight" className="mb-1 text-black">Weight (KG)</label>
+                                <Field id="weight" className="p-2 border-b border-gray-300 rounded-t-md focus:outline-none focus:border-b-2 focus:border-[#704b66]" type="text" name="weight" placeholder="Enter Here" />
+                                <ErrorMessage name="weight" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
                             <div className="flex flex-col">
                                 <label htmlFor="categoryId" className="mb-1 text-black">Category</label>

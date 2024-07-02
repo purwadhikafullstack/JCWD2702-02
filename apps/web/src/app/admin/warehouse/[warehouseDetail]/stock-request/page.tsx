@@ -5,6 +5,7 @@ import { useAcceptStockRequest } from "@/helpers/adminWarehouse/hooks/useAcceptS
 import { useRejectStockRequest } from "@/helpers/adminWarehouse/hooks/useRejectStockRequest"
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
+import Head from 'next/head';
 import { IoIosArrowBack } from "react-icons/io"
 import { useEffect } from 'react'
 
@@ -37,6 +38,10 @@ export default function StockRequest({ params }: { params: { warehouseDetail: st
     if (dataStockRequestPerWarehouse === undefined) return <div>Loading...</div>
     return (
         <div className="container mx-auto p-4 border border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh]">
+            <Head>
+                <title>Stock Requests - {dataWarehouseDetail?.name}</title>
+                <meta name="description" content={`Incoming stock requests for ${dataWarehouseDetail?.name}.`} />
+            </Head>
             <div className="flex flex-col">
                 <div className="flex flex-row justify-between items-center gap-4 mb-4">
                     <div>

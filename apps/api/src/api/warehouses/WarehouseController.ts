@@ -56,7 +56,8 @@ export const getProductsPerWarehouse = async (req: Request, res: Response, next:
 export const getStockHistoryByProductIdAndWarehouseId = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { productId, warehouseId } = req.params
-        const stockHistory = await getStockHistoryByProductIdAndWarehouseIdQuery(productId, warehouseId);
+        const { month, year } = req.query;
+        const stockHistory = await getStockHistoryByProductIdAndWarehouseIdQuery(productId, warehouseId, month as string, year as string);
         res.status(200).send({
             error: false,
             message: 'Get Stock History',

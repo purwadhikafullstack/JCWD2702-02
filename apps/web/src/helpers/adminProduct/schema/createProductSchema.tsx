@@ -5,4 +5,5 @@ export const createProductSchema = Yup.object().shape({
     description: Yup.string().required('Description is required'),
     price: Yup.number().required('Price is required'),
     categoryId: Yup.number().required('Required'),
+    weight: Yup.number().required('Required'),
 })

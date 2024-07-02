@@ -231,13 +231,13 @@ enum cartSelect {
 }
 
 model Order {
-  id               Int         @id @default(autoincrement())
+  id               Int          @id @default(autoincrement())
+  user             User         @relation(fields: [userId], references: [uid])
   userId           String
-  status           OrderStatus @default(WAITING_FOR_PAYMENT)
+  status           OrderStatus? @default(WAITING_FOR_PAYMENT)
   addressId        Int
-  totalOrderAmount Int         @default(0)
-  shippingCost     Int?        @default(0)
-  paymentUrl       String?
+  totalOrderAmount Int          @default(0)
+  shippingCost     Int?         @default(0)
 
   user    User    @relation(fields: [userId], references: [uid])
   address Address @relation(fields: [addressId], references: [id])
@@ -246,8 +246,16 @@ model Order {
   updatedAt DateTime  @updatedAt
   shippedAt DateTime?
 
-  items   OrderItem[]
-  payment Payment[]
+  items        OrderItem[]
+  payment      Payment[]
+  stockHistory stockHistory[]
+}
+
+enum OrderStatus {
+  PAID
+  WAITING_FOR_PAYMENT
+  WAITING_FOR_CONFIRMATION
+  CANCELLED
 }
 
 enum OrderStatus {
@@ -289,10 +297,12 @@ model stockHistory {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   deletedAt DateTime?
+  orderId   Int?
 
   Product Product       @relation(fields: [productId], references: [id])
   from    Mutation_Type @relation("StockHistoryFrom", fields: [fromId], references: [id])
   to      Mutation_Type @relation("StockHistoryTo", fields: [toId], references: [id])
+  order   Order?        @relation(fields: [orderId], references: [id])
 
   @@map("stock_history")
 }

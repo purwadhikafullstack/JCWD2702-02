@@ -1,4 +1,5 @@
 'use client'
+import { useState } from "react";
 import { useGetProductDetail } from "@/helpers/productDetail/hooks/useGetProductDetail";
 import { useGetAllProductCategories } from "@/helpers/shop/hooks/useGetAllProductCategories";
 import Image from "next/image";
@@ -8,7 +9,19 @@ import { AiFillProduct, AiOutlineUpload } from "react-icons/ai";
 import { useUpdateProduct } from "@/helpers/adminProduct/hooks/useUpdateProduct";
 import { useUpdateProductImage } from "@/helpers/adminProductImages/hooks/useUpdateProductImage";
 import { useSoftDeleteProduct } from "@/helpers/adminProduct/hooks/useSoftDeleteProduct";
+import { IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import ConfirmationModal from "@/components/admin/ConfirmationModal"; // Make sure this modal is more generic
+import Link from "next/link";
+import Head from "next/head";
+
+type FormData = {
+    name: string;
+    description: string;
+    price: string;
+    categoryId: string;
+    weight: number;
+};
 
 export default function ProductDetail({ params }: { params: { productDetail: string } }) {
     const router = useRouter();
@@ -18,41 +31,83 @@ export default function ProductDetail({ params }: { params: { productDetail: str
     const { mutationUpdateProductImage } = useUpdateProductImage(params.productDetail);
     const { mutationSoftDeleteProduct } = useSoftDeleteProduct(params.productDetail);
 
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [formData, setFormData] = useState<FormData | null>(null);
+
     const onsetProductImage = (event: any, imageId: number) => {
         try {
             const formData = new FormData();
-            const acceptedFormat = ['jpg', 'jpeg', 'webp', 'png', 'svg']
-            const files = [...event.target.files]
+            const acceptedFormat = ['jpg', 'jpeg', 'webp', 'png', 'svg'];
+            const files = [...event.target.files];
 
             files.forEach(file => {
-                if (!acceptedFormat.includes(file.name.split('.')[file.name.split('.').length - 1])) {
-                    throw { message: `${file.name} Format Not Acceptable` }
+                if (!acceptedFormat.includes(file.name.split('.').pop())) {
+                    throw { message: `${file.name} Format Not Acceptable` };
                 }
                 if (file.size > (1 * 1024 * 1024)) {
-                    throw { message: `${file.name} is too Large! Maximum Filesize is 1Mb` }
+                    throw { message: `${file.name} is too Large! Maximum Filesize is 1Mb` };
                 }
-            })
+            });
 
-            if (files.length > 1) throw { message: `You cannot select more than 1 image` }
+            if (files.length > 1) throw { message: `You cannot select more than 1 image` };
 
-            formData.append('producturl', files[0])
-            const updatedProductImage = mutationUpdateProductImage({
+            formData.append('producturl', files[0]);
+            mutationUpdateProductImage({
                 data: formData,
                 id: String(imageId)
-            })
+            });
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
 
     const onHandleErase = () => {
-        if (confirm("Are you sure you want to erase this product? You still can restore this product later.")) {
-            try {
-                mutationSoftDeleteProduct(params.productDetail);
-                router.push('/admin/product');
-            } catch (error) {
-                console.log(error);
-            }
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDeleteModalClose = () => {
+        setIsDeleteModalOpen(false);
+    };
+
+    const handleConfirmDelete = () => {
+        try {
+            mutationSoftDeleteProduct(params.productDetail);
+            router.push('/admin/product');
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsDeleteModalOpen(false);
+        }
+    };
+
+    const onHandleUpdate = (values: { name: string; description: string; price: string; categoryId: string; weight: number }) => {
+        setFormData(values);
+        setIsUpdateModalOpen(true);
+    };
+
+    const handleUpdateModalClose = () => {
+        setIsUpdateModalOpen(false);
+    };
+
+    const handleConfirmUpdate = async () => {
+        if (!formData) return;
+        const data = {
+            name: formData.name,
+            description: formData.description,
+            price: parseInt(formData.price),
+            categoryId: parseInt(formData.categoryId),
+            weight: Number(formData.weight) * 1000
+        };
+        try {
+            await mutationUpdateProduct({
+                data,
+                id: productDetail?.products.id
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsUpdateModalOpen(false);
         }
     };
 
@@ -60,12 +115,30 @@ export default function ProductDetail({ params }: { params: { productDetail: str
 
     return (
         <div className="container mx-auto p-4 border border-transparent hover:border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh] flex flex-col gap-5 transition-all">
+            <Head>
+                <title>{productDetail.products.name} - Product Detail</title>
+                <meta name="description" content={`Admin panel - Product detail for ${productDetail.products.name}`} />
+            </Head>
+            <div className="flex flex-row justify-between items-center gap-4 mb-4">
+                <div>
+                    <div className="text-sm breadcrumbs">
+                        <ul>
+                            <li className="flex gap-2">
+                                <Link className="hover:text-eggplant" href={`/admin/product`}>
+                                    <IoIosArrowBack /> All Products
+                                </Link>
+                            </li>
+                            <li>{productDetail?.products.name}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             <div>
                 <div className="flex justify-between">
                     <div className="flex gap-4">
                         {productDetail?.productImages.map((productImage: { id: number, productUrl: string }, index: number) => (
                             <div key={index} className="relative group flex flex-col items-center">
-                                <Image className="rounded-xl" src={`http://localhost:8000/${productImage.productUrl}`} alt={productImage.productUrl} width={100} height={100} />
+                                <Image className="rounded-xl" src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${productImage.productUrl}`} alt={productImage.productUrl} width={100} height={100} />
                                 <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <input type="file" onChange={(event) => onsetProductImage(event, productImage.id)} accept="image/*" className="hidden" />
                                     <AiOutlineUpload size={24} className="text-white" />
@@ -79,25 +152,11 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                         name: productDetail?.products.name,
                         description: productDetail?.products.description,
                         price: productDetail?.products.price,
-                        categoryId: productDetail?.products.categoryId
+                        categoryId: productDetail?.products.categoryId,
+                        weight: productDetail?.products.weight / 1000
                     }}
                     validationSchema={createProductSchema}
-                    onSubmit={async (values) => {
-                        const data = {
-                            name: values.name,
-                            description: values.description,
-                            price: parseInt(values.price),
-                            categoryId: parseInt(values.categoryId)
-                        }
-                        try {
-                            const updatedProduct = await mutationUpdateProduct({
-                                data,
-                                id: productDetail?.products.id
-                            })
-                        } catch (error) {
-                            console.log(error)
-                        }
-                    }}
+                    onSubmit={onHandleUpdate}
                 >
                     {({ dirty, isValid }) => (
                         <Form className="flex flex-col gap-4">
@@ -127,6 +186,14 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                                 <ErrorMessage name="price" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
                             <div className="flex flex-col">
+                                <label htmlFor="weight" className="mb-1 text-black">Weight</label>
+                                <div className="flex items-center ml-[10px]">
+                                    <Field className="p-2 text-[20px] w-[70px] border-b border-transparent hover:border-gray-300 rounded-t-md focus:outline-none focus:border-b-2 focus:border-[#704b66] transition-all" type="text" name="weight" placeholder="Enter Here" />
+                                    <div className="text-[20px]">Kg</div>
+                                </div>
+                                <ErrorMessage name="weight" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+                            <div className="flex flex-col">
                                 <label htmlFor="categoryId" className="mb-1 text-black">Category</label>
                                 <Field as="select" name="categoryId" className="p-2 border-b border-transparent hover:border-gray-300 rounded-t-md focus:outline-none focus:border-b-2 focus:border-[#704b66] transition-all">
                                     <option value="0">Select Category</option>
@@ -145,6 +212,12 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                     </button>
                 </div>
             </div>
+            <ConfirmationModal isOpen={isDeleteModalOpen} onClose={handleDeleteModalClose} onConfirm={handleConfirmDelete} title="Confirm Deletion">
+                Are you sure you want to erase this product? You can restore it later.
+            </ConfirmationModal>
+            <ConfirmationModal isOpen={isUpdateModalOpen} onClose={handleUpdateModalClose} onConfirm={handleConfirmUpdate} title="Confirm Update">
+                Are you sure you want to update this product?
+            </ConfirmationModal>
         </div>
     );
 }

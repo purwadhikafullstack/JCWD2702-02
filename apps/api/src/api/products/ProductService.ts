@@ -3,7 +3,7 @@ import { prisma } from './../../lib/PrismaClient';
 import { IProduct } from './ProductsTypes';
 
 // Query for get all products
-export const getProductsQuery = async (sortBy?: string, minPrice?: number, maxPrice?: number, categoryId?: number, search?: string, page?: number,) => {
+export const getProductsQuery = async (sortBy?: string, minPrice?: number, maxPrice?: number, categoryId?: number, search?: string, page?: number) => {
     const sortCriteriaMap: Record<string, Prisma.ProductOrderByWithRelationInput> = {
         name: { name: 'asc' },
         newest: { createdAt: 'desc' },
@@ -122,6 +122,7 @@ export const createProductAndProductImagesQuery = async (
                 description: data.description,
                 price: data.price,
                 categoryId: data.categoryId,
+                weight: data.weight,
             },
         });
         const productImages: any = [];
@@ -174,6 +175,7 @@ export const updateProductDataQuery = async (id: string, data: IProduct) => {
             description: data.description,
             price: data.price,
             categoryId: data.categoryId,
+            weight: data.weight
         },
     });
 };

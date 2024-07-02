@@ -1,7 +1,7 @@
 'use client'
-
 import { useGetAllWarehouse } from '@/helpers/adminWarehouse/hooks/useGetAllWarehouse'
 import AdminWarehouseCard from '@/components/admin/AdminWarehouseCard'
+import Head from "next/head";
 
 export default function Warehouse() {
   const { dataWarehouses } = useGetAllWarehouse()
@@ -9,6 +9,11 @@ export default function Warehouse() {
   if (!dataWarehouses) return <div>Loading...</div>
   return (
     <div className='container mx-auto h-full max-h-[95vh] overflow-y-auto rounded-md border border-gray-300 bg-white p-6 shadow-lg'>
+      <Head>
+        <title>Warehouses - Admin Dashboard</title>
+        <meta name="description" content="View all warehouses in the admin dashboard." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
       <div className='mb-6 flex items-center justify-between'>
         <div className='text-3xl font-bold text-black'>Warehouses</div>
       </div>

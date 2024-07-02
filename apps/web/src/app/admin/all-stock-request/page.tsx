@@ -2,6 +2,7 @@
 import { useGetAllStockRequests } from "@/helpers/adminWarehouse/hooks/useGetAllStockRequests"
 import { IoIosArrowBack } from "react-icons/io"
 import Link from "next/link"
+import Head from "next/head"
 
 export default function AllStockRequest() {
     const { dataAllStockRequests } = useGetAllStockRequests()
@@ -15,6 +16,10 @@ export default function AllStockRequest() {
     if (dataAllStockRequests === undefined) return <div>Loading...</div>
     return (
         <div className="container mx-auto p-4 border border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh]">
+            <Head>
+                <title>All Stock Requests</title>
+                <meta name="description" content="View all stock requests across warehouses in the admin dashboard." />
+            </Head>
             <div className="flex flex-col">
                 <div className="flex flex-row justify-between items-center gap-4 mb-4">
                     <div>

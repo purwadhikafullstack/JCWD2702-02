@@ -1,26 +1,20 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { useGetProductDetail } from '@/helpers/productDetail/hooks/useGetProductDetail'
-import Image from 'next/image'
-import { IProductDetail } from '@/helpers/productDetail/ProductDetailTypes'
-import SearchBox from '@/components/shop/SearchBox'
-import {
-  FaShoppingCart,
-  FaMinus,
-  FaPlus,
-  FaFacebookF,
-  FaLinkedin,
-  FaWhatsapp,
-  FaPinterest,
-  FaEnvelope,
-} from 'react-icons/fa'
-import { FaXTwitter } from 'react-icons/fa6'
-import { IoShieldCheckmarkOutline } from 'react-icons/io5'
-import { useContext } from 'react'
-import { CartContext } from '@/config/context/cartContext'
-import { useAddToCart } from '@/helpers/cart/hooks/useAddToCart'
-import ActiveImageModal from '@/components/shop/ActiveImageModal'
+
 import { useRouter } from 'next/navigation'
+import { useState, useEffect } from "react";
+import { useGetProductDetail } from "@/helpers/productDetail/hooks/useGetProductDetail";
+import Image from "next/image";
+import { IProductDetail } from "@/helpers/productDetail/ProductDetailTypes";
+import SearchBox from "@/components/shop/SearchBox";
+import { FaShoppingCart, FaMinus, FaPlus, FaFacebookF, FaLinkedin, FaWhatsapp, FaPinterest, FaEnvelope } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { useContext } from "react";
+import { CartContext } from "@/config/context/cartContext";
+import { useAddToCart } from "@/helpers/cart/hooks/useAddToCart";
+import ActiveImageModal from "@/components/shop/ActiveImageModal";
+import Head from "next/head";
+import HeadComponentMeta from "@/components/cores/Head";
 
 export default function ProductDetail({
   params,
@@ -58,8 +52,8 @@ export default function ProductDetail({
       setShowModal(true)
     }
   }
-
-  const handleCloseModal = () => {
+  
+   const handleCloseModal = () => {
     setShowModal(false)
   }
 
@@ -69,64 +63,36 @@ export default function ProductDetail({
     }, 1000)
   }, [isError])
 
-  return (
-    <div className='mb-8 mt-8 min-h-screen w-auto bg-[#ffffff] px-4 lg:px-8'>
-      <div className='mx-[50px] flex flex-col items-center justify-center lg:flex-row'>
-        <div className='flex flex-shrink-0 flex-col justify-center lg:mr-8 lg:w-[45%]'>
-          <div className='mb-4 flex justify-center'>
-            <SearchBox
-              showAdditionalFilters={false}
-              applyFilters={() => {}}
-              initialSearchParams={{}}
-              refetchDataProducts={() => {}}
-            />
-          </div>
-        </div>
-        <div className='flex flex-col lg:w-[55%] lg:justify-center'>
-          <div className='mb-4 flex items-start gap-3 lg:items-center'>
-            <div className='font-semibold text-[#34222f]'>
-              {productDetail?.products.Categories.name}
+    return (
+        <div className="bg-[#ffffff] mt-8 mb-8 min-h-screen w-auto px-4 lg:px-8">
+            <HeadComponentMeta title={productDetail?.products.name} description="Product detail page, see all product descriptions on this page" keywords="product, shop, ecommerce" />
+            <div className="flex flex-col lg:flex-row mx-[50px] justify-center items-center">
+                <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%] justify-center">
+                    <div className="mb-4 flex justify-center">
+                        <SearchBox showAdditionalFilters={false} applyFilters={() => { }} initialSearchParams={{}} refetchDataProducts={() => { }} />
+                    </div>
+                </div>
+                <div className="flex flex-col lg:w-[55%] lg:justify-center">
+                    <div className="mb-4 flex gap-3 items-start lg:items-center">
+                        <div className="text-[#34222f] font-semibold">{productDetail?.products.Categories.name}</div>/<div>{productDetail?.products.name}</div>
+                    </div>
+                </div>
             </div>
-            /<div>{productDetail?.products.name}</div>
-          </div>
-        </div>
-      </div>
-      <div className='mx-[50px] flex flex-col justify-center lg:flex-row'>
-        <div className='flex flex-shrink-0 flex-col lg:mr-8 lg:w-[45%]'>
-          <div className='flex flex-col items-center gap-[15px]'>
-            {activeImg && (
-              <Image
-                src={`http://localhost:8000/${activeImg}`}
-                key={activeImg}
-                className='aspect-square cursor-pointer rounded-xl object-cover shadow-lg'
-                alt='image'
-                width={450}
-                height={450}
-                onClick={handleActiveImageClick}
-              />
-            )}
-            <div className='flex flex-row flex-wrap justify-start gap-2'>
-              {productDetail?.productImages?.map(
-                (image: IProductDetail, index: number) => (
-                  <div
-                    key={index}
-                    onClick={() => setActiveImg(image.productUrl)}
-                    className='mb-2 h-24 w-24 cursor-pointer rounded-xl'
-                  >
-                    <Image
-                      src={`http://localhost:8000/${image.productUrl}`}
-                      className='h-[100px] w-[100px] rounded-xl object-cover'
-                      alt='image'
-                      width={1000}
-                      height={1000}
-                    />
-                  </div>
-                )
-              )}
-            </div>
-          </div>
-        </div>
-
+            <div className="flex flex-col lg:flex-row mx-[50px] justify-center">
+                <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%]">
+                    <div className="flex flex-col gap-[15px] items-center">
+                        {activeImg && (
+                            <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${activeImg}`} key={activeImg} className="aspect-square object-cover rounded-xl shadow-lg cursor-pointer" alt="image" width={450} height={450} onClick={handleActiveImageClick} />
+                        )}
+                        <div className="flex flex-row justify-start gap-2 flex-wrap">
+                            {productDetail?.productImages?.map((image: IProductDetail, index: number) => (
+                                <div key={index} onClick={() => setActiveImg(image.productUrl)} className="w-24 h-24 rounded-xl cursor-pointer mb-2">
+                                    <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${image.productUrl}`} className="w-[100px] h-[100px] object-cover rounded-xl" alt="image" width={1000} height={1000} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
         <div className='mt-[20px] flex flex-col gap-[10px] lg:mt-[60px] lg:w-[55%]'>
           <div className='mb-4 flex flex-col'>
             <div className='text-[32px] font-bold'>
@@ -232,13 +198,7 @@ export default function ProductDetail({
           </div>
         </div>
       </div>
-      {showModal && activeImg && (
-        <ActiveImageModal
-          src={`http://localhost:8000/${activeImg}`}
-          alt='Product Image'
-          onClose={handleCloseModal}
-        />
-      )}
+          {showModal && activeImg && <ActiveImageModal src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${activeImg}`} alt="Product Image" onClose={handleCloseModal} />}  
     </div>
   )
 }
