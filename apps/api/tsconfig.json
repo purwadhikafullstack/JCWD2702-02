@@ -13,6 +13,6 @@
     }
   },
   // "include": ["src/**/*"],
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "src/helpers/Midtrans/index.js"],
   "exclude": ["node_modules"]
 }

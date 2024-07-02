@@ -231,14 +231,15 @@ enum cartSelect {
 }
 
 model Order {
-  id               Int    @id @default(autoincrement())
-  user             User   @relation(fields: [userId], references: [uid])
+  id               Int         @id @default(autoincrement())
   userId           String
-  status           String
+  status           OrderStatus @default(WAITING_FOR_PAYMENT)
   addressId        Int
-  totalOrderAmount Int    @default(0)
-  shippingCost     Int?   @default(0)
+  totalOrderAmount Int         @default(0)
+  shippingCost     Int?        @default(0)
+  paymentUrl       String?
 
+  user    User    @relation(fields: [userId], references: [uid])
   address Address @relation(fields: [addressId], references: [id])
 
   createdAt DateTime  @default(now())
@@ -249,16 +250,25 @@ model Order {
   payment Payment[]
 }
 
+enum OrderStatus {
+  PAID
+  WAITING_FOR_PAYMENT
+  WAITING_FOR_CONFIRMATION
+  CANCELLED
+}
+
 model OrderItem {
-  id           Int      @id @default(autoincrement())
-  order        Order    @relation(fields: [orderId], references: [id])
+  id           Int @id @default(autoincrement())
   orderId      Int
-  product      Product  @relation(fields: [productId], references: [id])
   productId    Int
   quantity     Int
-  currentPrice Int      @default(0)
-  totalAmount  Int      @default(0)
-  createdAt    DateTime @default(now())
+  currentPrice Int @default(0)
+  totalAmount  Int @default(0)
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 model Payment {

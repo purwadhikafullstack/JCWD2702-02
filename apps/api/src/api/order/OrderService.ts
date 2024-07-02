@@ -1,5 +1,11 @@
 import { prisma } from '../../lib/PrismaClient';
-import { Order, OrderItem, Warehouse } from './OrderTypes';
+import {
+  Order,
+  OrderItem,
+  Warehouse,
+  createOrderServiceProps,
+} from './OrderTypes';
+import { OrderStatus } from '@prisma/client';
 
 export class OrderService {
   async createOrder(order: Order) {
@@ -83,10 +89,126 @@ export class OrderService {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRad(loc1.latitude)) *
-      Math.cos(toRad(loc2.latitude)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+        Math.cos(toRad(loc2.latitude)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
 }
+
+export const getCheckoutMidtransService = async (uid: string) => {
+  return await prisma.carts.findMany({
+    where: {
+      userId: uid,
+      selected: true,
+    },
+    include: {
+      Product: true,
+    },
+  });
+};
+
+export const createOrderService = async ({
+  uid,
+  orderId,
+  addressId,
+  totalAmount,
+  shippingCost,
+  paymentUrl,
+}: createOrderServiceProps) => {
+  await prisma.$transaction(async (tx) => {
+    const createOrder = await tx.order.create({
+      data: {
+        id: orderId,
+        userId: uid,
+        addressId: addressId,
+        shippingCost: shippingCost,
+        totalOrderAmount: totalAmount,
+        paymentUrl: paymentUrl,
+      },
+    });
+
+    const findCheckoutItem = await tx.carts.findMany({
+      where: {
+        userId: uid,
+        selected: true,
+      },
+      include: {
+        Product: true,
+      },
+    });
+
+    if (findCheckoutItem.length < 1) throw new Error('No selected item found');
+
+    let orderItemsArr: any = [];
+
+    findCheckoutItem.map((x: any) => {
+      orderItemsArr.push({
+        orderId: orderId,
+        productId: x.Product.id,
+        quantity: x.qty,
+        currentPrice: x.Product.price,
+        totalAmount: x.price,
+      });
+    });
+
+    await tx.orderItem.createMany({
+      data: [...orderItemsArr],
+    });
+
+    // await tx.carts.deleteMany({
+    //   where: {
+    //     selected: true,
+    //   },
+    // });
+  });
+};
+
+export const getUserOrderService = async (uid: string) => {
+  return await prisma.order.findMany({
+    where: {
+      userId: uid,
+    },
+    include: {
+      items: {
+        include: {
+          product: {
+            include: {
+              ProductImages: true,
+            },
+          },
+        },
+      },
+      address: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+};
+
+export const getTransactionByIdService = async (orderId: number) => {
+  return await prisma.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+};
+
+export const updateTransactionStatusService = async ({
+  orderId,
+  status,
+}: {
+  orderId: number;
+  status: string;
+}) => {
+  await prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      status: status as OrderStatus,
+    },
+  });
+};

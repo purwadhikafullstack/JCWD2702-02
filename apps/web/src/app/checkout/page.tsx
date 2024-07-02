@@ -9,6 +9,7 @@ import { getAddressDetail } from '@/helpers/address/hooks/getAddressDetail'
 import SelectedCart from '@/components/cart/SelectedCart'
 import { useGetNearestWarehouse } from '@/helpers/cart/hooks/useGetNearestWarehouse'
 import { useShippingCost } from '@/helpers/rajaOngkir/hooks/useShippingCost'
+import { useCheckoutMidtrans } from '@/helpers/checkout/hooks/useCheckoutMidtrans'
 
 export default function Checkout() {
   const { dataUserAddress, UserAddressLoading } = getUserAddress()
@@ -17,6 +18,7 @@ export default function Checkout() {
   const { mutationGetNearestWarehouse, nearestWarehouseData } =
     useGetNearestWarehouse()
   const { mutationShippingCost, shippingCostData } = useShippingCost()
+  const { mutationCheckoutMidtrans } = useCheckoutMidtrans()
 
   const selectedCart = dataCheckoutCart?.data?.data
   const totalWeight = dataUserCart?.data?.data?.totalWeight
@@ -29,6 +31,7 @@ export default function Checkout() {
   const [totalAmount, setTotalAmout] = useState<number>()
 
   const courierTypeRef = useRef<HTMLSelectElement>(null)
+  const addressTypeRef = useRef<HTMLSelectElement>(null)
 
   useEffect(() => {
     if (totalPrice && shippingCostPrice) {
@@ -58,11 +61,20 @@ export default function Checkout() {
 
   const handleAddressChange = (event: any) => {
     setMainAddress(event.target.value)
+    setShippingCostPrice(undefined)
+    setTotalAmout(undefined)
+    setEtd(undefined)
+    setCourier(undefined)
+    if (addressTypeRef.current) {
+      addressTypeRef.current.value = 'DEFAULT'
+    }
   }
 
   const handleCourierChange = (event: any) => {
-    setShippingCostPrice(0)
+    setShippingCostPrice(undefined)
     setCourier(event.target.value)
+    setTotalAmout(undefined)
+    setEtd(undefined)
     if (courierTypeRef.current) {
       courierTypeRef.current.value = 'DEFAULT'
     }
@@ -77,6 +89,14 @@ export default function Checkout() {
   const { dataAddressDetail } = getAddressDetail(mainAddress as any)
   const addressDetailData = dataAddressDetail?.data?.data
 
+  const handleCheckoutMidtrans = () => {
+    mutationCheckoutMidtrans({
+      grossAmount: Number(totalAmount),
+      shippingCost: shippingCostPrice as number,
+      addressId: Number(mainAddress),
+    })
+  }
+
   useEffect(() => {
     mutationShippingCost({
       origin: addressDetailData?.cityId,
@@ -89,15 +109,15 @@ export default function Checkout() {
   if (UserAddressLoading || checkoutCartLoading) return <Loading />
 
   return (
-    <div className='flex h-full flex-col items-center justify-center gap-3 bg-red-200 px-20'>
-      <h1 className='flex w-full justify-center bg-purple-200 text-2xl font-bold'>
-        Shipping
+    <div className='flex h-full flex-col items-center justify-center gap-3 px-20'>
+      <h1 className='flex w-full justify-center text-2xl font-bold'>
+        Checkout
       </h1>
-      <div className='flex w-[80%] justify-center bg-yellow-200'>
-        <div className='flex min-h-[410px] w-full bg-purple-200'>
+      <div className='flex w-[80%] justify-center rounded-lg bg-ebony'>
+        <div className='flex min-h-[410px] w-full'>
           <div className='flex h-max w-full flex-col items-center justify-center gap-10 p-5'>
             <div className='flex w-full flex-col gap-3'>
-              <h3 className='text-xl font-bold'>Choose Address</h3>
+              <h3 className='text-xl font-bold text-white'>Choose Address</h3>
               <select
                 defaultValue={'DEFAULT'}
                 className='select select-bordered w-full'
@@ -116,30 +136,30 @@ export default function Checkout() {
               </select>
             </div>
             {mainAddress == null ? (
-              <div className='flex h-[200px] items-center justify-center font-bold'>
+              <div className='flex h-[200px] items-center justify-center font-bold text-white'>
                 Choose Address First
               </div>
             ) : (
               <>
-                <div className='flex w-full flex-col gap-2'>
+                <div className='flex w-full flex-col gap-2 text-white'>
                   <h3 className='text-xl font-bold'>Address Detail</h3>
-                  <div className='flex w-full justify-between'>
+                  <div className='flex w-full justify-between text-mercury'>
                     <div className='font-bold'>Recipients</div>
                     {addressDetailData?.recipients}
                   </div>
-                  <div className='flex h-fit w-full justify-between'>
+                  <div className='flex h-fit w-full justify-between text-mercury'>
                     <div className='font-bold'>Address</div>
                     {addressDetailData?.address}
                   </div>
-                  <div className='flex w-full justify-between'>
+                  <div className='flex w-full justify-between text-mercury'>
                     <div className='font-bold'>Phone Number</div>
                     {addressDetailData?.phoneNumber}
                   </div>
-                  <div className='flex w-full justify-between'>
+                  <div className='flex w-full justify-between text-mercury'>
                     <div className='font-bold'>Province</div>
                     {addressDetailData?.province}
                   </div>
-                  <div className='flex w-full justify-between'>
+                  <div className='flex w-full justify-between text-mercury'>
                     <div className='font-bold'>City</div>
                     {addressDetailData?.city}
                   </div>
@@ -148,10 +168,11 @@ export default function Checkout() {
             )}
 
             <div className='flex w-full flex-col gap-3'>
-              <h3 className='text-xl font-bold'>Choose Shipping</h3>
+              <h3 className='text-xl font-bold text-white'>Choose Shipping</h3>
               <div className='flex w-full'>
                 <div className='flex w-[50%] flex-col gap-3'>
                   <select
+                    ref={addressTypeRef}
                     onChange={handleCourierChange}
                     defaultValue={'DEFAULT'}
                     className='select select-bordered w-[50%]'
@@ -203,12 +224,12 @@ export default function Checkout() {
             </div>
           </div>
         </div>
-        <div className='flex h-full w-full bg-blue-400'>
-          <div className='flex h-full w-full flex-col items-center justify-start gap-2 p-5'>
-            <div className='bg-red-200 text-2xl font-bold text-white'>
+        <div className='flex h-full w-full rounded-r-lg bg-eggplant'>
+          <div className='flex h-full w-full flex-col items-center justify-start gap-2 p-5 text-white'>
+            <div className='text-2xl font-bold text-white'>
               Checkout Information
             </div>
-            <div className='text-md flex w-full justify-between bg-green-200'>
+            <div className='text-md flex w-full justify-between text-mercury'>
               <div>Total Price</div>
               {totalPrice.toLocaleString('id-ID', {
                 style: 'currency',
@@ -216,7 +237,7 @@ export default function Checkout() {
               })}
             </div>
             {shippingCostPrice ? (
-              <div className='text-md flex w-full justify-between bg-green-200'>
+              <div className='text-md flex w-full justify-between text-mercury'>
                 <div>Shipping Price</div>
                 {shippingCostPrice.toLocaleString('id-ID', {
                   style: 'currency',
@@ -225,7 +246,7 @@ export default function Checkout() {
               </div>
             ) : null}
             {etd ? (
-              <div className='text-md flex w-full justify-between bg-green-200'>
+              <div className='text-md flex w-full justify-between text-mercury'>
                 <div>Estimate Day</div>
                 {etd} Day/s
               </div>
@@ -233,15 +254,23 @@ export default function Checkout() {
             {totalAmount ? (
               <>
                 <div className='divider'></div>
-                <div className='text-md flex w-full justify-between bg-green-200'>
-                  <div>Total Price</div>
+                <div className='text-md flex w-full justify-between text-mercury'>
+                  <div>Total Payment</div>
                   {totalAmount.toLocaleString('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
                   })}
                 </div>
-                <div className='divider'></div>
+                <div className='divider text-neutral-content'></div>
               </>
+            ) : null}
+            {totalAmount ? (
+              <div
+                onClick={handleCheckoutMidtrans}
+                className='text-md btn flex w-[20%] justify-center border-ebony bg-ebony text-mercury hover:border-eggplant hover:bg-ebony'
+              >
+                Checkout
+              </div>
             ) : null}
           </div>
         </div>

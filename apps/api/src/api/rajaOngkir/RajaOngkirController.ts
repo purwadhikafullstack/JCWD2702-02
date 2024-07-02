@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://api.rajaongkir.com/starter';
-axios.defaults.headers.common['key'] = process.env.RAJA_ONGKIR_API_KEY;
-axios.defaults.headers.post['Content-Type'] =
-  'application/x-www-form-urlencoded';
+const RAJA_ONGKIR_API_URL = process.env.RAJA_ONGKIR_API_URL;
+const RAJA_ONGKIR_API_KEY = process.env.RAJA_ONGKIR_API_KEY;
 
 export const getProvince = async (
   req: Request,
@@ -12,7 +10,12 @@ export const getProvince = async (
   next: NextFunction,
 ) => {
   try {
-    const response = await axios.get('/province');
+    const response = await axios.get(`${RAJA_ONGKIR_API_URL}/province`, {
+      headers: {
+        key: RAJA_ONGKIR_API_KEY,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
 
     res.status(201).send({
       error: false,
@@ -31,7 +34,15 @@ export const getCities = async (
 ) => {
   try {
     const { provinceId } = req.query;
-    const response = await axios.get(`/city?province=${provinceId}`);
+    const response = await axios.get(
+      `${RAJA_ONGKIR_API_URL}/city?province=${provinceId}`,
+      {
+        headers: {
+          key: RAJA_ONGKIR_API_KEY,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    );
 
     res.status(201).send({
       error: false,
@@ -50,9 +61,14 @@ export const getCityDetail = async (
 ) => {
   try {
     const { cityId, provinceId } = req.query;
-
     const response = await axios.get(
-      `/city?province=${provinceId}&id=${cityId}`,
+      `${RAJA_ONGKIR_API_URL}/city?province=${provinceId}&id=${cityId}`,
+      {
+        headers: {
+          key: RAJA_ONGKIR_API_KEY,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
     );
 
     res.status(201).send({
@@ -72,15 +88,21 @@ export const shippingCost = async (
 ) => {
   try {
     const { origin, destination, weight, courier } = req.query;
-
-    const response = await axios.post('/cost', {
-      origin: origin,
-      destination,
-      weight,
-      courier,
-    });
-
-    console.log(response.data.rajaongkir.results[0].costs);
+    const response = await axios.post(
+      `${RAJA_ONGKIR_API_URL}/cost`,
+      {
+        origin,
+        destination,
+        weight,
+        courier,
+      },
+      {
+        headers: {
+          key: RAJA_ONGKIR_API_KEY,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    );
 
     res.status(201).send({
       error: false,
