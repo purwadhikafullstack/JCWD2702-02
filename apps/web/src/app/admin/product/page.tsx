@@ -6,6 +6,7 @@ import Link from "next/link";
 import { IoMdCreate } from "react-icons/io";
 import { FaTrashRestoreAlt } from "react-icons/fa";
 import SearchAndFilterBoxAdminProduct from "@/components/admin/SearchBoxAdminProduct";
+import Head from "next/head";
 
 export default function Adminproduct({ searchParams }: { searchParams: { search: string, sort: string, minPrice: string, maxPrice: string, categoryId: string, page: string } }) {
     const { search = '', sort = '', categoryId = '', page = '1' } = searchParams;
@@ -16,14 +17,17 @@ export default function Adminproduct({ searchParams }: { searchParams: { search:
         setTimeout(() => {
             refetchDataProducts();
         }, 10);
-    }, [search, sort, categoryId, page]);
+    }, [search, sort, categoryId, page, refetchDataProducts]);
 
-    if (isLoading) {
-        return <div>Loading...</div>
-    }
+    if (isLoading) return <div>Loading...</div>
+
 
     return (
         <div className="container mx-auto p-4 border border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh]">
+            <Head>
+                <title>Admin Products</title>
+                <meta name="description" content="Manage and view all products in the admin panel. Restore deleted products and create new ones." />
+            </Head>
             <div className="flex justify-between items-center mb-4">
                 <div className="text-2xl font-semibold">Products</div>
                 <div className="flex gap-5">
@@ -44,8 +48,8 @@ export default function Adminproduct({ searchParams }: { searchParams: { search:
             </div>
             {dataProducts && dataProducts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {dataProducts.map((item: any, index: number) => (
-                        <AdminProductCard key={index} id={item.id} name={item.name} price={item.price} productImage={`http://localhost:8000/${item.oneImage.productUrl}`} />
+                    {dataProducts.map((item: { id: number, name: string, price: number, oneImage: { productUrl: string } }, index: number) => (
+                        <AdminProductCard key={index} id={item.id} name={item.name} price={item.price} productImage={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${item.oneImage.productUrl}`} />
                     ))}
                 </div>
             ) : (

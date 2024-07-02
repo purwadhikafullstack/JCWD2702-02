@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useGetAllErasedProduct } from "@/helpers/adminProduct/hooks/useGetAllErasedProduct";
 import { AdminErasedProductCard } from "@/components/admin/AdminErasedProductCard";
+import Head from "next/head";
 
 export default function Adminproduct() {
     const { dataErasedProducts, refetchDataErasedProducts, isLoading } = useGetAllErasedProduct();
@@ -27,6 +28,10 @@ export default function Adminproduct() {
 
     return (
         <div className="container mx-auto p-4 border border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh]">
+            <Head>
+                <title>Erased Products</title>
+                <meta name="description" content="View erased products in the admin panel. Restore products by searching and selecting from the list." />
+            </Head>
             <div className="flex justify-between items-center mb-4">
                 <div className="text-2xl font-semibold">Erased Products</div>
             </div>
@@ -36,7 +41,7 @@ export default function Adminproduct() {
             {filteredProducts && filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {filteredProducts.map((item: any, index: number) => (
-                        <AdminErasedProductCard key={index} id={item.id} name={item.name} price={item.price} productImage={`http://localhost:8000/${item.ProductImages[0].productUrl}`} />
+                        <AdminErasedProductCard key={index} id={item.id} name={item.name} price={item.price} productImage={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${item.ProductImages[0].productUrl}`} />
                     ))}
                 </div>
             ) : (

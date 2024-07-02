@@ -52,3 +52,11 @@ export interface IReduceStockModalProps {
     dataWarehouseDetail: any;
     warehouseId: string;
 }
+
+export interface IDeletePopupProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    title: string;
+    children: React.ReactNode;
+}

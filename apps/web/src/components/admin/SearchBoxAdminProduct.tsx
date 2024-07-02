@@ -60,6 +60,8 @@ export default function SearchAndFilterBoxAdminProduct({ initialSearchParams, re
         refetchDataProducts();
     };
 
+    console.log(totalProducts)
+
     return (
         <div className="flex flex-col items-center justify-center w-full mt-[30px]">
             <div className='flex w-full justify-between items-center mb-4'>
@@ -100,6 +102,7 @@ export default function SearchAndFilterBoxAdminProduct({ initialSearchParams, re
                     <Pagination
                         className='flex items-end justify-end'
                         simple
+                        pageSize={8}
                         defaultCurrent={page}
                         total={totalProducts}
                         onChange={handlePageChange}

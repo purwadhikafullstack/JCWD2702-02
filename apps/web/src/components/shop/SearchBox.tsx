@@ -151,7 +151,7 @@ export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters
             )}
             {showAdditionalFilters && (
                 <div className='flex items-end justify-end w-[75%] mt-[40px]'>
-                    <Pagination className='flex items-end justify-end' simple defaultCurrent={page} total={totalProducts} onChange={handlePageChange} />
+                    <Pagination className='flex items-end justify-end' simple pageSize={8} defaultCurrent={page} total={totalProducts} onChange={handlePageChange} />
                 </div>
             )}
         </div>

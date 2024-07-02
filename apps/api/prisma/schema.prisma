@@ -33,7 +33,6 @@ model User {
   User_Reset_Password_History     User_Reset_Password_History[]
   User_Email_Verification_History User_Email_Verification_History[]
   Address                         Address[]
-  Carts                           Carts[]
 
   @@map("users")
 }
@@ -178,6 +177,7 @@ model Product {
   description      String @db.LongText()
   price            Int    @default(0)
   reservedQuantity Int    @default(0)
+  weight           Int?   @default(1000)
   categoryId       Int?
 
   createdAt DateTime  @default(now())
@@ -189,7 +189,6 @@ model Product {
   ProductImages Product_Images[]
   Categories    Category?        @relation(fields: [categoryId], references: [id])
   stockHistory  stockHistory[]
-  Carts         Carts[]
 
   @@map("products")
 }
@@ -225,12 +224,13 @@ model Carts {
 }
 
 model Order {
-  id               Int    @id @default(autoincrement())
-  user             User   @relation(fields: [userId], references: [uid])
+  id               Int          @id @default(autoincrement())
+  user             User         @relation(fields: [userId], references: [uid])
   userId           String
-  status           String
+  status           OrderStatus? @default(WAITING_FOR_PAYMENT)
   addressId        Int
-  totalOrderAmount Int    @default(0)
+  totalOrderAmount Int          @default(0)
+  shippingCost     Int?         @default(0)
 
   address Address @relation(fields: [addressId], references: [id])
 
@@ -238,8 +238,16 @@ model Order {
   updatedAt DateTime  @updatedAt
   shippedAt DateTime?
 
-  items   OrderItem[]
-  payment Payment[]
+  items        OrderItem[]
+  payment      Payment[]
+  stockHistory stockHistory[]
+}
+
+enum OrderStatus {
+  PAID
+  WAITING_FOR_PAYMENT
+  WAITING_FOR_CONFIRMATION
+  CANCELLED
 }
 
 model OrderItem {
@@ -272,10 +280,12 @@ model stockHistory {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   deletedAt DateTime?
+  orderId   Int?
 
   Product Product       @relation(fields: [productId], references: [id])
   from    Mutation_Type @relation("StockHistoryFrom", fields: [fromId], references: [id])
   to      Mutation_Type @relation("StockHistoryTo", fields: [toId], references: [id])
+  order   Order?        @relation(fields: [orderId], references: [id])
 
   @@map("stock_history")
 }
