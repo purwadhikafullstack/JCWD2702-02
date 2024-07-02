@@ -2,7 +2,8 @@ export interface IProduct {
     name: string,
     description: string,
     price: number,
-    categoryId: number
+    categoryId: number,
+    weight: number
 }
 
 export interface IProductImage {

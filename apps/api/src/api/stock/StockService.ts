@@ -179,7 +179,8 @@ export const orderStockHistoryQuery = async (orderId: number) => {
                 quantity: quantityNeeded,
                 fromId: closestWarehouseId,
                 toId: 7,
-                status: StockStatus.ACCEPTED
+                status: StockStatus.ACCEPTED,
+                orderId: orderId
             });
         } else {
             let remainingQuantity = quantityNeeded - totalStockClosestWarehouse;
@@ -206,12 +207,26 @@ export const orderStockHistoryQuery = async (orderId: number) => {
                 quantity: item.quantity,
                 fromId: closestWarehouseId,
                 toId: 7,
-                status: StockStatus.ACCEPTED
+                status: StockStatus.ACCEPTED,
+                orderId: orderId
             });
         }
     }
     const createStockHistoryPerProduct = await prisma.stockHistory.createMany({
         data: createStockHistoryData
     });
-    return createStockHistoryPerProduct;
+    // Fetch the created records based on the data we just inserted
+    const createdRecords = await prisma.stockHistory.findMany({
+        where: {
+            OR: createStockHistoryData.map(data => ({
+                productId: data.productId,
+                quantity: data.quantity,
+                fromId: data.fromId,
+                toId: data.toId,
+                status: data.status
+            }))
+        }
+    });
+
+    return { createStockHistoryPerProduct, createdRecords };
 };

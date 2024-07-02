@@ -2,6 +2,7 @@
 import { useGetWarehouseDetail } from "@/helpers/adminWarehouse/hooks/useGetWarehouseDetail"
 import { useGetOutgoingStockRequestPerWarehouse } from "@/helpers/adminWarehouse/hooks/useGetOutgoingStockRequestPerWarehouse"
 import Link from "next/link"
+import Head from "next/head"
 import { IoIosArrowBack } from "react-icons/io"
 
 export default function OutgoingStockRequest({ params }: { params: { warehouseDetail: string } }) {
@@ -17,6 +18,10 @@ export default function OutgoingStockRequest({ params }: { params: { warehouseDe
     if (dataOutgoingStockRequestPerWarehouse === undefined) return <div>Loading...</div>
     return (
         <div className="container mx-auto p-4 border border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh]">
+            <Head>
+                <title>Outgoing Stock Requests - {dataWarehouseDetail?.name}</title>
+                <meta name="description" content={`View outgoing stock requests for ${dataWarehouseDetail?.name}, ${dataWarehouseDetail?.province}, ${dataWarehouseDetail?.city}`} />
+            </Head>
             <div className="flex flex-col">
                 <div className="flex flex-row justify-between items-center gap-4 mb-4">
                     <div>

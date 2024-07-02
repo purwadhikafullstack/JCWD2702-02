@@ -8,6 +8,7 @@ import OrderRouter from './../order/OrderRouter';
 import RajaOngkirRouter from './../rajaOngkir/RajaOngkirRouter';
 import WarehouseRouter from './../warehouses/WarehouseRouter';
 import StockRouter from './../stock/StockRouter';
+import ReportRouter from './../report/ReportRouter';
 
 const router = Router();
 
@@ -29,5 +30,6 @@ router.use('/order', OrderRouter);
 router.use('/raja-ongkir', RajaOngkirRouter);
 router.use('/warehouse', WarehouseRouter);
 router.use('/stock', StockRouter);
+router.use('/report', ReportRouter);
 
 export default router;

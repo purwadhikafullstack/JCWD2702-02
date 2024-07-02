@@ -11,55 +11,13 @@ export const getStockMutationTypeQuery = async (warehouseId: string) => {
     return await prisma.mutation_Type.findMany({
         where: {
             AND: [
-                {
-                    warehouseId: {
-                        not: null
-                    }
-                },
-                {
-                    warehouseId: {
-                        not: Number(warehouseId)
-                    }
-                }
+                { warehouseId: { not: null } },
+                { warehouseId: { not: Number(warehouseId) } }
             ]
         },
-        include: {
-            warehouse: true
-        }
+        include: { warehouse: true }
     });
 }
-
-// // Query for get all products (stock per warehouse)
-// export const getProductsPerWarehouseQuery = async (warehouseId?: string, sort?: string, search?: string, page?: string) => {
-
-//     const products = await prisma.product.findMany({
-//         include: {
-//             stockHistory: {
-//                 where: {
-//                     AND: [{ status: 'ACCEPTED' }, { OR: [{ fromId: Number(warehouseId) }, { toId: Number(warehouseId) }] }],
-//                 }
-//             }
-//         },
-//     });
-
-//     const productsWithTotalStock = products.map(product => {
-//         let totalStock = 0;
-//         for (let stock of product.stockHistory) {
-//             if (stock.fromId === Number(warehouseId)) {
-//                 totalStock -= stock.quantity;
-//             } else if (stock.toId === Number(warehouseId)) {
-//                 totalStock += stock.quantity;
-//             }
-//         }
-
-//         return {
-//             ...product,
-//             totalStock: totalStock
-//         };
-//     });
-
-//     return { products: productsWithTotalStock };
-// };
 
 // Query for get all products (stock per warehouse)
 export const getProductsPerWarehouseQuery = async (warehouseId?: string, sort?: string, search?: string, page?: number) => {
@@ -112,27 +70,71 @@ export const getProductsPerWarehouseQuery = async (warehouseId?: string, sort?: 
 };
 
 // Query for get stockHistory by product Id and warehouse Id
-export const getStockHistoryByProductIdAndWarehouseIdQuery = async (productId: string, warehouseId: string) => {
+export const getStockHistoryByProductIdAndWarehouseIdQuery = async (productId: string, warehouseId: string, month?: string, year?: string) => {
+    const whereClause: Prisma.stockHistoryWhereInput = {
+        productId: Number(productId),
+        OR: [
+            { AND: [{ fromId: Number(warehouseId) }, { status: { in: ['ACCEPTED', 'REJECTED'] } }] },
+            { AND: [{ toId: Number(warehouseId) }, { status: { in: ['ACCEPTED', 'REJECTED'] } }] }
+        ]
+    };
+
+    if (month && year) {
+        const startDate = new Date(Number(year), Number(month) - 1, 1);
+        const endDate = new Date(Number(year), Number(month), 0);
+        whereClause.createdAt = {
+            gte: startDate,
+            lt: endDate
+        };
+    }
+
     const stockHistory = await prisma.stockHistory.findMany({
-        where: {
-            productId: Number(productId),
-            OR: [
-                { AND: [{ fromId: Number(warehouseId) }, { status: { in: ['ACCEPTED', 'REJECTED'] } }] },
-                { AND: [{ toId: Number(warehouseId) }, { status: { in: ['ACCEPTED', 'REJECTED'] } }] }
-            ]
-        },
+        where: whereClause,
         include: {
             from: { include: { warehouse: true } },
             to: { include: { warehouse: true } }
-        }
+        },
+        orderBy: [{ createdAt: 'asc' }]
     });
 
     const product = await prisma.product.findUnique({
         where: { id: Number(productId) }
     });
 
-    return { product, stockHistory };
-}
+    const fromSum = await prisma.stockHistory.aggregate({
+        where: {
+            productId: Number(productId),
+            fromId: Number(warehouseId),
+            status: { in: ['ACCEPTED', 'REJECTED'] },
+            ...(month && year && {
+                createdAt: {
+                    gte: new Date(Number(year), Number(month) - 1, 1),
+                    lt: new Date(Number(year), Number(month), 0)
+                }
+            })
+        },
+        _sum: { quantity: true }
+    });
+
+    const toSum = await prisma.stockHistory.aggregate({
+        where: {
+            productId: Number(productId),
+            toId: Number(warehouseId),
+            status: { in: ['ACCEPTED', 'REJECTED'] },
+            ...(month && year && {
+                createdAt: {
+                    gte: new Date(Number(year), Number(month) - 1, 1),
+                    lt: new Date(Number(year), Number(month), 0)
+                }
+            })
+        },
+        _sum: { quantity: true }
+    });
+
+    const currentStock = (toSum._sum.quantity || 0) - (fromSum._sum.quantity || 0);
+
+    return { product, stockHistory, fromSum: fromSum._sum.quantity, toSum: toSum._sum.quantity, currentStock };
+};
 
 // Query for get warehouse by id
 export const getWarehouseByIdQuery = async (id: string) => {
@@ -152,16 +154,8 @@ export const getStockRequestByWarehouseIdQuery = async (warehouseId: string) => 
         },
         include: {
             Product: true,
-            from: {
-                include: {
-                    warehouse: true
-                }
-            },
-            to: {
-                include: {
-                    warehouse: true
-                }
-            }
+            from: { include: { warehouse: true } },
+            to: { include: { warehouse: true } }
         }
     })
 }

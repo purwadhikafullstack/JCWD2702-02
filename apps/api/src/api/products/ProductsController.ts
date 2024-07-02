@@ -3,7 +3,7 @@ import { DeletedProductUrlFiles } from '../../helpers/DeleteProductUrlFiles';
 import fs from 'fs';
 import path from 'path';
 import { prisma } from '@/lib/PrismaClient';
-import { createProductAndProductImagesQuery, softDeleteProductQuery, getErasedProductsQuery, restoreProductQuery, updateProductImageQuery, getProductImageByIdQuery, updateProductDataQuery, getProductsQuery, getProductByIdQuery, getProductImagesQuery, deleteProductQuery } from '../products/ProductService';
+import { createProductAndProductImagesQuery, getExistingProductQuery, softDeleteProductQuery, getErasedProductsQuery, restoreProductQuery, updateProductImageQuery, getProductImageByIdQuery, updateProductDataQuery, getProductsQuery, getProductByIdQuery, getProductImagesQuery, deleteProductQuery } from '../products/ProductService';
 
 // Controller for get all products
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
@@ -58,20 +58,14 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
 }
 
 // Controller for create product
-export const createProduct = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
+export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = JSON.parse(req.body.data);
         let uploadedProductUrl;
         if (req.files) {
-            uploadedProductUrl = Array.isArray(req.files)
-                ? req.files
-                : req.files['producturl'];
-            const getProductsQueryResult = await getProductsQuery();
-            for (const product of getProductsQueryResult) {
+            uploadedProductUrl = Array.isArray(req.files) ? req.files : req.files['producturl'];
+            const getExistingProductResult = await getExistingProductQuery();
+            for (const product of getExistingProductResult) {
                 if (product.name === data.name) {
                     throw new Error('Cannot Create Product, Product name already exists');
                 }

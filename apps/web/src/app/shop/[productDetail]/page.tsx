@@ -11,6 +11,8 @@ import { useContext } from "react";
 import { CartContext } from "@/config/context/cartContext";
 import { useAddToCart } from "@/helpers/cart/hooks/useAddToCart";
 import ActiveImageModal from "@/components/shop/ActiveImageModal";
+import Head from "next/head";
+import HeadComponentMeta from "@/components/cores/Head";
 
 export default function ProductDetail({ params }: { params: { productDetail: string } }) {
     const { productDetail } = useGetProductDetail(params.productDetail);
@@ -49,6 +51,7 @@ export default function ProductDetail({ params }: { params: { productDetail: str
 
     return (
         <div className="bg-[#ffffff] mt-8 mb-8 min-h-screen w-auto px-4 lg:px-8">
+            <HeadComponentMeta title={productDetail?.products.name} description="Product detail page, see all product descriptions on this page" keywords="product, shop, ecommerce" />
             <div className="flex flex-col lg:flex-row mx-[50px] justify-center items-center">
                 <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%] justify-center">
                     <div className="mb-4 flex justify-center">
@@ -65,12 +68,12 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                 <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%]">
                     <div className="flex flex-col gap-[15px] items-center">
                         {activeImg && (
-                            <Image src={`http://localhost:8000/${activeImg}`} key={activeImg} className="aspect-square object-cover rounded-xl shadow-lg cursor-pointer" alt="image" width={450} height={450} onClick={handleActiveImageClick} />
+                            <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${activeImg}`} key={activeImg} className="aspect-square object-cover rounded-xl shadow-lg cursor-pointer" alt="image" width={450} height={450} onClick={handleActiveImageClick} />
                         )}
                         <div className="flex flex-row justify-start gap-2 flex-wrap">
                             {productDetail?.productImages?.map((image: IProductDetail, index: number) => (
                                 <div key={index} onClick={() => setActiveImg(image.productUrl)} className="w-24 h-24 rounded-xl cursor-pointer mb-2">
-                                    <Image src={`http://localhost:8000/${image.productUrl}`} className="w-[100px] h-[100px] object-cover rounded-xl" alt="image" width={1000} height={1000} />
+                                    <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${image.productUrl}`} className="w-[100px] h-[100px] object-cover rounded-xl" alt="image" width={1000} height={1000} />
                                 </div>
                             ))}
                         </div>
@@ -141,7 +144,7 @@ export default function ProductDetail({ params }: { params: { productDetail: str
                     </div>
                 </div>
             </div>
-            {showModal && activeImg && <ActiveImageModal src={`http://localhost:8000/${activeImg}`} alt="Product Image" onClose={handleCloseModal} />}
+            {showModal && activeImg && <ActiveImageModal src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${activeImg}`} alt="Product Image" onClose={handleCloseModal} />}
         </div>
     );
 }

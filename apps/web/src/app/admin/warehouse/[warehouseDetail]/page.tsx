@@ -5,13 +5,13 @@ import { useGetProductsStockPerWarehouse } from "@/helpers/adminWarehouse/hooks/
 import { useGetStockMutationTypeLists } from '@/helpers/adminWarehouse/hooks/useGetStockMutationTypeLists';
 import { useGetStockRequestPerWarehouse } from '@/helpers/adminWarehouse/hooks/useGetStockRequestPerWarehouse';
 import { useGetOutgoingStockRequestPerWarehouse } from '@/helpers/adminWarehouse/hooks/useGetOutgoingStockRequestPerWarehouse';
-import { HiSortDescending, HiSortAscending } from "react-icons/hi";
 import { FaHistory } from "react-icons/fa";
 import CreateRequestModal from '@/components/admin/CreateManualRequestModal';
 import AddStockModal from '@/components/admin/AddStockModal';
 import ReduceStockModal from '@/components/admin/ReduceStockModal';
 import SearchBoxWarehouseDetail from '@/components/admin/SearchBoxWarehouseDetail';
 import Link from "next/link";
+import Head from 'next/head';
 
 export default function WarehouseDetail({ params, searchParams }: { params: { warehouseDetail: string } } & { searchParams: { search: string, sort: string, page: string } }) {
     const { search = '', sort = '', page = '1' } = searchParams;
@@ -53,6 +53,7 @@ export default function WarehouseDetail({ params, searchParams }: { params: { wa
     };
 
     const closeModal = (setModalState: React.Dispatch<React.SetStateAction<boolean>>) => {
+        refetchDataProductsStockPerWarehouse()
         setModalState(false);
         setSelectedProduct(null);
     };
@@ -61,11 +62,17 @@ export default function WarehouseDetail({ params, searchParams }: { params: { wa
 
     return (
         <div className="container mx-auto p-4 border border-gray-300 rounded-md shadow-lg overflow-y-auto max-h-[95vh]">
+            <Head>
+                <title>{dataWarehouseDetail?.name} - Warehouse Detail</title>
+                <meta name="description" content={`Details of ${dataWarehouseDetail?.name} warehouse including stock, requests, and more.`} />
+            </Head>
             <div className="flex flex-col gap-2 mb-4">
                 <div className='flex justify-between'>
-                    <div className="text-2xl ml-[5px] font-semibold text-[#704b66]">
-                        {dataWarehouseDetail?.name}
-                    </div>
+                    <Link href={`/admin/warehouse/${params.warehouseDetail}/dashboard`}>
+                        <div className="text-2xl ml-[5px] font-semibold text-[#704b66]">
+                            {dataWarehouseDetail?.name}
+                        </div>
+                    </Link>
                 </div>
                 <div className="flex justify-between items-center">
                     <div className="text-black ml-[5px] font-bold">
