@@ -139,8 +139,6 @@ export const createOrderService = async ({
       },
     });
 
-    console.log(findCheckoutItem);
-
     if (findCheckoutItem.length < 1) throw new Error('No selected item found');
 
     let orderItemsArr: any = [];
@@ -172,14 +170,63 @@ export const createOrderService = async ({
 
     await tx.carts.deleteMany({
       where: {
+        userId: uid,
         selected: true,
       },
     });
   });
 };
 
-export const getUserOrderService = async (uid: string) => {
-  return await prisma.order.findMany({
+export const getUserOrderService = async (
+  uid: string,
+  page: number,
+  limit: number,
+  status: string,
+) => {
+  const pageNumber = page;
+
+  if (status != 'All') {
+    const totalOrder = await prisma.order.count({
+      where: {
+        userId: uid,
+        status: status as OrderStatus,
+      },
+    });
+
+    const result = await prisma.order.findMany({
+      where: {
+        userId: uid,
+        status: status as OrderStatus,
+      },
+      include: {
+        items: {
+          include: {
+            product: {
+              include: {
+                ProductImages: true,
+              },
+            },
+          },
+        },
+        address: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      skip: (Number(pageNumber) - 1) * limit,
+      take: limit,
+    });
+
+    return { result, totalOrder };
+  }
+
+  const totalOrder = await prisma.order.count({
+    where: {
+      userId: uid,
+    },
+  });
+
+  const result = await prisma.order.findMany({
     where: {
       userId: uid,
     },
@@ -198,7 +245,11 @@ export const getUserOrderService = async (uid: string) => {
     orderBy: {
       createdAt: 'desc',
     },
+    skip: (Number(pageNumber) - 1) * limit,
+    take: limit,
   });
+
+  return { result, totalOrder };
 };
 
 export const getTransactionByIdService = async (orderId: number) => {
@@ -253,5 +304,28 @@ export const cancelReservedQuatityService = async (orderId: number) => {
         reservedQuantity: x.product.reservedQuantity - x.qty,
       },
     });
+  });
+};
+
+export const getTransactionDetailService = async (
+  orderId: number,
+  uid: string,
+) => {
+  return await prisma.order.findUnique({
+    where: {
+      id: orderId,
+      userId: uid,
+    },
+    include: {
+      items: {
+        include: {
+          product: {
+            include: {
+              ProductImages: true,
+            },
+          },
+        },
+      },
+    },
   });
 };

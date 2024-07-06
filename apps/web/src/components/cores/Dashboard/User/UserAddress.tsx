@@ -48,15 +48,13 @@ export default function UserAddress() {
   })
 
   const { mutationCreateAddress, isSuccess } = useCreateUserAddress()
-  const { dataUserAddress, UserAddressLoading } = useGetUserAddress(
-    currentPage || 0
-  )
+  const { dataUserAddress, UserAddressLoading } = useGetUserAddress()
 
   const userAddressData = dataUserAddress?.data?.data
 
-  const totalPages = Math.ceil(userAddressData.length / itemsPerPage)
+  const totalPages = Math.ceil(userAddressData?.length / itemsPerPage)
 
-  const currentData = userAddressData.slice(
+  const currentData = userAddressData?.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
@@ -249,7 +247,7 @@ export default function UserAddress() {
         <div className='divider w-full'></div>
         <div className='flex w-full'>
           <div className='flex h-[600px] w-full snap-y snap-mandatory flex-col gap-5 overflow-y-scroll p-10'>
-            {currentData.map((x: any, i: any) => {
+            {currentData?.map((x: any, i: any) => {
               return (
                 <div key={i}>
                   <AddressBox

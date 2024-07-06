@@ -26,6 +26,8 @@ export default function AdminSidebarDesktop() {
 
   const navigate = useRouter()
 
+  console.log(userData?.role == 2)
+
   const { mutationKeepLogin } = useKeepLogin()
 
   const handleLogout = async () => {
@@ -78,16 +80,29 @@ export default function AdminSidebarDesktop() {
       <div className='divide-y divide-gray-300'>
         <ul className='space-y-1 pb-4 pt-2 text-sm'>
           <li>
-            <Link
-              rel='noopener noreferrer'
-              href={'/admin/dashboard'}
-              className='flex items-center space-x-3 rounded-md p-2'
-            >
-              <MdDashboardCustomize className='h-5 w-5 fill-current' />
-              <div className='font-sans font-semibold tracking-wide hover:text-red-600'>
-                DASHBOARD
-              </div>
-            </Link>
+            {userData?.role == 2 ? (
+              <Link
+                rel='noopener noreferrer'
+                href={`/admin/warehouse/${userData?.role}/dashboard`}
+                className='flex items-center space-x-3 rounded-md p-2'
+              >
+                <MdDashboardCustomize className='h-5 w-5 fill-current' />
+                <div className='font-sans font-semibold tracking-wide hover:text-red-600'>
+                  DASHBOARD
+                </div>
+              </Link>
+            ) : userData?.role == 3 ? (
+              <Link
+                rel='noopener noreferrer'
+                href={'/admin/dashboard'}
+                className='flex items-center space-x-3 rounded-md p-2'
+              >
+                <MdDashboardCustomize className='h-5 w-5 fill-current' />
+                <div className='font-sans font-semibold tracking-wide hover:text-red-600'>
+                  DASHBOARD
+                </div>
+              </Link>
+            ) : null}
           </li>
           {userData?.role == 1 ? (
             <>

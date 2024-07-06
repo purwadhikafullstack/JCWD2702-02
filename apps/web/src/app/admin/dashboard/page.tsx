@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import SuperAdminBarChartPerMonth from "@/components/admin/chart/SuperAdminBarChartPerMonth";
 import SuperAdminLineChartPerMonth from "@/components/admin/chart/SuperAdminLineChartPerMonth";
 import SuperAdminPieChartPerMonth from "@/components/admin/chart/SuperAdminPieChartPerMonth";
@@ -7,10 +7,14 @@ import SuperAdminRecentOrders from "@/components/admin/SuperAdminRecentOrders";
 import SuperAdminTopCardDashboard from "@/components/admin/chart/SuperAdminTopCardDashboard";
 import { FaChartBar, FaChartLine, FaChartPie } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
+import { UserContext } from '@/config/context/userContext';
+import { useRouter } from 'next/navigation';
 import Link from "next/link";
 import Head from "next/head";
 
 export default function SuperAdminDashboard() {
+  const navigate = useRouter()
+  const { userData, setUserData }: any = useContext(UserContext)
   const [chartTypePerMonth, setChartTypePerMonth] = useState("bar");
 
   const renderChart = () => {
@@ -25,6 +29,10 @@ export default function SuperAdminDashboard() {
         return <SuperAdminBarChartPerMonth />;
     }
   };
+
+  useEffect(()=>{
+    if(userData?.role != 1) navigate.push(`/admin/warehouse/${userData?.warehouse}`)
+  },[userData])
 
   return (
     <div className="container mx-auto h-full max-h-[95vh] overflow-y-auto rounded-md border border-gray-300 bg-white p-6 shadow-lg">

@@ -1,3 +1,4 @@
+import { query } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 import { findUserByIdService } from '../cores/AuthService';
 import {

@@ -1,7 +1,6 @@
 import { useGetUserAddressQuery } from '../api/getUserAddressQuery'
 
-export const useGetUserAddress = (skip: any) => {
-  console.log(skip)
+export const useGetUserAddress = () => {
   const {
     data: dataUserAddress,
     isLoading: UserAddressLoading,

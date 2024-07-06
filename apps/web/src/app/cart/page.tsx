@@ -19,11 +19,6 @@ const CartPage: React.FC = () => {
     router.push('/checkout')
   }
 
-  const handleSelectAll = (event: any) => {
-    const isChecked = event.target.checked
-    setChecked(isChecked)
-  }
-
   useEffect(() => {
     mutationSelectedAll({ isChecked: checked })
   }, [checked])
@@ -73,6 +68,7 @@ const CartPage: React.FC = () => {
           </div>
           <button
             onClick={handleCheckout}
+            disabled={totalPrice == 0}
             className='flex w-[90%] justify-center rounded bg-eggplant px-4 py-2 text-white hover:border-ebony hover:bg-hover_eggplant'
           >
             Checkout

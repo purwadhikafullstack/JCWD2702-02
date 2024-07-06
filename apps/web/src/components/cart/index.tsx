@@ -16,7 +16,7 @@ interface CartProps {
   price: number
   html: string
   productId: number
-  isChecked?: boolean // Optional prop to set the default checked state
+  isChecked?: boolean
 }
 
 function debounce(func: any, wait: any) {
@@ -32,7 +32,6 @@ function debounce(func: any, wait: any) {
 }
 
 export default function Cart(props: CartProps) {
-  // console.log(props)
   const queryClient = useQueryClient()
 
   const { mutationSelectedCart } = useSetSelectedCart()

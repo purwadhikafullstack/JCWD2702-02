@@ -1,18 +1,24 @@
 import { useGetCartDetail } from '@/helpers/cart/hooks/getCartDetail'
 import Image from 'next/image'
-import Loading from '../cores/Loading'
+import Loading from '../../cores/Loading'
 
-export default function SelectedCart(props: any) {
+interface OrderItemsProps {
+  productId: number
+  name: string
+  qty: number
+  price: number
+  id: any
+}
+
+export default function OrderItems(props: OrderItemsProps) {
   const { dataCartDetail, CartDetailLoading } = useGetCartDetail(
     props.productId
   )
 
-  const cartDetailData = dataCartDetail?.data?.data?.cartDetail
   const productImage = dataCartDetail?.data?.data?.productImage[0]?.productUrl
 
-  if (!dataCartDetail) return <Loading />
   return (
-    <div className='card card-side h-[170px] border-2 border-white bg-concrete shadow-xl'>
+    <div className='card card-side h-[170px] border-2 border-white bg-concrete'>
       <figure className='w-[50%] bg-ebony'>
         <Image
           src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${productImage}`}
@@ -23,21 +29,14 @@ export default function SelectedCart(props: any) {
         />
       </figure>
       <div className='card-body flex h-full w-[50%] flex-col items-center justify-center'>
-        <h2 className='card-title'>{cartDetailData?.Product?.name}</h2>
+        <h2 className='card-title'>{props.name}</h2>
         <p>
-          {cartDetailData?.qty} x{' '}
-          {cartDetailData?.Product?.price.toLocaleString('id-ID', {
+          {props.qty} x{' '}
+          {props.price.toLocaleString('id-ID', {
             style: 'currency',
             currency: 'IDR',
           })}
         </p>
-      </div>
-      <div
-        className='btn'
-        onClick={() => console.log(props.productId)}
-        // onClick={() => console.log(dataCartDetail)}
-      >
-        test
       </div>
     </div>
   )

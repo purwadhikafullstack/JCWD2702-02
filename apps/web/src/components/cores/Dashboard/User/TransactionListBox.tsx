@@ -6,23 +6,30 @@ interface TransactionListBoxProps {
   item: [{}] | any
   date: string
   href: string
+  status: string
 }
 
 export default function TransactionListBox(props: TransactionListBoxProps) {
   const items = props.item
-  // console.log(items)
-  // console.log(props.href)
   const date = props.date.split('T')[0]
-  //   console.log(date)
-  //   console.log(items[0]?.product?.ProductImages[0]?.productUrl)
-  //   console.log(typeof props.item)
+
   return (
-    <div className='card w-[60%] bg-base-100 shadow-xl'>
+    <div className='card w-full bg-base-100 shadow-xl'>
       <div className='card-body'>
         <h2 className='card-title flex w-full items-center justify-between'>
           <div className='flex items-center gap-2'>
             <div>{props.title}</div>
-            <span className='badge bg-green-400'>Badge</span>
+            {props.status == 'WAITING_FOR_PAYMENT' ? (
+              <span className='badge bg-blue-400'>Waiting for payment</span>
+            ) : props.status == 'WAITING_FOR_CONFIRMATION' ? (
+              <span className='badge bg-blue-400'>
+                Waiting for confirmation
+              </span>
+            ) : props.status == 'CANCELLED' ? (
+              <span className='badge bg-red-400'>Cancelled</span>
+            ) : props.status == 'PAID' ? (
+              <span className='badge bg-green-400'>Paid</span>
+            ) : null}
           </div>
           <div>{date}</div>
         </h2>
@@ -55,18 +62,14 @@ export default function TransactionListBox(props: TransactionListBoxProps) {
             <p className='font-bold underline'>{`${items.length - 1}+ more product `}</p>
           ) : null}
         </div>
-        {/* <p>If a dog chews shoes whose shoes does he choose?</p> */}
-
         <TransactionModal
+          id={props.title}
           body='Payment Link'
           head='Transaction Detail'
           html={props.title}
           subject='Transaction Detail'
           href={props.href}
         />
-        {/* <div className='card-actions justify-end'>
-          <button className='btn btn-primary'>Buy Now</button>
-        </div> */}
       </div>
     </div>
   )

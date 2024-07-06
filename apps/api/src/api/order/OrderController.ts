@@ -7,6 +7,7 @@ import {
   getTransactionByIdService,
   updateTransactionStatusService,
   cancelReservedQuatityService,
+  getTransactionDetailService,
 } from './OrderService';
 import { orderStockHistoryQuery } from '../stock/StockService';
 import { Order } from './OrderTypes';
@@ -128,13 +129,21 @@ export const getUserOrder = async (
   try {
     const reqToken = req as IReqAccessToken;
     const { uid } = reqToken.payload;
+    const { page, status } = req.query;
 
-    const getUserOrderResult = await getUserOrderService(uid);
+    const limit = 3;
+
+    const { result, totalOrder } = await getUserOrderService(
+      uid,
+      Number(page),
+      limit,
+      status as string,
+    );
 
     res.status(201).send({
       error: false,
       message: 'Get user order',
-      data: getUserOrderResult,
+      data: { data: result, totalPages: Math.ceil(totalOrder / limit) },
     });
   } catch (error) {
     next(error);
@@ -243,6 +252,33 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
     const { orderId } = req.body;
 
     await cancelReservedQuatityService(Number(orderId));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTransactionDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const reqToken = req as IReqAccessToken;
+    const { uid } = reqToken.payload;
+    const { orderId } = req.query;
+
+    const getTransactionResult = await getTransactionDetailService(
+      Number(orderId),
+      uid,
+    );
+
+    if (!getTransactionResult) throw new Error('Transaction not found');
+
+    res.status(201).send({
+      error: false,
+      message: 'OK',
+      data: getTransactionResult,
+    });
   } catch (error) {
     next(error);
   }

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useGetWarehouseDetail } from "@/helpers/adminWarehouse/hooks/useGetWarehouseDetail";
 import WarehouseAdminBarChartPerMonth from "@/components/admin/chart/WarehouseAdminBarChartPerMonth";
 import WarehouseAdminLineChartPerMonth from "@/components/admin/chart/WarehouseAdminLineChartPerMonth";
@@ -8,10 +8,15 @@ import WarehouseAdminRecentOrders from "@/components/admin/WarehouseAdminRecentO
 import WarehouseAdminTopCardDashboard from "@/components/admin/chart/WarehouseAdminTopCardDashboard";
 import { FaChartBar, FaChartLine, FaChartPie } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
+import { UserContext } from '@/config/context/userContext';
+import { useRouter } from 'next/navigation';
+
 import Link from "next/link";
 import Head from "next/head";
 
 export default function WarehouseAdminDashboard({ params }: { params: { warehouseDetail: string } }) {
+    const navigate = useRouter()
+    const { userData, setUserData }: any = useContext(UserContext)
     const { dataWarehouseDetail } = useGetWarehouseDetail(params.warehouseDetail);
     const [chartTypePerMonth, setChartTypePerMonth] = useState("bar");
 
@@ -27,6 +32,10 @@ export default function WarehouseAdminDashboard({ params }: { params: { warehous
                 return <WarehouseAdminBarChartPerMonth warehouseDetail={params.warehouseDetail} />;
         }
     };
+
+    useEffect(()=>{
+        if(userData?.role != params.warehouseDetail) navigate.push(`/admin/warehouse/${userData?.warehouse}`)
+    },[userData])
     return (
         <div className="container mx-auto h-full max-h-[95vh] overflow-y-auto rounded-md border border-gray-300 bg-white p-6 shadow-lg">
             <Head>
