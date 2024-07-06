@@ -1,15 +1,13 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import useCartStore from '@/zustand/cart/cartStore'
-import { getUserCart } from '@/helpers/cart/hooks/getUserCart'
+import { useGetUserCart } from '@/helpers/cart/hooks/getUserCart'
 import Cart from '@/components/cart'
-import { getCartDetail } from '@/helpers/cart/hooks/getCartDetail'
 import { useSelectAll } from '@/helpers/cart/hooks/useSelectAll'
 
 const CartPage: React.FC = () => {
   const { mutationSelectedAll, isSuccess } = useSelectAll()
-  const { dataUserCart } = getUserCart()
+  const { dataUserCart } = useGetUserCart()
   const router = useRouter()
 
   const [checked, setChecked] = useState<boolean>(false)
@@ -40,17 +38,6 @@ const CartPage: React.FC = () => {
     <div className='container mx-auto flex flex-col p-4'>
       <h1 className='mb-4 text-2xl font-bold'>Shopping Cart</h1>
       <p className='mb-4'>Total items: {userCartData?.length || 0}</p>
-      <div className='form-control w-[10%]'>
-        <label className='label cursor-pointer'>
-          <span className='label-text text-lg'>Select All</span>
-          <input
-            type='checkbox'
-            className='checkbox'
-            onChange={handleSelectAll}
-            checked={checked}
-          />
-        </label>
-      </div>
       <div className='flex gap-11'>
         <div className='flex w-full'>
           <div className='flex w-full'>

@@ -1,12 +1,11 @@
-import { getUserCartQuery } from '../api/getUserCartQuery'
-import { getCartDetailQuery } from '../api/getCartDetailQuery'
+import { useGetCartDetailQuery } from '../api/getCartDetailQuery'
 
-export const getCartDetail = (productId: any) => {
+export const useGetCartDetail = (productId: any) => {
   const {
     data: dataCartDetail,
     isLoading: CartDetailLoading,
     refetch,
-  } = getCartDetailQuery(productId)
+  } = useGetCartDetailQuery(productId)
 
   return { dataCartDetail, CartDetailLoading, refetch }
 }

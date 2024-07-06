@@ -52,7 +52,7 @@ export default function WhatsOn() {
             </h1>
             <p className='h-[72px] pt-2 text-[13px] text-gray-500'>
               We are proud to announce that Elevate Furniture has been honored
-              as Brand of the Year in the "Home Furnishings" category at the
+              as Brand of the Year in the Home Furnishings category at the
               prestigious World Branding Awards for 2023-2024. This marks the
               second consecutive year that Elevate Furniture has achieved this
               distinguished recognition.

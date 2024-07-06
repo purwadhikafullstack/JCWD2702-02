@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { getCartDetail } from '@/helpers/cart/hooks/getCartDetail'
+import { useGetCartDetail } from '@/helpers/cart/hooks/getCartDetail'
 import Loading from '../cores/Loading'
 import { useAddToCartDetail } from '@/helpers/cart/hooks/useAddToCartDetail'
 import { MdOutlineDeleteOutline } from 'react-icons/md'
@@ -39,7 +39,9 @@ export default function Cart(props: CartProps) {
   const { mutationAddToCartDetail } = useAddToCartDetail()
   const { mutationDeleteCart, isSuccess } = useDeleteCart()
 
-  const { dataCartDetail, CartDetailLoading } = getCartDetail(props.productId)
+  const { dataCartDetail, CartDetailLoading } = useGetCartDetail(
+    props.productId
+  )
   const cartDetailData = dataCartDetail?.data?.data?.cartDetail
   const productImage = dataCartDetail?.data?.data?.productImage
 

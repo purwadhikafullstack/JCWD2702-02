@@ -38,7 +38,7 @@ export const useUpdateAddressMutation = ({
       longitude,
       latitude,
     }: Address) => {
-      return await axiosInstanceInterceptor.post(
+      return await axiosInstanceInterceptor.patch(
         `/auth/user/update-address?addressId=${addressId}`,
         {
           recipients,

@@ -1,23 +1,24 @@
 'use client'
 
-import { getUserAddress } from '@/helpers/address/hooks/getUserAddress'
-import { getCheckoutCart } from '@/helpers/cart/hooks/getCheckoutCart'
+import { useGetUserAddress } from '@/helpers/address/hooks/getUserAddress'
+import { useGetCheckoutCart } from '@/helpers/cart/hooks/getCheckoutCart'
 import { useEffect, useState, useRef } from 'react'
 import Loading from '@/components/cores/Loading'
-import { getUserCart } from '@/helpers/cart/hooks/getUserCart'
-import { getAddressDetail } from '@/helpers/address/hooks/getAddressDetail'
+import { useGetUserCart } from '@/helpers/cart/hooks/getUserCart'
+import { useGetAddressDetail } from '@/helpers/address/hooks/getAddressDetail'
 import SelectedCart from '@/components/cart/SelectedCart'
 import { useGetNearestWarehouse } from '@/helpers/cart/hooks/useGetNearestWarehouse'
 import { useShippingCost } from '@/helpers/rajaOngkir/hooks/useShippingCost'
 import { useCheckoutMidtrans } from '@/helpers/checkout/hooks/useCheckoutMidtrans'
 
 export default function Checkout() {
-  const { dataUserAddress, UserAddressLoading } = getUserAddress()
-  const { dataCheckoutCart, checkoutCartLoading } = getCheckoutCart()
-  const { dataUserCart } = getUserCart()
+  const { dataUserAddress, UserAddressLoading } = useGetUserAddress()
+  const { dataCheckoutCart, checkoutCartLoading } = useGetCheckoutCart()
+  const { dataUserCart } = useGetUserCart()
   const { mutationGetNearestWarehouse, nearestWarehouseData } =
     useGetNearestWarehouse()
-  const { mutationShippingCost, shippingCostData } = useShippingCost()
+  const { mutationShippingCost, shippingCostData, isPending } =
+    useShippingCost()
   const { mutationCheckoutMidtrans } = useCheckoutMidtrans()
 
   const selectedCart = dataCheckoutCart?.data?.data
@@ -57,6 +58,8 @@ export default function Checkout() {
     if (shippingCostData) setShippingCost(shippingCostData?.data?.data)
   }, [shippingCostData])
 
+  console.log(shippingCostData)
+
   const nearestWarehouse = nearestWarehouseData?.data?.data?.nearestPlace
 
   const handleAddressChange = (event: any) => {
@@ -86,7 +89,7 @@ export default function Checkout() {
     setEtd(values[1])
   }
 
-  const { dataAddressDetail } = getAddressDetail(mainAddress as any)
+  const { dataAddressDetail } = useGetAddressDetail(mainAddress as any)
   const addressDetailData = dataAddressDetail?.data?.data
 
   const handleCheckoutMidtrans = () => {
@@ -192,7 +195,7 @@ export default function Checkout() {
                     defaultValue={'DEFAULT'}
                     onChange={handleShippingCostprice}
                     className='select select-bordered w-[50%]'
-                    disabled={!courier}
+                    disabled={!courier || isPending}
                   >
                     <option value={'DEFAULT'} disabled>
                       Courier Type

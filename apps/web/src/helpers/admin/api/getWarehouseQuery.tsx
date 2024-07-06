@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { axiosInstanceInterceptor } from './../../../config/axios/axiosInstanceInterceptor'
 
-export const getWarehouseQuery = () => {
+export const useGetWarehouseQuery = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['warehouse'],
     queryFn: async () => {

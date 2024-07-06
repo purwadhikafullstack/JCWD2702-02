@@ -238,8 +238,8 @@ model Order {
   addressId        Int
   totalOrderAmount Int          @default(0)
   shippingCost     Int?         @default(0)
+  paymentUrl       String?
 
-  user    User    @relation(fields: [userId], references: [uid])
   address Address @relation(fields: [addressId], references: [id])
 
   createdAt DateTime  @default(now())
@@ -249,13 +249,6 @@ model Order {
   items        OrderItem[]
   payment      Payment[]
   stockHistory stockHistory[]
-}
-
-enum OrderStatus {
-  PAID
-  WAITING_FOR_PAYMENT
-  WAITING_FOR_CONFIRMATION
-  CANCELLED
 }
 
 enum OrderStatus {

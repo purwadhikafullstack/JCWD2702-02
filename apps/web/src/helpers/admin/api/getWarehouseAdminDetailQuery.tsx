@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { axiosInstanceInterceptor } from './../../../config/axios/axiosInstanceInterceptor'
 
-export const getWarehouseAdminDetailQuery = (adminId: string) => {
+export const useGetWarehouseAdminDetailQuery = (adminId: string) => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['warehouse-admin=detail', adminId],
     queryFn: async () => {

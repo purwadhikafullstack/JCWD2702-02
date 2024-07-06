@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `products` ADD COLUMN `weight` INTEGER NULL DEFAULT 1000;

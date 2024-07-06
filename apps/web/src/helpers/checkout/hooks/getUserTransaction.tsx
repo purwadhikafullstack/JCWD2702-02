@@ -1,11 +1,11 @@
-import { getUserTransactionQuery } from '../api/getUserTransactionQuery'
+import { useGetUserTransactionQuery } from '../api/getUserTransactionQuery'
 
-export const getUserTransaction = () => {
+export const useGetUserTransaction = () => {
   const {
     data: dataUserTransaction,
     isLoading: userTransactionLoading,
     refetch,
-  } = getUserTransactionQuery()
+  } = useGetUserTransactionQuery()
 
   return { dataUserTransaction, userTransactionLoading, refetch }
 }

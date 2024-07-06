@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { getWarehouseAdmin } from '@/helpers/admin/hooks/getWarehouseAdmin'
+import { useGetWarehouseAdmin } from '@/helpers/admin/hooks/getWarehouseAdmin'
 import Loading from '@/components/cores/Loading'
 import { FiPlus } from 'react-icons/fi'
 import { createAdminSchema } from '@/helpers/admin/schema/createAdminSchema'
@@ -13,7 +13,7 @@ export default function ManageAdmin() {
   const navigate = useRouter()
 
   const { mutationCreateAdmin, isSuccess } = useCreateAdmin()
-  const { dataWarehouseAdmin, warehouseAdminLoading } = getWarehouseAdmin()
+  const { dataWarehouseAdmin, warehouseAdminLoading } = useGetWarehouseAdmin()
 
   const warehouseAdminData = dataWarehouseAdmin?.data?.data
 

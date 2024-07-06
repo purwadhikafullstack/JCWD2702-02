@@ -1,8 +1,5 @@
 import { toast } from 'react-toastify'
 import { Slide, Zoom, Flip, Bounce } from 'react-toastify'
-// import { useDeleteCartMutation } from '../api/useDeleteCartMutation'
-// import { useSetSelectedCartMutation } from '../api/useSetSelectedCartMutation'
-// import { getUserCart } from './getUserCart'
 import { useCheckoutMidtransMutation } from '../api/useCheckoutMidtransMutation'
 import { useRouter } from 'next/navigation'
 

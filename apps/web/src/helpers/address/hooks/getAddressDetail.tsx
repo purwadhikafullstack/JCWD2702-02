@@ -1,11 +1,11 @@
-import { getAddressDetailQuery } from '../api/getAddressDetailQuery'
+import { useGetAddressDetailQuery } from '../api/getAddressDetailQuery'
 
-export const getAddressDetail = (addressId: string) => {
+export const useGetAddressDetail = (addressId: string) => {
   const {
     data: dataAddressDetail,
     isLoading: addressDetailLoading,
     refetch,
-  } = getAddressDetailQuery(addressId)
+  } = useGetAddressDetailQuery(addressId)
 
   return { dataAddressDetail, addressDetailLoading, refetch }
 }

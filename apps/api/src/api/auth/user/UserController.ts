@@ -9,6 +9,7 @@ import {
   deleteUserAddressService,
   findAddressDetailService,
   updateUserAddressService,
+  findAllUserAddressService,
 } from './UserService';
 import { IReqAccessToken } from '@/helpers/Token/TokenType';
 import fs from 'fs';
@@ -106,7 +107,9 @@ export const findUserAddress = async (
     const reqToken = req as IReqAccessToken;
     const { uid } = reqToken.payload;
 
-    const findUserAddressResult = await findUserAddressService({ uid });
+    const findUserAddressResult = await findUserAddressService({
+      uid,
+    });
 
     res.status(201).send({
       error: false,

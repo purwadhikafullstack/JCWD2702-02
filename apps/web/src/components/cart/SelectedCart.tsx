@@ -1,9 +1,11 @@
-import { getCartDetail } from '@/helpers/cart/hooks/getCartDetail'
+import { useGetCartDetail } from '@/helpers/cart/hooks/getCartDetail'
 import Image from 'next/image'
 import Loading from '../cores/Loading'
 
 export default function SelectedCart(props: any) {
-  const { dataCartDetail, CartDetailLoading } = getCartDetail(props.productId)
+  const { dataCartDetail, CartDetailLoading } = useGetCartDetail(
+    props.productId
+  )
 
   const cartDetailData = dataCartDetail?.data?.data?.cartDetail
   const productImage = dataCartDetail?.data?.data?.productImage[0]?.productUrl

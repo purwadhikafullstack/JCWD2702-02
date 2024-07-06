@@ -139,6 +139,8 @@ export const createOrderService = async ({
       },
     });
 
+    console.log(findCheckoutItem);
+
     if (findCheckoutItem.length < 1) throw new Error('No selected item found');
 
     let orderItemsArr: any = [];
@@ -153,15 +155,26 @@ export const createOrderService = async ({
       });
     });
 
+    findCheckoutItem.map(async (x: any) => {
+      await tx.product.update({
+        where: {
+          id: x.Product.id,
+        },
+        data: {
+          reservedQuantity: x.Product.reservedQuantity + x.qty,
+        },
+      });
+    });
+
     await tx.orderItem.createMany({
       data: [...orderItemsArr],
     });
 
-    // await tx.carts.deleteMany({
-    //   where: {
-    //     selected: true,
-    //   },
-    // });
+    await tx.carts.deleteMany({
+      where: {
+        selected: true,
+      },
+    });
   });
 };
 
@@ -210,5 +223,35 @@ export const updateTransactionStatusService = async ({
     data: {
       status: status as OrderStatus,
     },
+  });
+};
+
+export const cancelReservedQuatityService = async (orderId: number) => {
+  const findOrderById = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+
+  if (!findOrderById) throw new Error('Order not found');
+
+  const findOrderItems = await prisma.orderItem.findMany({
+    where: {
+      orderId: findOrderById.id,
+    },
+    include: {
+      product: true,
+    },
+  });
+
+  findOrderItems.map(async (x: any) => {
+    await prisma.product.update({
+      where: {
+        id: x.product.id,
+      },
+      data: {
+        reservedQuantity: x.product.reservedQuantity - x.qty,
+      },
+    });
   });
 };

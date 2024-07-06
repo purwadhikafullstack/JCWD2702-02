@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { getAllUser } from '@/helpers/admin/hooks/getAllUser'
+import { useGetAllUser } from '@/helpers/admin/hooks/getAllUser'
 import { FiPlus } from 'react-icons/fi'
 import { useCreateUser } from '@/helpers/admin/hooks/useCreateUser'
 import { useFormik } from 'formik'
@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 
 export default function ManageUser() {
   const navigate = useRouter()
-  const { dataAllUser } = getAllUser()
+  const { dataAllUser } = useGetAllUser()
   const { mutationCreateUser, isSuccess } = useCreateUser()
 
   const allUserData = dataAllUser?.data?.data

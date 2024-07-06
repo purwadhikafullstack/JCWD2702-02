@@ -28,7 +28,8 @@ const storage = multer.diskStorage({
 const fileFilter = (req: any, file: any, cb: any) => {
   const fileAccepter = ['webp', 'jpg', 'jpeg', 'png', 'svg', 'gif'];
   const splitOriginalName = file.originalname.split('.');
-  const fileExtension = splitOriginalName[splitOriginalName.length - 1];
+  const fileExtension =
+    splitOriginalName[splitOriginalName.length - 1].toLowerCase();
 
   if (!fileAccepter.includes(fileExtension))
     return cb(new Error('Only accept webp, jpg, jpeg, png, svg, gif'), false);

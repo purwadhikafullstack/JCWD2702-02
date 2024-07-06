@@ -1,12 +1,11 @@
-import { getWarehouseAdminQuery } from '../api/getWarehouseAdminQuery'
-import { getWarehouseQuery } from '../api/getWarehouseQuery'
+import { useGetWarehouseQuery } from '../api/getWarehouseQuery'
 
-export const getWarehouse = () => {
+export const useGetWarehouse = () => {
   const {
     data: dataWarehouse,
     isLoading: warehouseLoading,
     refetch,
-  } = getWarehouseQuery()
+  } = useGetWarehouseQuery()
 
   return { dataWarehouse, warehouseLoading, refetch }
 }

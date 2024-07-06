@@ -2,19 +2,19 @@
 import { useContext } from 'react'
 import UserSideBar from '@/components/cores/Dashboard/User/SideBar'
 import { SideBarContext } from '@/config/context/sideBarContext'
-import { getProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
+import { useGetProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
 import { useGetUser } from '@/helpers/auth/hooks/useGetUser'
 import Loading from '@/components/cores/Loading'
 import UserInfo from '@/components/cores/Dashboard/User/UserInfo'
 import UserAddress from '@/components/cores/Dashboard/User/UserAddress'
-import { getUserAddress } from '@/helpers/address/hooks/getUserAddress'
+import { useGetUserAddress } from '@/helpers/address/hooks/getUserAddress'
 import UserTransaction from '@/components/cores/Dashboard/User/UserTransaction'
 
 export default function UserDashboard() {
   const { sideBar }: any = useContext(SideBarContext)
   const { isLoading } = useGetUser()
-  const { UserAddressLoading } = getUserAddress()
-  const { provinceLoading } = getProvince()
+  const { UserAddressLoading } = useGetUserAddress()
+  const { provinceLoading } = useGetProvince()
 
   if (isLoading || provinceLoading || UserAddressLoading) return <Loading />
 

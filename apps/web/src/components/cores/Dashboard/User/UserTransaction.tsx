@@ -1,14 +1,13 @@
 'use client'
 
-import { FiPlus } from 'react-icons/fi'
-import { getUserTransaction } from '@/helpers/checkout/hooks/getUserTransaction'
+import { useGetUserTransaction } from '@/helpers/checkout/hooks/getUserTransaction'
 import TransactionListBox from './TransactionListBox'
 
 export default function UserTransaction() {
-  const { dataUserTransaction, userTransactionLoading } = getUserTransaction()
+  const { dataUserTransaction, userTransactionLoading } =
+    useGetUserTransaction()
   const userTransactionData = dataUserTransaction?.data?.data
 
-  // console.log(userTransactionData)
   return (
     <div className='flex h-max w-full flex-col items-start justify-between rounded-md border-2 border-white bg-white px-10 py-5 shadow-md'>
       <div className='flex w-full flex-col gap-2'>
