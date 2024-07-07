@@ -23,7 +23,7 @@ export default function ShopPage({ searchParams }: { searchParams: { search: str
         <>
             <div className="bg-[#ffffff] mt-[0%] mb-[5%] min-h-screen w-auto">
                 <HeadComponentMeta title="Shop" description="Shop all products" keywords="shop, all products" />
-                <div className="flex lg:flex-nowrap flex-wrap my-[1%] mx-[50px] gap-3 justify-center w-auto">
+                <div className="flex lg:flex-nowrap flex-wrap my-[1%] gap-3 justify-center w-auto">
                     <SearchBox showAdditionalFilters={true} applyFilters={() => { }} initialSearchParams={searchParams} refetchDataProducts={refetchDataProducts} totalProducts={totalProducts} />
                 </div>
                 {isLoading ? (

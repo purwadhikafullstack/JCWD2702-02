@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { DeletedProductCategoryUrlFiles } from '@/helpers/DeleteProductCategoryUrlFiles';
 import fs from 'fs';
 import path from 'path';
-import { getProductCategoriesQuery, deleteCategoryAndCategoryImagesQuery, softDeleteCategoryAndCategoryImagesQuery, createCategoryAndCategoryImagesQuery, getCategoryByIdQuery, updateCategoryAndCategoryImagesQuery } from './ProductCategoriesService';
+import { getProductCategoriesQuery, deleteCategoryAndCategoryImagesQuery, getProductByCategoryIdQuery, softDeleteCategoryAndCategoryImagesQuery, createCategoryAndCategoryImagesQuery, getCategoryByIdQuery, updateCategoryAndCategoryImagesQuery } from './ProductCategoriesService';
 
 
 // Controller for get all categories
@@ -81,7 +81,13 @@ export const softDeleteCategory = async (req: Request, res: Response, next: Next
   try {
     const { id } = req.params
     const categoryResult = await getCategoryByIdQuery(id);
-    if (!categoryResult) throw new Error('Cannot delete category, category not found')
+    if (!categoryResult) throw Error('Cannot delete category, category not found')
+
+    const relatedProducts = await getProductByCategoryIdQuery(id);
+    if (relatedProducts.length > 0) {
+      throw Error('Cannot delete category because there are still products associated.');
+    }
+
     await softDeleteCategoryAndCategoryImagesQuery(id)
     res.status(200).send({
       error: false,

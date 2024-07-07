@@ -7,33 +7,39 @@ import { useRouter } from 'next/navigation';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoIosArrowBack } from "react-icons/io";
-import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
 import Head from "next/head";
 
-export default function ProductHistoryPerWarehouse({ params }: { params: { warehouseDetail: string, productId: string } }) {
+export default function ProductHistoryPerWarehouse({ params, searchParams }: { params: { warehouseDetail: string, productId: string } } & { searchParams: { month: string, year: string } }) {
     const navigate = useRouter()
-    const { dataStockHistoryByProductAndWarehouse } = useGetStockHistoryByProductAndWarehouse(params.productId, params.warehouseDetail)
-    const { dataWarehouseDetail,isError } = useGetWarehouseDetail(params.warehouseDetail)
-    const { dataWarehouseDetail } = useGetWarehouseDetail(params.warehouseDetail)
+    const { month = '', year = '' } = searchParams;
+    const query = { month, year };
+    const { dataWarehouseDetail, isError } = useGetWarehouseDetail(params.warehouseDetail)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [monthAndYear, setMonthAndYear] = useState<string>("");
-
-    useEffect(() => {
-        if (selectedDate) {
-            setMonthAndYear(`month=${selectedDate.getMonth() + 1}&year=${selectedDate.getFullYear()}`);
-        } else {
-            setMonthAndYear("");
-        }
-    }, [selectedDate]);
-
+    const [monthAndYear, setMonthAndYear] = useState<string>(`month=${month}&year=${year}`);
     const {
         dataStockHistoryByProductAndWarehouse,
         refetchDataStockHistoryByProductAndWarehouse
-    } = useGetStockHistoryByProductAndWarehouse(params.productId, params.warehouseDetail, monthAndYear?.toString())
+    } = useGetStockHistoryByProductAndWarehouse(params.productId, params.warehouseDetail, monthAndYear);
 
-    const handleClearFilters = () => {
+    useEffect(() => {
+        refetchDataStockHistoryByProductAndWarehouse();
+    }, [monthAndYear, refetchDataStockHistoryByProductAndWarehouse]);
+
+    const handleClearFilters = async () => {
         setSelectedDate(null);
+        setMonthAndYear('');
+        navigate.push(`/admin/warehouse/${params.warehouseDetail}/product/${params.productId}/history`);
+    }
+
+    const handleApplyFilters = () => {
+        if (selectedDate) {
+            const newMonth = selectedDate.getMonth() + 1;
+            const newYear = selectedDate.getFullYear();
+            const newMonthAndYear = `month=${newMonth}&year=${newYear}`;
+            setMonthAndYear(newMonthAndYear);
+            navigate.push(`/admin/warehouse/${params.warehouseDetail}/product/${params.productId}/history?${newMonthAndYear}`);
+        }
     }
 
     const formatDate = (dateString: string) => {
@@ -43,9 +49,9 @@ export default function ProductHistoryPerWarehouse({ params }: { params: { wareh
         return `${date.toLocaleDateString(undefined, dateOptions)} ${date.toLocaleTimeString(undefined, timeOptions)}`;
     }
 
-    useEffect(()=>{
-        if(isError) navigate.back()
-    },[isError])
+    useEffect(() => {
+        if (isError) navigate.back()
+    }, [isError, navigate])
 
     if ((dataStockHistoryByProductAndWarehouse === undefined) || (dataWarehouseDetail === undefined) || (dataStockHistoryByProductAndWarehouse.stockHistory === undefined)) return <div>Loading...</div>
 
@@ -124,6 +130,9 @@ export default function ProductHistoryPerWarehouse({ params }: { params: { wareh
                 <div className="flex justify-between">
                     <div className="flex items-center gap-4 mb-4">
                         <DatePicker
+                            filterDate={d => {
+                                return new Date() > d;
+                            }}
                             selected={selectedDate}
                             onChange={(date) => setSelectedDate(date as Date)}
                             dateFormat="MM/yyyy"
@@ -131,10 +140,10 @@ export default function ProductHistoryPerWarehouse({ params }: { params: { wareh
                             placeholderText="Select Month and Year"
                             className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-eggplant focus:ring-eggplant"
                         />
-                        <button className="bg-eggplant hover:bg-eggplant-dark text-white font-bold py-2 px-4 rounded" onClick={() => refetchDataStockHistoryByProductAndWarehouse()}>
+                        <button className="bg-eggplant hover:bg-eggplant-dark text-white font-bold py-2 px-4 rounded" onClick={() => handleApplyFilters()}>
                             Apply Filters
                         </button>
-                        <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" onClick={handleClearFilters}>
+                        <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" onClick={() => handleClearFilters()}>
                             Clear Filters
                         </button>
                     </div>

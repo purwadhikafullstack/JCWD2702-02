@@ -28,13 +28,15 @@ export default function SearchBoxWarehouseDetail({ initialSearchParams, refetchD
 
     const handleSearch = async (search: string) => {
         setSearch(search);
-        await updateURL(search, sort, page);
+        setPage(1);
+        await updateURL(search, sort, 1);
         refetchDataProducts()
     };
 
     const handleSort = async (sort: string) => {
         setSort(sort);
-        await updateURL(search, sort, page);
+        setPage(1);
+        await updateURL(search, sort, 1);
         refetchDataProducts()
     };
 

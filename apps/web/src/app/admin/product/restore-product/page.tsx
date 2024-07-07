@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useGetAllErasedProduct } from "@/helpers/adminProduct/hooks/useGetAllErasedProduct";
 import { AdminErasedProductCard } from "@/components/admin/AdminErasedProductCard";
 import Head from "next/head";
+import { IoIosArrowBack } from "react-icons/io"
+import Link from "next/link";
 
 export default function Adminproduct() {
     const { dataErasedProducts, refetchDataErasedProducts, isLoading } = useGetAllErasedProduct();
@@ -12,7 +14,7 @@ export default function Adminproduct() {
         setTimeout(() => {
             refetchDataErasedProducts
         }, 10);
-    }, []);
+    }, [refetchDataErasedProducts]);
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
@@ -32,6 +34,21 @@ export default function Adminproduct() {
                 <title>Erased Products</title>
                 <meta name="description" content="View erased products in the admin panel. Restore products by searching and selecting from the list." />
             </Head>
+            <div className="text-sm breadcrumbs">
+                <ul>
+                    <li className="flex gap-2">
+                        <Link className="hover:text-eggplant" href={`/admin/warehouse`}>
+                            <IoIosArrowBack /> All Warehouse
+                        </Link>
+                    </li>
+                    <li>
+                        <Link className="hover:text-eggplant" href={`/admin/product`}>
+                            All Products
+                        </Link>
+                    </li>
+                    <li>Restore Product</li>
+                </ul>
+            </div>
             <div className="flex justify-between items-center mb-4">
                 <div className="text-2xl font-semibold">Erased Products</div>
             </div>

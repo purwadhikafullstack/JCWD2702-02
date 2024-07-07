@@ -4,6 +4,8 @@ import { useGetAllProductCategories } from '@/helpers/shop/hooks/useGetAllProduc
 import AdminCategoryCard from '@/components/admin/AdminCategoryCard'
 import CreateCategoryForm from '@/components/admin/CreateCategoryForm'
 import Head from 'next/head'
+import { IoIosArrowBack } from "react-icons/io"
+import Link from "next/link";
 
 export default function AdminCategory() {
   const { dataProductCategories } = useGetAllProductCategories()
@@ -28,6 +30,16 @@ export default function AdminCategory() {
         <title>Admin Categories</title>
         <meta name="description" content="Manage product categories for the admin dashboard." />
       </Head>
+      <div className="text-sm breadcrumbs">
+        <ul>
+          <li className="flex gap-2">
+            <Link className="hover:text-eggplant" href={`/admin/warehouse`}>
+              <IoIosArrowBack /> All Warehouse
+            </Link>
+          </li>
+          <li>All Categories</li>
+        </ul>
+      </div>
       <div className='mb-4 flex items-center justify-between'>
         <div className='text-2xl font-semibold'>Categories</div>
         <button
@@ -43,13 +55,7 @@ export default function AdminCategory() {
       </div>
       <div className='flex flex-col gap-5'>
         {dataProductCategories?.map((item: any) => (
-          <AdminCategoryCard
-            key={item.id}
-            category={item}
-            onUpdate={() => setCategoryToUpdate(item)}
-            isUpdating={categoryToUpdate && categoryToUpdate.id === item.id}
-            onFormClose={handleFormClose}
-          />
+          <AdminCategoryCard key={item.id} category={item} onUpdate={() => setCategoryToUpdate(item)} isUpdating={categoryToUpdate && categoryToUpdate.id === item.id} onFormClose={handleFormClose} />
         ))}
       </div>
     </div>

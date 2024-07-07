@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { ICreateCategoryFormProps } from './types';
 import { useCreateCategory } from '@/helpers/adminCategory/hooks/useCreateCategory';
+import { toast } from 'react-toastify';
 
 export default function CreateCategoryForm({ onClose }: ICreateCategoryFormProps) {
     const [name, setName] = useState('');
@@ -26,14 +27,14 @@ export default function CreateCategoryForm({ onClose }: ICreateCategoryFormProps
 
             files.forEach(file => {
                 if (!acceptedFormat.includes(file.name.split('.')[file.name.split('.').length - 1])) {
-                    throw { message: `${file.name} Format Not Acceptable` }
+                    toast.error(`${file.name} Format Not Acceptable`)
                 }
                 if (file.size > (1 * 1024 * 1024)) {
-                    throw { message: `${file.name} is too Large! Maximum Filesize is 1Mb` }
+                    toast.error(`${file.name} is too Large! Maximum Filesize is 1Mb`)
                 }
             })
 
-            if (files.length > 1) throw { message: `You cannot select more than 1 image` }
+            if (files.length > 1) toast.error(`Cannot Create Product Category, Max 1 images allowed`)
 
             setCategoryImage(files)
         } catch (error) {

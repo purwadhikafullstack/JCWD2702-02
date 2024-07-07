@@ -37,9 +37,9 @@ export default function RootLayout({
                   <ToastContainer />
                   <TanstackProvider>
                     <Navbar />
-                    <div className='flex min-h-screen'>
+                    <div className='flex'>
                       <AdminSidebar />
-                      <main className='flex-1 p-4'>{children}</main>
+                      <main className='w-full p-4'>{children}</main>
                     </div>
                     <Footer />
                   </TanstackProvider>

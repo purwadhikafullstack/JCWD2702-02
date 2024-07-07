@@ -123,19 +123,3 @@ export const automaticStockRequest = async (req: Request, res: Response, next: N
         next(error);
     }
 }
-
-// 1. dapetin closest warehouse dari addressId di Order sebagai warehouse pengirim ke address user
-// 2. get orderItems by orderId di table order, looping/createmany stockHistory berdasarkan banyaknya orderitems dengan status = PENDING
-// 3. cek untuk setiap orderItems, kalau stock cukup, status = ACCEPTED
-// 4. kalau stock tidak cukup, buat list of warehouse (sort terdekat ke terjauh warehouse pengirim)
-// 5. looping dari list setiap warehouse, untuk create stockHistory (status Acc)
-// 6. kalo stock dari warehouse pengirim sudah mencukupi demand user, ubah status stockHistory ke customer menjadi ACCEPTED
-
-// kalo user di menaggio village,
-// 1. ke gudang SAFE n LOCK : +- 815km
-// 2. ke sentral singosari malang : +- 867km
-// 3. ke bumi kreasiprima warehouse : +-52km
-// 4. ke pergudangan daan mogot arcadia : +-19km --> HARUSNYA INI YANG TERDEKAT
-// 5. ke warehousing complex diamond :+-467km
-
-// 1 -> 2 -> 5 -> 3 -> 4

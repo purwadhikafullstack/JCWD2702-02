@@ -4,16 +4,18 @@ import { createProduct, getProducts, getErasedProducts, restoreProduct, softDele
 
 // Middleware
 import { productUrlUploader } from '@/middlewares/ProductUrlUploader';
+import { handleErrorExpressValidator } from '@/middlewares/validator/HandleErrorExpressValidator';
+import { validatorUpdateProduct } from '@/middlewares/validator/Products/ProductsDataValidator';
 
 const router = Router();
 
-router.post('/', productUrlUploader, createProduct);
-router.put('/:id', updateProductData);
+router.post('/', handleErrorExpressValidator, productUrlUploader, createProduct);
+router.put('/:id', validatorUpdateProduct, handleErrorExpressValidator, updateProductData);
 router.put('/images/:imageId', productUrlUploader, updateProductImage);
 router.get('/', getProducts);
 router.get('/erased', getErasedProducts);
 router.get('/:id', getProductById);
 router.delete('/soft-delete/:id', softDeleteProduct);
-router.patch('/restore/:id', restoreProduct);
+router.patch('/restore/:id', handleErrorExpressValidator, restoreProduct);
 
 export default router;

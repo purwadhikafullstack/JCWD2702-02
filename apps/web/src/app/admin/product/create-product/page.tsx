@@ -6,6 +6,9 @@ import { useGetAllProductCategories } from '@/helpers/shop/hooks/useGetAllProduc
 import { createProductSchema } from '@/helpers/adminProduct/schema/createProductSchema';
 import { useCreateProduct } from '@/helpers/adminProduct/hooks/useCreateProduct';
 import Head from 'next/head';
+import { toast } from 'react-toastify';
+import { IoIosArrowBack } from "react-icons/io"
+import Link from "next/link"
 
 export default function CreateProduct() {
     const router = useRouter();
@@ -20,14 +23,14 @@ export default function CreateProduct() {
 
             files.forEach(file => {
                 if (!acceptedFormat.includes(file.name.split('.')[file.name.split('.').length - 1])) {
-                    throw { message: `${file.name} Format Not Acceptable` }
+                    toast.error(`${file.name} Format Not Acceptable`)
                 }
                 if (file.size > (1 * 1024 * 1024)) {
-                    throw { message: `${file.name} is too Large! Maximum Filesize is 1Mb` }
+                    toast.error(`${file.name} is too Large! Maximum Filesize is 1Mb`)
                 }
             })
 
-            if (files.length > 4) throw { message: `You cannot select more than 4 image` }
+            if (files.length > 4) toast.error(`Cannot Create Product, Max 4 images allowed`)
 
             setProductImages(files)
         } catch (error) {
@@ -43,6 +46,21 @@ export default function CreateProduct() {
                 <title>Create Product</title>
                 <meta name="description" content="Create a new product with name, description, price, category, weight, and images." />
             </Head>
+            <div className="text-sm breadcrumbs">
+                <ul>
+                    <li className="flex gap-2">
+                        <Link className="hover:text-eggplant" href={`/admin/warehouse`}>
+                            <IoIosArrowBack /> All Warehouse
+                        </Link>
+                    </li>
+                    <li>
+                        <Link className="hover:text-eggplant" href={`/admin/product`}>
+                            All Products
+                        </Link>
+                    </li>
+                    <li>Create Product</li>
+                </ul>
+            </div>
             <div className="text-2xl font-bold mb-4 text-[#704b66]">Create Product</div>
             <div>
                 <Formik
@@ -112,7 +130,7 @@ export default function CreateProduct() {
                             </div>
                             <div className='flex flex-col'>
                                 <label htmlFor="image" className="mb-1 text-black">Image (Up to 4 images)</label>
-                                <input type="file" multiple onChange={(event) => onSetProductImage(event)} name="productImages" accept='image/*' className="p-2 border-b border-gray-300 rounded-t-md focus:outline-none focus:border-b-2 focus:border-[#704b66]" />
+                                <input required type="file" multiple onChange={(event) => onSetProductImage(event)} name="productImages" accept='image/*' className="p-2 border-b border-gray-300 rounded-t-md focus:outline-none focus:border-b-2 focus:border-[#704b66]" />
                             </div>
                             <div>
                                 <button type="submit" disabled={!dirty || !isValid} className="text-white bg-[#704b66] px-4 py-2 rounded-md hover:bg-purple-800 transition-colors">
