@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `carts` ADD COLUMN `selected` ENUM('TRUE', 'FALSE') NOT NULL DEFAULT 'TRUE';

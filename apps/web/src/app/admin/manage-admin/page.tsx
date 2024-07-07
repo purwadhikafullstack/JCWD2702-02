@@ -1,5 +1,4 @@
 'use client'
-
 import { useRouter } from 'next/navigation'
 import { getWarehouseAdmin } from '@/helpers/admin/hooks/getWarehouseAdmin'
 import Loading from '@/components/cores/Loading'
@@ -8,6 +7,8 @@ import { createAdminSchema } from '@/helpers/admin/schema/createAdminSchema'
 import { useFormik } from 'formik'
 import { useCreateAdmin } from '@/helpers/admin/hooks/userCreateAdmin'
 import { useEffect } from 'react'
+import { IoIosArrowBack } from "react-icons/io"
+import Link from "next/link";
 
 export default function ManageAdmin() {
   const navigate = useRouter()
@@ -26,7 +27,6 @@ export default function ManageAdmin() {
     validationSchema: createAdminSchema,
     validateOnChange: false,
     onSubmit: (values) => {
-      // console.log(values)
       mutationCreateAdmin({
         fullname: values.fullname,
         email: values.email,
@@ -41,6 +41,16 @@ export default function ManageAdmin() {
 
   return (
     <div className='container mx-auto max-h-[95vh] overflow-y-auto rounded-md border border-gray-300 p-4 shadow-lg'>
+      <div className="text-sm breadcrumbs">
+        <ul>
+          <li className="flex gap-2">
+            <Link className="hover:text-eggplant" href={`/admin/warehouse`}>
+              <IoIosArrowBack /> All Warehouse
+            </Link>
+          </li>
+          <li>All Admins</li>
+        </ul>
+      </div>
       <div className='mb-4 flex items-center justify-between'>
         <div className='text-2xl font-semibold'>Manage Admin</div>
         <label

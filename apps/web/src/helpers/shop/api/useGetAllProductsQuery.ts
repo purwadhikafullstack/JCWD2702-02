@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useGetAllProductsQuery = (queryParams?: any) => {
-    const { data: products, refetch: refetchDataProducts, isLoading } = useQuery({
+    const { data: products, refetch: refetchDataProducts, isLoading, isFetching } = useQuery({
         queryKey: ["products"],
         queryFn: async () => {
             const queryString = new URLSearchParams(queryParams).toString();
@@ -10,5 +10,5 @@ export const useGetAllProductsQuery = (queryParams?: any) => {
             return res;
         },
     });
-    return { products, refetchDataProducts, isLoading };
+    return { products, refetchDataProducts, isLoading, isFetching };
 }

@@ -2,28 +2,29 @@ import Link from 'next/link'
 import { MdShoppingCart } from 'react-icons/md'
 import { useContext } from 'react'
 import { UserContext } from '@/config/context/userContext'
+import Image from 'next/image'
 
 export default function NavbarDesktop(props: any) {
   const { userData }: any = useContext(UserContext)
 
   return (
-    <div className='2xl:px-60 flex h-[70px] w-screen items-center justify-between border-b-2 bg-ebony px-3 shadow-md lg:px-10 xl:px-36'>
-      <div className='flex w-[45%] justify-between text-xl text-white lg:w-[35%]'>
-        <div className='flex w-full'>
-          <a href='/'>Logo</a>
+    <div className='2xl:px-[90px] flex h-[70px] w-auto items-center justify-between border-b-2 bg-white px-3 shadow-md lg:px-10 xl:px-36'>
+      <div className='flex w-[45%] justify-between text-xl text-white lg:w-[90%] gap-6'>
+        <div className='flex items-center'>
+          <Image src='/Decorify-Logo-Eggplant.png' width={150} height={50} alt='logo' />
         </div>
-        <div className='flex w-full gap-6'>
-          <a href='/' className='hover:underline'>
+        <div className='flex w-full gap-6 items-center'>
+          <Link href='/' className='hover:underline text-black pt-[5px]'>
             Home
-          </a>
-          <Link href='/shop' className='hover:text-white'>
+          </Link>
+          <Link href='/shop' className='hover:underline text-black pt-[5px]'>
             Shop
           </Link>
-          <a href='' className='hover:text-white'>
-            Item
+          <a href='' className='hover:underline text-black pt-[5px]'>
+            About
           </a>
-          <a href='' className='hover:text-white'>
-            Item
+          <a href='' className='hover:underline text-black pt-[5px]'>
+            Contacts
           </a>
         </div>
       </div>

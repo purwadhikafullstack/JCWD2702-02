@@ -6,9 +6,4 @@ export default function AdminSidebar() {
 
   if (!pathname.includes('/admin')) return null
   return <div>{pathname == '/admin' ? null : <AdminSidebarDesktop />}</div>
-  // return (
-  //   <div>
-  //     <AdminSidebarDesktop />
-  //   </div>
-  // )
 }

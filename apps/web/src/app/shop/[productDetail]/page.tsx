@@ -1,5 +1,4 @@
 'use client'
-
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from "react";
 import { useGetProductDetail } from "@/helpers/productDetail/hooks/useGetProductDetail";
@@ -13,21 +12,15 @@ import { useContext } from "react";
 import { CartContext } from "@/config/context/cartContext";
 import { useAddToCart } from "@/helpers/cart/hooks/useAddToCart";
 import ActiveImageModal from "@/components/shop/ActiveImageModal";
-import Head from "next/head";
 import HeadComponentMeta from "@/components/cores/Head";
 
-export default function ProductDetail({
-  params,
-}: {
-  params: { productDetail: string }
-}) {
+export default function ProductDetail({ params, }: { params: { productDetail: string } }) {
   const navigate = useRouter()
 
   const { productDetail } = useGetProductDetail(params.productDetail)
   const [activeImg, setActiveImg] = useState<string | null>(null)
 
   const [quantity, setQuantity] = useState(1)
-  const { cartData, setCartData }: any = useContext(CartContext)
   const { mutationAddToCart, isError } = useAddToCart()
   const [showModal, setShowModal] = useState(false)
 
@@ -52,8 +45,8 @@ export default function ProductDetail({
       setShowModal(true)
     }
   }
-  
-   const handleCloseModal = () => {
+
+  const handleCloseModal = () => {
     setShowModal(false)
   }
 
@@ -61,38 +54,38 @@ export default function ProductDetail({
     setTimeout(() => {
       if (isError == true) navigate.push('/login')
     }, 1000)
-  }, [isError])
+  }, [isError, navigate])
 
-    return (
-        <div className="bg-[#ffffff] mt-8 mb-8 min-h-screen w-auto px-4 lg:px-8">
-            <HeadComponentMeta title={productDetail?.products.name} description="Product detail page, see all product descriptions on this page" keywords="product, shop, ecommerce" />
-            <div className="flex flex-col lg:flex-row mx-[50px] justify-center items-center">
-                <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%] justify-center">
-                    <div className="mb-4 flex justify-center">
-                        <SearchBox showAdditionalFilters={false} applyFilters={() => { }} initialSearchParams={{}} refetchDataProducts={() => { }} />
-                    </div>
+  return (
+    <div className="bg-[#ffffff] mt-8 mb-8 min-h-screen w-auto px-4 lg:px-8">
+      <HeadComponentMeta title={productDetail?.products.name} description="Product detail page, see all product descriptions on this page" keywords="product, shop, ecommerce" />
+      <div className="flex flex-col lg:flex-row mx-[50px] justify-center items-center">
+        <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%] justify-center">
+          <div className="mb-4 flex justify-center">
+            <SearchBox showAdditionalFilters={false} applyFilters={() => { }} initialSearchParams={{}} refetchDataProducts={() => { }} />
+          </div>
+        </div>
+        <div className="flex flex-col lg:w-[55%] lg:justify-center">
+          <div className="mb-4 flex gap-3 items-start lg:items-center">
+            <div className="text-[#34222f] font-semibold">{productDetail?.products.Categories.name}</div>/<div>{productDetail?.products.name}</div>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col lg:flex-row mx-[50px] justify-center">
+        <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%]">
+          <div className="flex flex-col gap-[15px] items-center">
+            {activeImg && (
+              <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${activeImg}`} key={activeImg} className="aspect-square object-cover rounded-xl shadow-lg cursor-pointer" alt="image" width={450} height={450} onClick={handleActiveImageClick} />
+            )}
+            <div className="flex flex-row justify-start gap-2 flex-wrap">
+              {productDetail?.productImages?.map((image: IProductDetail, index: number) => (
+                <div key={index} onClick={() => setActiveImg(image.productUrl)} className="w-24 h-24 rounded-xl cursor-pointer mb-2">
+                  <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${image.productUrl}`} className="w-[100px] h-[100px] object-cover rounded-xl" alt="image" width={1000} height={1000} />
                 </div>
-                <div className="flex flex-col lg:w-[55%] lg:justify-center">
-                    <div className="mb-4 flex gap-3 items-start lg:items-center">
-                        <div className="text-[#34222f] font-semibold">{productDetail?.products.Categories.name}</div>/<div>{productDetail?.products.name}</div>
-                    </div>
-                </div>
+              ))}
             </div>
-            <div className="flex flex-col lg:flex-row mx-[50px] justify-center">
-                <div className="flex flex-col flex-shrink-0 lg:mr-8 lg:w-[45%]">
-                    <div className="flex flex-col gap-[15px] items-center">
-                        {activeImg && (
-                            <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${activeImg}`} key={activeImg} className="aspect-square object-cover rounded-xl shadow-lg cursor-pointer" alt="image" width={450} height={450} onClick={handleActiveImageClick} />
-                        )}
-                        <div className="flex flex-row justify-start gap-2 flex-wrap">
-                            {productDetail?.productImages?.map((image: IProductDetail, index: number) => (
-                                <div key={index} onClick={() => setActiveImg(image.productUrl)} className="w-24 h-24 rounded-xl cursor-pointer mb-2">
-                                    <Image src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${image.productUrl}`} className="w-[100px] h-[100px] object-cover rounded-xl" alt="image" width={1000} height={1000} />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+          </div>
+        </div>
         <div className='mt-[20px] flex flex-col gap-[10px] lg:mt-[60px] lg:w-[55%]'>
           <div className='mb-4 flex flex-col'>
             <div className='text-[32px] font-bold'>
@@ -108,7 +101,7 @@ export default function ProductDetail({
                 currency: 'IDR',
               })}
             </div>
-            <div className='mt-4 flex items-center gap-10'>
+            <div className='mt-4 flex items-center gap-8 md:gap-10'>
               <div className='flex items-center'>
                 <button
                   onClick={handleDecrement}
@@ -128,8 +121,9 @@ export default function ProductDetail({
                   <FaPlus />
                 </button>
               </div>
-              <div className='font-medium text-gray-500'>
-                Stock left: {productDetail?.totalStockAllWarehouse}
+              <div className='font-medium text-gray-500 text-center md:text-[14px]'>
+                <span className="lg:hidden">{productDetail?.totalStockAllWarehouse} left</span>
+                <span className="hidden lg:inline">Stock left: {productDetail?.totalStockAllWarehouse}</span>
               </div>
               <button
                 onClick={() =>
@@ -138,10 +132,9 @@ export default function ProductDetail({
                     qty: Number(quantity),
                   })
                 }
-                className={`flex h-[30px] w-[200px] items-center justify-center gap-5 rounded-md border-2 border-eggplant bg-eggplant text-[14px] font-medium text-white hover:border-hover_eggplant hover:bg-hover_eggplant lg:h-[40px] lg:text-[16px] ${productDetail?.totalStockAllWarehouse <= 0 ? 'cursor-not-allowed opacity-50' : ''}`}
-                // disabled={productDetail?.totalStockAllWarehouse <= 0}
-              >
-                <FaShoppingCart /> Add to Cart
+                className={`flex h-[30px] w-[200px] items-center justify-center gap-5 rounded-md border-2 border-eggplant bg-eggplant text-[14px] font-medium text-white hover:border-hover_eggplant hover:bg-hover_eggplant lg:h-[40px] lg:text-[16px] ${productDetail?.totalStockAllWarehouse <= 0 ? 'cursor-not-allowed opacity-50' : ''}`}>
+                <FaShoppingCart />
+                <span className="hidden lg:inline">Add to Cart</span>
               </button>
             </div>
           </div>
@@ -164,41 +157,17 @@ export default function ProductDetail({
               <div>Shipping: 2-3 Business Days</div>
             </div>
             <div className='mt-[10px] flex items-start justify-start gap-3 lg:mt-0 lg:items-end lg:justify-end'>
-              <FaFacebookF
-                size={24}
-                className='cursor-pointer duration-300 hover:scale-150'
-                color='#3b5999'
-              />
-              <FaXTwitter
-                size={24}
-                className='cursor-pointer duration-300 hover:scale-150'
-                color='#60afee'
-              />
-              <FaLinkedin
-                size={24}
-                className='cursor-pointer duration-300 hover:scale-150'
-                color='#0077b5'
-              />
-              <FaWhatsapp
-                size={24}
-                className='cursor-pointer duration-300 hover:scale-150'
-                color='#27d366'
-              />
-              <FaPinterest
-                size={24}
-                className='cursor-pointer duration-300 hover:scale-150'
-                color='#c8232c'
-              />
-              <FaEnvelope
-                size={24}
-                className='cursor-pointer duration-300 hover:scale-150'
-                color='#65435c'
-              />
+              <FaFacebookF size={24} className='cursor-pointer duration-300 hover:scale-150' color='#3b5999' />
+              <FaXTwitter size={24} className='cursor-pointer duration-300 hover:scale-150' color='#60afee' />
+              <FaLinkedin size={24} className='cursor-pointer duration-300 hover:scale-150' color='#0077b5' />
+              <FaWhatsapp size={24} className='cursor-pointer duration-300 hover:scale-150' color='#27d366' />
+              <FaPinterest size={24} className='cursor-pointer duration-300 hover:scale-150' color='#c8232c' />
+              <FaEnvelope size={24} className='cursor-pointer duration-300 hover:scale-150' color='#65435c' />
             </div>
           </div>
         </div>
       </div>
-          {showModal && activeImg && <ActiveImageModal src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${activeImg}`} alt="Product Image" onClose={handleCloseModal} />}  
+      {showModal && activeImg && <ActiveImageModal src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${activeImg}`} alt="Product Image" onClose={handleCloseModal} />}
     </div>
   )
 }

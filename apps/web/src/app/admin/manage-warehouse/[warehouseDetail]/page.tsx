@@ -1,5 +1,4 @@
 'use client'
-
 import { useFormik } from 'formik'
 import Loading from '@/components/cores/Loading'
 import { useState, useEffect } from 'react'
@@ -8,6 +7,8 @@ import { createWarehouseSchema } from '@/helpers/admin/schema/createWarehouseSch
 import { getProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
 import { getCities } from '@/helpers/rajaOngkir/hooks/getCities'
 import { useUpdateWarehouseDetail } from '@/helpers/admin/hooks/useUpdateWarehouseDetail'
+import { IoIosArrowBack } from "react-icons/io"
+import Link from "next/link";
 
 export default function UserDetail({
   params,
@@ -104,6 +105,21 @@ export default function UserDetail({
     <div>
       <div className='container mx-auto flex max-h-[95vh] flex-col gap-5 overflow-y-auto rounded-md border border-transparent p-4 shadow-lg transition-all hover:border-gray-300'>
         <div>
+          <div className="text-sm breadcrumbs">
+            <ul>
+              <li className="flex gap-2">
+                <Link className="hover:text-eggplant" href={`/admin/warehouse`}>
+                  <IoIosArrowBack /> All Warehouse
+                </Link>
+              </li>
+              <li>
+                <Link className="hover:text-eggplant" href={`/admin/manage-warehouse`}>
+                  All Warehouses
+                </Link>
+              </li>
+              <li>{warehouseDetailData?.name}</li>
+            </ul>
+          </div>
           <div className='flex justify-between'>
             <div className='flex gap-4'></div>
           </div>

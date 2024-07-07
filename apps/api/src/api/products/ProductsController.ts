@@ -62,6 +62,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     try {
         const data = JSON.parse(req.body.data);
         let uploadedProductUrl;
+
         if (req.files) {
             uploadedProductUrl = Array.isArray(req.files) ? req.files : req.files['producturl'];
             const getExistingProductResult = await getExistingProductQuery();

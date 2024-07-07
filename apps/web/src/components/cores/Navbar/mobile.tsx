@@ -7,12 +7,13 @@ import { useContext, useState } from 'react'
 import { useEffect } from 'react'
 import { deleteCookie } from '@/config/cookie'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 export default function NavbarMobile(props: any) {
   const { userData, setUserData }: any = useContext(UserContext)
 
   return (
-    <div className='relative flex h-[60px] w-screen items-center justify-center border-b-2 px-3 shadow-md'>
+    <div className='relative flex h-[60px] w-auto items-center justify-center border-b-2 px-3 shadow-md z-30'>
       <div className='absolute left-3'>
         <div className='drawer'>
           <input id='my-drawer' type='checkbox' className='drawer-toggle' />
@@ -28,6 +29,9 @@ export default function NavbarMobile(props: any) {
               className='drawer-overlay'
             ></label>
             <ul className='text-shuttlegray menu relative min-h-full w-80 bg-base-200 p-4 font-bold'>
+              <li>
+                <Image src='/Decorify-Logo-Black.png' width={150} height={40} alt='logo' />
+              </li>
               <li className='pt-10 text-bouquet hover:text-eggplant'>
                 <Link href='/'>Home</Link>
               </li>
@@ -54,7 +58,6 @@ export default function NavbarMobile(props: any) {
                   Logout
                 </div>
               </li>
-              {/* Close button */}
               <input id='my-drawer' type='checkbox' className='hidden' />
               <div className='absolute right-5'>
                 <label htmlFor='my-drawer'>
@@ -65,7 +68,7 @@ export default function NavbarMobile(props: any) {
           </div>
         </div>
       </div>
-      <div>Logo</div>
+      <div><Image src='/Decorify-Logo-Black.png' width={150} height={40} alt='logo' /></div>
     </div>
   )
 }

@@ -19,7 +19,7 @@ export default function WarehouseDetail({ params, searchParams }: { params: { wa
     const { search = '', sort = '', page = '1' } = searchParams;
     const query = { search, sort, page };
     const { dataProductsStockPerWarehouse, refetchDataProductsStockPerWarehouse, totalDataProductsStockPerWarehouse } = useGetProductsStockPerWarehouse(params.warehouseDetail, query);
-    const { dataWarehouseDetail,isError } = useGetWarehouseDetail(params.warehouseDetail);
+    const { dataWarehouseDetail, isError } = useGetWarehouseDetail(params.warehouseDetail);
     const { dataStockMutationTypeLists } = useGetStockMutationTypeLists(params.warehouseDetail);
     const { dataStockRequestPerWarehouse } = useGetStockRequestPerWarehouse(params.warehouseDetail);
     const { dataOutgoingStockRequestPerWarehouse } = useGetOutgoingStockRequestPerWarehouse(params.warehouseDetail);
@@ -29,9 +29,9 @@ export default function WarehouseDetail({ params, searchParams }: { params: { wa
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [pendingIncomingRequests, setPendingIncomingRequests] = useState(0);
 
-    useEffect(()=>{
-        if(isError) navigate.back()
-    },[isError])
+    useEffect(() => {
+        if (isError) navigate.back()
+    }, [isError, navigate])
 
     useEffect(() => {
         setTimeout(() => {

@@ -1,5 +1,4 @@
 'use client'
-
 import { getWarehouseAdminDetail } from '@/helpers/admin/hooks/getWarehouseAdminDetail'
 import { getWarehouse } from '@/helpers/admin/hooks/getWarehouse'
 import { useFormik } from 'formik'
@@ -8,6 +7,8 @@ import { useState, useEffect } from 'react'
 import { useUpdateWarehouseAdmin } from '@/helpers/admin/hooks/useUpdateWarehouseAdmin'
 import { useDeleteAdmin } from '@/helpers/admin/hooks/useDeleteAdmin'
 import { useRouter } from 'next/navigation'
+import { IoIosArrowBack } from "react-icons/io"
+import Link from "next/link"
 
 export default function AdminDetail({
   params,
@@ -89,6 +90,21 @@ export default function AdminDetail({
             }}
           >
             <div className='flex flex-col gap-4'>
+              <div className="text-sm breadcrumbs">
+                <ul>
+                  <li className="flex gap-2">
+                    <Link className="hover:text-eggplant" href={`/admin/warehouse`}>
+                      <IoIosArrowBack /> All Warehouse
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="hover:text-eggplant" href={`/admin/manage-admin`}>
+                      All Admins
+                    </Link>
+                  </li>
+                  <li>{warehouseAdminData?.fullname}</li>
+                </ul>
+              </div>
               <div className='flex items-center justify-between'>
                 <div className='flex flex-col'>
                   <div className='flex items-center'>

@@ -10,7 +10,6 @@ export const useAcceptStockRequest = (id: string) => {
             refetchDataStockRequestPerWarehouse()
         },
         onError: (error: any) => {
-            console.log(error)
             const errorMessage = error.response?.data?.message || 'An error occurred while accepting the stock request';
             toast.error(errorMessage);
         }
