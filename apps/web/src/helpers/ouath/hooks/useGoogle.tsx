@@ -31,18 +31,6 @@ export const useOauthLogin = () => {
       )
     },
     onError: (err: any) => {
-      // toast.error(err.response.data.message, {
-      //   position: 'top-right',
-      //   autoClose: 1500,
-      //   hideProgressBar: true,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: 'colored',
-      //   transition: Slide,
-      // })
-      // console.log(err)
     },
   })
 

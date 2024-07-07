@@ -39,26 +39,20 @@ export default function ProtectedRouteProvider({
         userRole == 3 &&
         pathname.includes(adminPermittedRoute)
       ) {
-        console.log(1)
         router.push('/')
       } else if (accessToken && afterLogin.includes(pathname)) {
-        console.log(2)
         router.push('/')
       } else if (!accesstoken && beforeLogin.includes(pathname)) {
-        console.log(3)
         router.push('/')
       } else if (
         accessToken &&
         (userRole == 1 || userRole == 2) &&
         userPermittedRoute.includes(pathname)
       ) {
-        console.log(4)
         router.push('/')
       } else if (!accesstoken && userPermittedRoute.includes(pathname)) {
-        console.log(5)
         router.push('/')
       } else if (!accesstoken && pathname.includes(adminPermittedRoute)) {
-        console.log(6)
         router.push('/')
       } else {
         setLoading(false)

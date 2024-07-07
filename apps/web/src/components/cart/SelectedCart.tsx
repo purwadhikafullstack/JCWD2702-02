@@ -32,13 +32,6 @@ export default function SelectedCart(props: any) {
           })}
         </p>
       </div>
-      <div
-        className='btn'
-        onClick={() => console.log(props.productId)}
-        // onClick={() => console.log(dataCartDetail)}
-      >
-        test
-      </div>
     </div>
   )
 }

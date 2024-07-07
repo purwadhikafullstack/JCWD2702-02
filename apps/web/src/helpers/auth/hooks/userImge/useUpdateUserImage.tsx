@@ -14,7 +14,6 @@ export const useUpdateUserImage = () => {
     isSuccess,
   } = useUpdateUserImageMutation({
     onSuccess: (res: any) => {
-      console.log(res)
       refetch()
     },
     onError: (err: any) => {

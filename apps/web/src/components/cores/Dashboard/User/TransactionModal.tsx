@@ -113,13 +113,6 @@ export default function TransactionModal(props: TransactionModalProps) {
                 )
               })}
             </div>
-            {/* <div
-              onClick={() => console.log(orderData)}
-              // onClick={() => console.log(items)}
-              className='btn'
-            >
-              test
-            </div> */}
           </div>
           <label className='modal-backdrop' htmlFor={props.html}>
             Close

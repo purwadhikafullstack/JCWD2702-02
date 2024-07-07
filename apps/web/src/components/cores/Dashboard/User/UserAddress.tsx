@@ -180,7 +180,6 @@ export default function UserAddress() {
                         return (
                           <option
                             onClick={() => {
-                              console.log('>>')
                             }}
                             key={i}
                             value={[x.province_id, x.province]}

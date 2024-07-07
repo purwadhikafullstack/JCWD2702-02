@@ -20,24 +20,10 @@ export const useKeepLogin = () => {
       })
     },
     onError: async (err: any) => {
-      //   toast.error('Something went wrong please login again', {
-      //     position: 'top-right',
-      //     autoClose: 1500,
-      //     hideProgressBar: true,
-      //     closeOnClick: true,
-      //     pauseOnHover: true,
-      //     draggable: true,
-      //     progress: undefined,
-      //     theme: 'colored',
-      //     transition: Slide,
-      //   })
-      // console.log(err)
 
       localStorage.removeItem('auth')
       await deleteCookie()
       setUserData(null)
-      // navigate.push('/')
-      // setIsLogin(false)
     },
   })
 

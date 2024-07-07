@@ -20,7 +20,7 @@ export default function UserDashboard() {
 
   return (
     <div className='flex h-fit items-center justify-center'>
-      <div className='my-28 flex w-[200px] flex-col justify-between gap-10 sm:w-[500px] md:w-[700px] xl:w-[1050px]'>
+      <div className='my-28 flex w-auto flex-col justify-between gap-10 sm:w-[500px] md:w-[700px] xl:w-[1050px]'>
         <div className='flex w-[100%] flex-col'>
           <UserSideBar></UserSideBar>
           {sideBar == 0 ? (

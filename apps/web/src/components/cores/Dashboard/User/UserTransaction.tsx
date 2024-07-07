@@ -28,7 +28,7 @@ export default function UserTransaction() {
       setOrderData(dataUserTransaction?.data?.data?.data)
       setTotalPages(dataUserTransaction?.data?.data?.totalPages)
     }
-  })
+  }, [dataUserTransaction])
 
   const handleNextPage = () => {
     if (page < totalPages) {
@@ -51,7 +51,7 @@ export default function UserTransaction() {
         <div className='divider w-full'></div>
         <div className='flex w-full items-center justify-between sm:flex-col md:gap-2 xl:gap-4'>
           <div className='flex px-5 text-xl font-bold'>Status</div>
-          <div className='flex w-full sm:justify-center md:gap-3 lg:gap-2 xl:gap-5'>
+          <div className='flex flex-wrap md:flex-nowrap w-full sm:justify-center md:gap-3 lg:gap-2 xl:gap-5'>
             {statusList.map((x: any, i: any) => {
               return (
                 <div

@@ -10,7 +10,6 @@ const CheckoutForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Submit checkout form with:', { firstName, lastName, address, city, postalCode });
     setFirstName('');
     setLastName('');
     setAddress('');

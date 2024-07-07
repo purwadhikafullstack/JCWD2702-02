@@ -25,7 +25,6 @@ export default function ManageUser() {
     validationSchema: createUserSchema,
     validateOnChange: false,
     onSubmit: (values) => {
-      console.log(values)
       mutationCreateUser({
         fullname: values.fullname,
         email: values.email,

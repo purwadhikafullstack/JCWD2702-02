@@ -7,7 +7,6 @@ export const useDeleteAddress = () => {
   const { refetch } = useGetUserAddress()
   const { mutate: mutationDeleteAddress } = useDeleteAddressMutation({
     onSuccess: (res: any) => {
-      // console.log(res)
       toast.success(res.data.message, {
         position: 'top-right',
         autoClose: 2000,
@@ -22,7 +21,6 @@ export const useDeleteAddress = () => {
       refetch()
     },
     onError: (err: any) => {
-      // console.log(err)
       toast.error(err.response.data.message, {
         position: 'top-right',
         autoClose: 1500,
