@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { IUpdateCategoryFormProps } from './types';
 import { useUpdateCategory } from '@/helpers/adminCategory/hooks/useUpdateCategory';
+import { toast } from 'react-toastify';
 
 export default function UpdateCategoryForm({ category, onClose }: IUpdateCategoryFormProps) {
     const [name, setName] = useState(category.name);
@@ -21,10 +22,10 @@ export default function UpdateCategoryForm({ category, onClose }: IUpdateCategor
 
             files.forEach(file => {
                 if (!acceptedFormat.includes(file.name.split('.')[file.name.split('.').length - 1])) {
-                    throw { message: `${file.name} Format Not Acceptable` }
+                    toast.error(`${file.name} Format Not Acceptable`)
                 }
                 if (file.size > (1 * 1024 * 1024)) {
-                    throw { message: `${file.name} is too Large! Maximum Filesize is 1Mb` }
+                    toast.error(`${file.name} is too Large! Maximum Filesize is 1Mb`)
                 }
             })
 

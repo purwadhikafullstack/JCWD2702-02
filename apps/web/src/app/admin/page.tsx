@@ -42,6 +42,7 @@ export default function AdminLogin() {
     <form onSubmit={formik.handleSubmit}>
       <div className='flex min-h-screen w-full flex-col items-center justify-center gap-10'>
         <div className='flex w-[300px] flex-col items-center justify-center gap-5'>
+          <div className='text-3xl text-eggplant font-medium'>Welcome, Admin!</div>
           <label
             className={`input input-bordered flex w-full items-center gap-2 ${formik.errors.email ? 'border-red-500' : ''}`}
           >
@@ -71,7 +72,7 @@ export default function AdminLogin() {
           <button
             type='submit'
             className='btn w-full border-eggplant bg-eggplant text-white hover:bg-hover_eggplant'
-            // disabled={!(dirty && isValid) || status === 'pending'}
+          // disabled={!(dirty && isValid) || status === 'pending'}
           >
             Log in
           </button>

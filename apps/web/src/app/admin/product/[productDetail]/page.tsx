@@ -11,9 +11,10 @@ import { useUpdateProductImage } from "@/helpers/adminProductImages/hooks/useUpd
 import { useSoftDeleteProduct } from "@/helpers/adminProduct/hooks/useSoftDeleteProduct";
 import { IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import ConfirmationModal from "@/components/admin/ConfirmationModal"; // Make sure this modal is more generic
+import ConfirmationModal from "@/components/admin/ConfirmationModal";
 import Link from "next/link";
 import Head from "next/head";
+import { toast } from 'react-toastify';
 
 type FormData = {
     name: string;
@@ -43,14 +44,14 @@ export default function ProductDetail({ params }: { params: { productDetail: str
 
             files.forEach(file => {
                 if (!acceptedFormat.includes(file.name.split('.').pop())) {
-                    throw { message: `${file.name} Format Not Acceptable` };
+                    toast.error(`${file.name} Format Not Acceptable`)
                 }
                 if (file.size > (1 * 1024 * 1024)) {
-                    throw { message: `${file.name} is too Large! Maximum Filesize is 1Mb` };
+                    toast.error(`${file.name} is too Large! Maximum Filesize is 1Mb`)
                 }
             });
 
-            if (files.length > 1) throw { message: `You cannot select more than 1 image` };
+            if (files.length > 4) toast.error(`Cannot Create Product, Max 4 images allowed`)
 
             formData.append('producturl', files[0]);
             mutationUpdateProductImage({

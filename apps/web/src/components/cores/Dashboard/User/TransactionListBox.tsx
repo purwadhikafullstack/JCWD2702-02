@@ -34,34 +34,38 @@ export default function TransactionListBox(props: TransactionListBoxProps) {
           <div>{date}</div>
         </h2>
         <div className='divider'></div>
-        <div className='flex flex-col gap-5'>
-          <div className='flex w-full'>
-            <div className='avatar'>
-              <div className='w-24 rounded'>
-                <Image
-                  alt={items[0]?.product?.name}
-                  src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${items[0]?.product?.ProductImages[0]?.productUrl}`}
-                  width={1000}
-                  height={1000}
-                />
+        {items && items.length > 0 ? (
+          <div className='flex flex-col gap-5'>
+            <div className='flex w-full'>
+              <div className='avatar'>
+                <div className='w-24 rounded'>
+                  <Image
+                    alt={items[0]?.product?.name}
+                    src={`${process.env.NEXT_PUBLIC_BASE_API_URL}/${items[0]?.product?.ProductImages[0]?.productUrl}`}
+                    width={1000}
+                    height={1000}
+                  />
+                </div>
+              </div>
+              <div className='flex flex-col items-start justify-center p-4'>
+                <h3 className='text-xl font-bold'>{items[0]?.product?.name}</h3>
+                <p className='text-[17px]'>
+                  {' '}
+                  {items[0].quantity} x{' '}
+                  {items[0]?.currentPrice.toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                  })}
+                </p>
               </div>
             </div>
-            <div className='flex flex-col items-start justify-center p-4'>
-              <h3 className='text-xl font-bold'>{items[0]?.product?.name}</h3>
-              <p className='text-[17px]'>
-                {' '}
-                {items[0].quantity} x{' '}
-                {items[0]?.currentPrice.toLocaleString('id-ID', {
-                  style: 'currency',
-                  currency: 'IDR',
-                })}
-              </p>
-            </div>
+            {items.length > 1 ? (
+              <p className='font-bold underline'>{`${items.length - 1}+ more product`}</p>
+            ) : null}
           </div>
-          {items.length > 1 ? (
-            <p className='font-bold underline'>{`${items.length - 1}+ more product `}</p>
-          ) : null}
-        </div>
+        ) : (
+          <p>No items found</p>
+        )}
         <TransactionModal
           id={props.title}
           body='Payment Link'

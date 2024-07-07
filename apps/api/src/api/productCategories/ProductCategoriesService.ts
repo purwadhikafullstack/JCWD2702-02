@@ -1,35 +1,43 @@
 import { prisma } from './../../lib/PrismaClient';
 import { IProductCategory } from './ProductCategoriesTypes';
 
-// Query for get all product Categories
+// Query for get all product Categories (Deleted At = Null)
 export const getProductCategoriesQuery = async () => {
-    return await prisma.category.findMany(
-        {
-            where: {
-                deletedAt: null
-            }
+    return await prisma.category.findMany({ where: { deletedAt: null } });
+};
+
+// Query for get all product Categories
+export const getAllProductCategoriesQuery = async () => {
+    return await prisma.category.findMany();
+};
+
+// Query for get product by categoryId 
+export const getProductByCategoryIdQuery = async (categoryId: string) => {
+    return await prisma.product.findMany({
+        where: {
+            categoryId: parseInt(categoryId)
         }
-    );
+    });
 };
 
 // Query for get category by id
 export const getCategoryByIdQuery = async (id: string) => {
-  return await prisma.category.findUnique({
-    where: { id: parseInt(id) },
-  });
+    return await prisma.category.findUnique({
+        where: { id: parseInt(id) },
+    });
 };
 
 // Query for create category
 export const createCategoryAndCategoryImagesQuery = async (
-  data: IProductCategory,
-  files: any,
+    data: IProductCategory,
+    files: any,
 ) => {
-  return await prisma.category.create({
-    data: {
-      name: data.name,
-      categoryUrl: files[0].path,
-    },
-  });
+    return await prisma.category.create({
+        data: {
+            name: data.name,
+            categoryUrl: files[0].path,
+        },
+    });
 };
 
 // Query for delete category
@@ -51,15 +59,6 @@ export const deleteCategoryAndCategoryImagesQuery = async (categoryId: string) =
 
 // Query for soft delete category
 export const softDeleteCategoryAndCategoryImagesQuery = async (categoryId: string) => {
-    const relatedProducts = await prisma.product.findMany({
-        where: {
-            categoryId: parseInt(categoryId)
-        }
-    });
-
-    if (relatedProducts.length > 0) {
-        throw new Error('Cannot delete category because there are still products associated with it.');
-    }
     return await prisma.category.update({
         where: {
             id: parseInt(categoryId)

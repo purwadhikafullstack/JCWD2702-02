@@ -1,5 +1,4 @@
 'use client'
-
 import { useRouter } from 'next/navigation'
 import { FiPlus } from 'react-icons/fi'
 import { useFormik } from 'formik'
@@ -9,6 +8,8 @@ import { createWarehouseSchema } from '@/helpers/admin/schema/createWarehouseSch
 import { useGetProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
 import { useGetCities } from '@/helpers/rajaOngkir/hooks/getCities'
 import { useCreateWarehouse } from '@/helpers/admin/hooks/useCreateWarehouse'
+import { IoIosArrowBack } from "react-icons/io"
+import Link from "next/link";
 
 export default function ManageWarehouse() {
   const navigate = useRouter()
@@ -80,6 +81,16 @@ export default function ManageWarehouse() {
 
   return (
     <div className='container mx-auto max-h-[95vh] overflow-y-auto rounded-md border border-gray-300 p-4 shadow-lg'>
+      <div className="text-sm breadcrumbs">
+        <ul>
+          <li className="flex gap-2">
+            <Link className="hover:text-eggplant" href={`/admin/warehouse`}>
+              <IoIosArrowBack /> All Warehouse
+            </Link>
+          </li>
+          <li>All Warehouses</li>
+        </ul>
+      </div>
       <div className='mb-4 flex items-center justify-between'>
         <div className='text-2xl font-semibold'>Manage Warehouse</div>
         <label

@@ -7,7 +7,6 @@ export const useCreateProduct = () => {
             toast.success("Product Created")
         },
         onError: (error: any) => {
-            console.log(error)
             toast.error(error.response?.data.message)
         }
     })

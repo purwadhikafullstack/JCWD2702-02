@@ -32,24 +32,28 @@ export default function SearchAndFilterBoxAdminProduct({ initialSearchParams, re
 
     const handleSearch = async (search: string) => {
         setSearch(search);
-        await updateURL(search, sort, categoryId, page);
+        setPage(1);
+        await updateURL(search, sort, categoryId, 1);
         refetchDataProducts
     };
 
     const handleSort = async (sort: string) => {
         setSort(sort);
-        await updateURL(search, sort, categoryId, page);
+        setPage(1);
+        await updateURL(search, sort, categoryId, 1);
         refetchDataProducts()
     };
 
     const handleCategory = async (categoryIdMap: string) => {
         if (categoryIdMap == categoryId) {
             setCategoryId('');
-            await updateURL(search, sort, '', page);
+            setPage(1);
+            await updateURL(search, sort, '', 1);
             refetchDataProducts()
         } else {
             setCategoryId(categoryIdMap);
-            await updateURL(search, sort, categoryIdMap, page);
+            setPage(1);
+            await updateURL(search, sort, categoryIdMap, 1);
             refetchDataProducts()
         }
     };
@@ -59,8 +63,6 @@ export default function SearchAndFilterBoxAdminProduct({ initialSearchParams, re
         await updateURL(search, sort, categoryId, page);
         refetchDataProducts();
     };
-
-    console.log(totalProducts)
 
     return (
         <div className="flex flex-col items-center justify-center w-full mt-[30px]">
@@ -103,7 +105,7 @@ export default function SearchAndFilterBoxAdminProduct({ initialSearchParams, re
                         className='flex items-end justify-end'
                         simple
                         pageSize={8}
-                        defaultCurrent={page}
+                        current={page}
                         total={totalProducts}
                         onChange={handlePageChange}
                     />

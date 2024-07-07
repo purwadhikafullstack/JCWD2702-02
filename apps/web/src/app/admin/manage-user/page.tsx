@@ -1,5 +1,4 @@
 'use client'
-
 import { useRouter } from 'next/navigation'
 import { useGetAllUser } from '@/helpers/admin/hooks/getAllUser'
 import { FiPlus } from 'react-icons/fi'
@@ -7,6 +6,8 @@ import { useCreateUser } from '@/helpers/admin/hooks/useCreateUser'
 import { useFormik } from 'formik'
 import { createUserSchema } from '@/helpers/admin/schema/createUserSchema'
 import { useEffect } from 'react'
+import { IoIosArrowBack } from "react-icons/io"
+import Link from "next/link";
 
 export default function ManageUser() {
   const navigate = useRouter()
@@ -41,6 +42,16 @@ export default function ManageUser() {
 
   return (
     <div className='container mx-auto max-h-[95vh] overflow-y-auto rounded-md border border-gray-300 p-4 shadow-lg'>
+      <div className="text-sm breadcrumbs">
+        <ul>
+          <li className="flex gap-2">
+            <Link className="hover:text-eggplant" href={`/admin/warehouse`}>
+              <IoIosArrowBack /> All Warehouse
+            </Link>
+          </li>
+          <li>All Users</li>
+        </ul>
+      </div>
       <div className='mb-4 flex items-center justify-between'>
         <div className='text-2xl font-semibold'>Manage User</div>
         <label

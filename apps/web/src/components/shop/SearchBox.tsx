@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { useGetAllProductCategories } from '@/helpers/shop/hooks/useGetAllProductCategories';
@@ -38,26 +38,38 @@ export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters
         router.push(`/shop?${queryString}`);
     };
 
+    useEffect(() => {
+        const searchParams = new URLSearchParams();
+        const pageFromURL = searchParams.get('page');
+        if (pageFromURL) {
+            setPage(Number(pageFromURL));
+        }
+    }, []);
+
     const handleSearch = async (search: string) => {
         setSearch(search);
-        await updateURL(search, sort, minPrice, maxPrice, categoryId, page);
+        setPage(1);
+        await updateURL(search, sort, minPrice, maxPrice, categoryId, 1);
         refetchDataProducts
     };
 
     const handleSort = async (sort: string) => {
         setSort(sort);
-        await updateURL(search, sort, minPrice, maxPrice, categoryId, page);
+        setPage(1);
+        await updateURL(search, sort, minPrice, maxPrice, categoryId, 1);
         refetchDataProducts()
     };
 
     const handleCategory = async (categoryIdMap: string) => {
         if (categoryIdMap == categoryId) {
             setCategoryId('');
-            await updateURL(search, sort, minPrice, maxPrice, '', page);
+            setPage(1);
+            await updateURL(search, sort, minPrice, maxPrice, '', 1);
             refetchDataProducts()
         } else {
             setCategoryId(categoryIdMap);
-            await updateURL(search, sort, minPrice, maxPrice, categoryIdMap, page);
+            setPage(1);
+            await updateURL(search, sort, minPrice, maxPrice, categoryIdMap, 1);
             refetchDataProducts()
         }
     };
@@ -69,7 +81,8 @@ export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters
         if ((!isNaN(minPriceValue) && minPriceValue >= 0) || (!isNaN(maxPriceValue) && maxPriceValue >= 0)) {
             applyFilters(minPriceValue, maxPriceValue);
         }
-        await updateURL(search, sort, minPrice || '', maxPrice || '', categoryId, page);
+        setPage(1);
+        await updateURL(search, sort, minPrice || '', maxPrice || '', categoryId, 1);
         refetchDataProducts();
     };
 
@@ -151,7 +164,7 @@ export default function SearchAndFilterBox({ applyFilters, showAdditionalFilters
             )}
             {showAdditionalFilters && (
                 <div className='flex items-end justify-end w-[75%] mt-[40px]'>
-                    <Pagination className='flex items-end justify-end' simple pageSize={8} defaultCurrent={page} total={totalProducts} onChange={handlePageChange} />
+                    <Pagination className='flex items-end justify-end' simple pageSize={8} current={page} total={totalProducts} onChange={handlePageChange} />
                 </div>
             )}
         </div>

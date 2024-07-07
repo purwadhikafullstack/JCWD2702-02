@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useGetAllProducts } from "@/helpers/shop/hooks/useGetAllProducts";
 import AdminProductCard from "@/components/admin/AdminProductCard";
+import { IoIosArrowBack } from "react-icons/io"
 import Link from "next/link";
 import { IoMdCreate } from "react-icons/io";
 import { FaTrashRestoreAlt } from "react-icons/fa";
@@ -28,6 +29,16 @@ export default function Adminproduct({ searchParams }: { searchParams: { search:
                 <title>Admin Products</title>
                 <meta name="description" content="Manage and view all products in the admin panel. Restore deleted products and create new ones." />
             </Head>
+            <div className="text-sm breadcrumbs">
+                <ul>
+                    <li className="flex gap-2">
+                        <Link className="hover:text-eggplant" href={`/admin/warehouse`}>
+                            <IoIosArrowBack /> All Warehouse
+                        </Link>
+                    </li>
+                    <li>All Products</li>
+                </ul>
+            </div>
             <div className="flex justify-between items-center mb-4">
                 <div className="text-2xl font-semibold">Products</div>
                 <div className="flex gap-5">
