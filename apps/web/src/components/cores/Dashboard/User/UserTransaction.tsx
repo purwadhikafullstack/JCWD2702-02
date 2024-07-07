@@ -60,7 +60,7 @@ export default function UserTransaction() {
                     setOrderStatus(x[1])
                     setPage(1)
                   }}
-                  className='btn bg-eggplant text-white sm:btn-xs hover:bg-hover_eggplant'
+                  className='btn md:text-white md:btn md:bg-eggplant md:hover:bg-hover_eggplant bg-eggplant text-white sm:btn-xs hover:bg-hover_eggplant'
                 >
                   {x[0]}
                 </div>
