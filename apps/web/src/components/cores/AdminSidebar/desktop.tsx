@@ -26,8 +26,6 @@ export default function AdminSidebarDesktop() {
 
   const navigate = useRouter()
 
-  console.log(userData?.role == 2)
-
   const { mutationKeepLogin } = useKeepLogin()
 
   const handleLogout = async () => {
@@ -83,7 +81,7 @@ export default function AdminSidebarDesktop() {
             {userData?.role == 2 ? (
               <Link
                 rel='noopener noreferrer'
-                href={`/admin/warehouse/${userData?.role}/dashboard`}
+                href={`/admin/warehouse/${userData?.warehouse}/dashboard`}
                 className='flex items-center space-x-3 rounded-md p-2'
               >
                 <MdDashboardCustomize className='h-5 w-5 fill-current' />
@@ -91,7 +89,7 @@ export default function AdminSidebarDesktop() {
                   DASHBOARD
                 </div>
               </Link>
-            ) : userData?.role == 3 ? (
+            ) : userData?.role == 1 ? (
               <Link
                 rel='noopener noreferrer'
                 href={'/admin/dashboard'}

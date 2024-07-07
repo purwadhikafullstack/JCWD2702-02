@@ -233,7 +233,7 @@ export const midtransNotif = async (
     getTransactionByIdService(Number(orderId)).then((transaction: any) => {
       if (transaction) {
         updateStatusBasedOnMidtransResponse(orderId, data).then((res) => {
-          console.log('result', res);
+          console.log(res);
         });
       }
     });

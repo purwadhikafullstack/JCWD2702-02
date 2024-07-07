@@ -17,7 +17,7 @@ import Head from "next/head";
 export default function WarehouseAdminDashboard({ params }: { params: { warehouseDetail: string } }) {
     const navigate = useRouter()
     const { userData, setUserData }: any = useContext(UserContext)
-    const { dataWarehouseDetail } = useGetWarehouseDetail(params.warehouseDetail);
+    const { dataWarehouseDetail, isError } = useGetWarehouseDetail(params.warehouseDetail);
     const [chartTypePerMonth, setChartTypePerMonth] = useState("bar");
 
     const renderChart = () => {
@@ -33,9 +33,12 @@ export default function WarehouseAdminDashboard({ params }: { params: { warehous
         }
     };
 
-    useEffect(()=>{
-        if(userData?.role != params.warehouseDetail) navigate.push(`/admin/warehouse/${userData?.warehouse}`)
-    },[userData])
+    useEffect(() => {
+        if (isError) {
+            navigate.push(`/admin/warehouse/${userData?.warehouse}`)
+        }
+    }, [isError, navigate, userData?.warehouse])
+
     return (
         <div className="container mx-auto h-full max-h-[95vh] overflow-y-auto rounded-md border border-gray-300 bg-white p-6 shadow-lg">
             <Head>

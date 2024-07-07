@@ -46,14 +46,8 @@ export default function UserInfo() {
       })
 
       setFile(null)
-    } else {
-      console.log('No file selected')
     }
   }
-
-  // useEffect(()=>{
-  //   if(isSuccess)
-  // })
 
   return (
     <div className='flex h-[800px] w-full flex-col items-start justify-around rounded-md border-2 border-white bg-white p-10 shadow-md'>

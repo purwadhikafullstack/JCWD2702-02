@@ -58,7 +58,6 @@ export default function Checkout() {
     if (shippingCostData) setShippingCost(shippingCostData?.data?.data)
   }, [shippingCostData])
 
-  console.log(shippingCostData)
 
   const nearestWarehouse = nearestWarehouseData?.data?.data?.nearestPlace
 

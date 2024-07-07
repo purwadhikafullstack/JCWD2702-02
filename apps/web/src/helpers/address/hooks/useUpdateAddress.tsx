@@ -8,7 +8,6 @@ export const useUpdateAddress = () => {
   const { mutate: mutationUpdateAddress, isSuccess } = useUpdateAddressMutation(
     {
       onSuccess: (res: any) => {
-        console.log(res)
         toast.success(res.data.message, {
           position: 'top-right',
           autoClose: 2000,

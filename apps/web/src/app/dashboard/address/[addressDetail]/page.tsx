@@ -132,7 +132,7 @@ export default function AddressDetail({
 
   return (
     <div className='flex h-screen flex-col items-center justify-center'>
-      <div className='container mx-auto flex h-fit w-[40%] flex-col gap-5 overflow-y-auto rounded-md border border-transparent p-4 shadow-xl transition-all hover:border-eggplant'>
+      <div className='container mx-auto flex h-fit w-[80%] md:w-[40%] flex-col gap-5 overflow-y-auto rounded-md border border-transparent p-4 shadow-xl transition-all hover:border-eggplant'>
         <div>
           <div className='flex w-full justify-center'>
             <h1 className='flex gap-4 text-xl'>Update Address</h1>

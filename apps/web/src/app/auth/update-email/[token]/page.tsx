@@ -17,7 +17,6 @@ export default function UpdateEmail({ params }: any) {
       }}
       validationSchema={updateEmailSchema}
       onSubmit={(values, { resetForm }) => {
-        console.log(values)
         mutationUpdateEmail({
           accesstoken: token,
           email: values.email,

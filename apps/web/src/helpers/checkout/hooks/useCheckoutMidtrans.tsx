@@ -13,7 +13,6 @@ export const useCheckoutMidtrans = () => {
     isError,
   } = useCheckoutMidtransMutation({
     onSuccess: (res: any) => {
-      //   console.log(res)
       toast.success(
         'Create sransaction success, payment link has been sent to your profile',
         {
@@ -33,7 +32,6 @@ export const useCheckoutMidtrans = () => {
       }, 1000)
     },
     onError: (err: any) => {
-      //   console.log(err)
       toast.error(err.response.data.message, {
         position: 'top-right',
         autoClose: 2000,

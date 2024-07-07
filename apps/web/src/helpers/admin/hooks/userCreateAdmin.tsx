@@ -10,7 +10,6 @@ export const useCreateAdmin = () => {
     data: createAdminData,
   } = useCreateAdminMutation({
     onSuccess: (res: any) => {
-      // console.log(res)
       toast.success(res.data.message, {
         position: 'top-right',
         autoClose: 2000,
@@ -24,7 +23,6 @@ export const useCreateAdmin = () => {
       })
     },
     onError: (err: any) => {
-      // console.log(err)
       toast.error(err.response.data.message, {
         position: 'top-right',
         autoClose: 1500,

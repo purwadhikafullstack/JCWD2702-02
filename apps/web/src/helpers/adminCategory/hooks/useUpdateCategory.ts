@@ -10,7 +10,6 @@ export const useUpdateCategory = () => {
             refetchProductCategories()
         },
         onError: (error: any) => {
-            console.log(error.response?.data.message)
             toast.error('Failed to update category')
         }
     })
