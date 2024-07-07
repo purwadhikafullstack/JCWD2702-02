@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { axiosInstanceInterceptor } from './../../../config/axios/axiosInstanceInterceptor'
 
-export const getAllUserQuery = () => {
+export const useGetAllUserQuery = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['all-user'],
     queryFn: async () => {

@@ -1,11 +1,11 @@
-import { getUserCartQuery } from '../api/getUserCartQuery'
+import { useGetUserCartQuery } from '../api/getUserCartQuery'
 
-export const getUserCart = () => {
+export const useGetUserCart = () => {
   const {
     data: dataUserCart,
     isLoading: UserCartLoading,
     refetch,
-  } = getUserCartQuery()
+  } = useGetUserCartQuery()
 
   return { dataUserCart, UserCartLoading, refetch }
 }

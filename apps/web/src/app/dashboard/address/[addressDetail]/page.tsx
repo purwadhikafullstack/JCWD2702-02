@@ -4,11 +4,11 @@ import { useFormik } from 'formik'
 import Loading from '@/components/cores/Loading'
 import { useState, useEffect } from 'react'
 import { createUserAddressSchema } from '@/helpers/address/schema/createUserAddressSchema'
-import { getAddressDetail } from '@/helpers/address/hooks/getAddressDetail'
-import { getProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
-import { getCities } from '@/helpers/rajaOngkir/hooks/getCities'
+import { useGetAddressDetail } from '@/helpers/address/hooks/getAddressDetail'
+import { useGetProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
+import { useGetCities } from '@/helpers/rajaOngkir/hooks/getCities'
 import { useUpdateAddress } from '@/helpers/address/hooks/useUpdateAddress'
-import { getCityDetailed } from '@/helpers/rajaOngkir/hooks/getCityDetailed'
+import { useGetCityDetailed } from '@/helpers/rajaOngkir/hooks/getCityDetailed'
 import axios from 'axios'
 
 interface ILocation {
@@ -22,11 +22,11 @@ export default function AddressDetail({
   params: { adminDetail: string; userDetail: string; addressDetail: string }
 }) {
   const { mutationUpdateAddress, isSuccess } = useUpdateAddress()
-  const { dataAddressDetail, addressDetailLoading } = getAddressDetail(
+  const { dataAddressDetail, addressDetailLoading } = useGetAddressDetail(
     params.addressDetail
   )
 
-  const { dataProvince } = getProvince()
+  const { dataProvince } = useGetProvince()
   const provinceData = dataProvince?.data?.data
 
   const addressDetailData = dataAddressDetail?.data?.data
@@ -77,10 +77,10 @@ export default function AddressDetail({
     },
   })
 
-  const { dataCities } = getCities(formik.values.provinceId)
+  const { dataCities } = useGetCities(formik.values.provinceId)
   const citiesData = dataCities?.data?.data
 
-  const { dataDetailedCity } = getCityDetailed(
+  const { dataDetailedCity } = useGetCityDetailed(
     formik.values.provinceId,
     formik.values.cityId
   )
@@ -132,10 +132,10 @@ export default function AddressDetail({
 
   return (
     <div className='flex h-screen flex-col items-center justify-center'>
-      <div className='container mx-auto flex max-h-[100vh] flex-col gap-5 overflow-y-auto rounded-md border border-transparent p-4 shadow-lg transition-all hover:border-eggplant'>
+      <div className='container mx-auto flex h-fit w-[40%] flex-col gap-5 overflow-y-auto rounded-md border border-transparent p-4 shadow-xl transition-all hover:border-eggplant'>
         <div>
           <div className='flex w-full justify-center'>
-            <h1 className='flex gap-4'>Update Address</h1>
+            <h1 className='flex gap-4 text-xl'>Update Address</h1>
           </div>
           <form
             onSubmit={(event) => {
@@ -147,7 +147,7 @@ export default function AddressDetail({
               <div className='flex items-center justify-end'>
                 <button
                   type='submit'
-                  className='flex h-[40px] items-center justify-center rounded-md border-2 border-[#704b66] px-4 py-2 text-black transition-all hover:border-black hover:bg-[#704b66] hover:text-white'
+                  className='flex h-[40px] items-center justify-center rounded-md border-2 border-[#704b66] px-4 py-2 text-black transition-all hover:border-white hover:bg-[#704b66] hover:text-white'
                   disabled={!formik.dirty || formik.isSubmitting || isLoading}
                 >
                   Update

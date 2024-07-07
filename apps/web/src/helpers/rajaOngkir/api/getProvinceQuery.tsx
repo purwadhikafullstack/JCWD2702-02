@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { axiosInstance } from '@/config/axios/axiosInstance'
 import axios from 'axios'
 
-export const getProvinceQuery = () => {
+export const useGetProvinceQuery = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['province'],
     queryFn: async () => {

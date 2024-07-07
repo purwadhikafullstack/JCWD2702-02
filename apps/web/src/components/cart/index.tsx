@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { getCartDetail } from '@/helpers/cart/hooks/getCartDetail'
+import { useGetCartDetail } from '@/helpers/cart/hooks/getCartDetail'
 import Loading from '../cores/Loading'
 import { useAddToCartDetail } from '@/helpers/cart/hooks/useAddToCartDetail'
 import { MdOutlineDeleteOutline } from 'react-icons/md'
@@ -16,7 +16,7 @@ interface CartProps {
   price: number
   html: string
   productId: number
-  isChecked?: boolean // Optional prop to set the default checked state
+  isChecked?: boolean
 }
 
 function debounce(func: any, wait: any) {
@@ -32,14 +32,15 @@ function debounce(func: any, wait: any) {
 }
 
 export default function Cart(props: CartProps) {
-  // console.log(props)
   const queryClient = useQueryClient()
 
   const { mutationSelectedCart } = useSetSelectedCart()
   const { mutationAddToCartDetail } = useAddToCartDetail()
   const { mutationDeleteCart, isSuccess } = useDeleteCart()
 
-  const { dataCartDetail, CartDetailLoading } = getCartDetail(props.productId)
+  const { dataCartDetail, CartDetailLoading } = useGetCartDetail(
+    props.productId
+  )
   const cartDetailData = dataCartDetail?.data?.data?.cartDetail
   const productImage = dataCartDetail?.data?.data?.productImage
 

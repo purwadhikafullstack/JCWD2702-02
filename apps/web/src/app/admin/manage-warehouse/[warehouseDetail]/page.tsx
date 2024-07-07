@@ -2,10 +2,10 @@
 import { useFormik } from 'formik'
 import Loading from '@/components/cores/Loading'
 import { useState, useEffect } from 'react'
-import { getWarehouseDetail } from '@/helpers/admin/hooks/getWarehouseDetail'
+import { useGetWarehouseDetail } from '@/helpers/admin/hooks/getWarehouseDetail'
 import { createWarehouseSchema } from '@/helpers/admin/schema/createWarehouseSchema'
-import { getProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
-import { getCities } from '@/helpers/rajaOngkir/hooks/getCities'
+import { useGetProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
+import { useGetCities } from '@/helpers/rajaOngkir/hooks/getCities'
 import { useUpdateWarehouseDetail } from '@/helpers/admin/hooks/useUpdateWarehouseDetail'
 import { IoIosArrowBack } from "react-icons/io"
 import Link from "next/link";
@@ -17,12 +17,12 @@ export default function UserDetail({
 }) {
   const { mutationUpdateWarehouse, isSuccess } = useUpdateWarehouseDetail()
 
-  const { dataWarehouseDetail, warehouseDetailLoading } = getWarehouseDetail(
+  const { dataWarehouseDetail, warehouseDetailLoading } = useGetWarehouseDetail(
     params.warehouseDetail
   )
   const warehouseDetailData = dataWarehouseDetail?.data?.data
 
-  const { dataProvince } = getProvince()
+  const { dataProvince } = useGetProvince()
   const provinceData = dataProvince?.data?.data
 
   const [initialValues, setInitialValues] = useState({
@@ -74,7 +74,7 @@ export default function UserDetail({
     },
   })
 
-  const { dataCities } = getCities(formik.values.provinceId)
+  const { dataCities } = useGetCities(formik.values.provinceId)
   const citiesData = dataCities?.data?.data
 
   const handleProvinceChange = (event: any) => {
@@ -257,7 +257,7 @@ export default function UserDetail({
           </form>
           <div className='flex justify-end'>
             <button className='mt-4 rounded-md border border-red-300 px-4 py-2 text-red-600 transition-colors hover:bg-red-100'>
-              Erase Product
+              Erase
             </button>
           </div>
         </div>

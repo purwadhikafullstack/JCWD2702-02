@@ -1,10 +1,10 @@
 import { toast } from 'react-toastify'
 import { Slide } from 'react-toastify'
-import { getUserAddress } from './getUserAddress'
+import { useGetUserAddress } from './getUserAddress'
 import { useDeleteAddressMutation } from '../api/useDeleteAddressMutation'
 
 export const useDeleteAddress = () => {
-  const { refetch } = getUserAddress()
+  const { refetch } = useGetUserAddress()
   const { mutate: mutationDeleteAddress } = useDeleteAddressMutation({
     onSuccess: (res: any) => {
       // console.log(res)

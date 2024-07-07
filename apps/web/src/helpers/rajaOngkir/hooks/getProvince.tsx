@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react'
-import { getProvinceQuery } from '../api/getProvinceQuery'
+import { useGetProvinceQuery } from '../api/getProvinceQuery'
 
-export const getProvince = () => {
+export const useGetProvince = () => {
   const {
     data: dataProvince,
     isLoading: provinceLoading,
     refetch,
-  } = getProvinceQuery()
+  } = useGetProvinceQuery()
 
   return { dataProvince, provinceLoading, refetch }
 }

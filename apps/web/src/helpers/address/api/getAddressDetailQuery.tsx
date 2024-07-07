@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { axiosInstanceInterceptor } from './../../../config/axios/axiosInstanceInterceptor'
 
-export const getAddressDetailQuery = (addressId: string) => {
+export const useGetAddressDetailQuery = (addressId: string) => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['address-detail', addressId],
     queryFn: async () => {

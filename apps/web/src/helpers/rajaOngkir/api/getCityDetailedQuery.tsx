@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { axiosInstance } from '@/config/axios/axiosInstance'
 import axios from 'axios'
 
-export const getCityDetailedQuery = (provinceId: any, cityId: any) => {
+export const useGetCityDetailedQuery = (provinceId: any, cityId: any) => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['cities', provinceId, cityId],
     queryFn: async () => {

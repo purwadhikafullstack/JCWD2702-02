@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useLayoutEffect, useState, useContext } from 'react'
-import { useRouter, usePathname, redirect } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { UserContext } from '@/config/context/userContext'
 import Loading from '@/components/cores/Loading'
 
@@ -20,8 +20,10 @@ export default function ProtectedRouteProvider({
 
   const accessToken = accesstoken
 
-  const adminPermittedRoute: any = ['/admin']
-  const userPermittedRoute: any = ['/dashboard']
+  const adminPermittedRoute: any = ['/admin/']
+  const userPermittedRoute: any = ['/dashboard/user', '/cart', '/checkout']
+  const afterLogin: any = ['/register', '/login']
+  const beforeLogin: any = ['/dashboard/user', '/cart', '/checkout']
 
   const pathname = usePathname()
   const router = useRouter()
@@ -37,11 +39,31 @@ export default function ProtectedRouteProvider({
         userRole == 3 &&
         pathname.includes(adminPermittedRoute)
       ) {
+        console.log(1)
+        router.push('/')
+      } else if (accessToken && afterLogin.includes(pathname)) {
+        console.log(2)
+        router.push('/')
+      } else if (!accesstoken && beforeLogin.includes(pathname)) {
+        console.log(3)
+        router.push('/')
+      } else if (
+        accessToken &&
+        (userRole == 1 || userRole == 2) &&
+        userPermittedRoute.includes(pathname)
+      ) {
+        console.log(4)
+        router.push('/')
+      } else if (!accesstoken && userPermittedRoute.includes(pathname)) {
+        console.log(5)
+        router.push('/')
+      } else if (!accesstoken && pathname.includes(adminPermittedRoute)) {
+        console.log(6)
         router.push('/')
       } else {
         setLoading(false)
       }
-    }, 2000)
+    }, 1000)
     return () => clearTimeout(timer)
   }, [pathname, userRole])
 
@@ -51,31 +73,3 @@ export default function ProtectedRouteProvider({
 
   return <>{children}</>
 }
-
-// export default function ProtectedRouteProvider({
-//   children,
-// }: {
-//   children: any
-// }) {
-//   const { userData }: any = useContext(UserContext)
-//   let accesstoken: any = localStorage.getItem('auth')
-//   accesstoken = JSON.parse(accesstoken)
-
-//   const navigate = useRouter()
-//   const path = usePathname()
-
-//   const userRole = userData?.role
-//   const accessToken = accesstoken?.acctkn
-
-//   console.log(userRole)
-//   console.log(accessToken)
-//   console.log(!accessToken)
-
-//   const authorizeUser = async () => {}
-
-//   useEffect(() => {
-//     authorizeUser()
-//   }, [])
-
-//   return <>{children}</>
-// }

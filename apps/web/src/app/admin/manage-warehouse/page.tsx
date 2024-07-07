@@ -1,29 +1,26 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { getAllUser } from '@/helpers/admin/hooks/getAllUser'
 import { FiPlus } from 'react-icons/fi'
 import { useFormik } from 'formik'
-import { useEffect } from 'react'
-import { getWarehouse } from '@/helpers/admin/hooks/getWarehouse'
+import { useEffect, useRef } from 'react'
+import { useGetWarehouse } from '@/helpers/admin/hooks/getWarehouse'
 import { createWarehouseSchema } from '@/helpers/admin/schema/createWarehouseSchema'
-import { getProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
-import { getCities } from '@/helpers/rajaOngkir/hooks/getCities'
+import { useGetProvince } from '@/helpers/rajaOngkir/hooks/getProvince'
+import { useGetCities } from '@/helpers/rajaOngkir/hooks/getCities'
 import { useCreateWarehouse } from '@/helpers/admin/hooks/useCreateWarehouse'
 import { IoIosArrowBack } from "react-icons/io"
 import Link from "next/link";
 
 export default function ManageWarehouse() {
   const navigate = useRouter()
-  const { dataAllUser } = getAllUser()
+
   const { mutationCreateWarehouse, isSuccess } = useCreateWarehouse()
 
-  const { dataWarehouse } = getWarehouse()
+  const { dataWarehouse } = useGetWarehouse()
   const warehouseData = dataWarehouse?.data?.data
 
-  const { dataProvince } = getProvince()
+  const { dataProvince } = useGetProvince()
   const provinceData = dataProvince?.data?.data
-
-  const allUserData = dataAllUser?.data?.data
 
   const formik = useFormik({
     initialValues: {
@@ -54,13 +51,19 @@ export default function ManageWarehouse() {
     },
   })
 
-  const { dataCities } = getCities(formik.values.provinceId)
+  const { dataCities } = useGetCities(formik.values.provinceId)
   const citiesData = dataCities?.data?.data
+
+  const cityTypeRef = useRef<HTMLSelectElement>(null)
 
   const handleProvinceChange = (event: any) => {
     const values = event.target.value.split(',')
     formik.setFieldValue('provinceId', values[0])
     formik.setFieldValue('province', values[1])
+
+    if (cityTypeRef.current) {
+      cityTypeRef.current.value = 'DEFAULT'
+    }
   }
 
   const handleCityChange = (event: any) => {
@@ -146,8 +149,9 @@ export default function ManageWarehouse() {
               </div>
               <div className='w-full'>
                 <select
+                  ref={cityTypeRef}
+                  defaultValue={'DEFAULT'}
                   onChange={handleCityChange}
-                  value={`${formik.values.cityId},${formik.values.city}`}
                   className={`select select-bordered w-full ${formik.errors.city ? 'border-red-500' : ''}`}
                   disabled={!formik.values.provinceId}
                 >

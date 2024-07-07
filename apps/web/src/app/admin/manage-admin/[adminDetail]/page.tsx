@@ -1,6 +1,7 @@
 'use client'
-import { getWarehouseAdminDetail } from '@/helpers/admin/hooks/getWarehouseAdminDetail'
-import { getWarehouse } from '@/helpers/admin/hooks/getWarehouse'
+
+import { useGetWarehouseAdminDetail } from '@/helpers/admin/hooks/getWarehouseAdminDetail'
+import { useGetWarehouse } from '@/helpers/admin/hooks/getWarehouse'
 import { useFormik } from 'formik'
 import Loading from '@/components/cores/Loading'
 import { useState, useEffect } from 'react'
@@ -20,9 +21,9 @@ export default function AdminDetail({
   const { mutationDeleteAdmin, isSuccess } = useDeleteAdmin()
 
   const { dataWarehouseAdminDetail, warehouseAdminDetailLoading } =
-    getWarehouseAdminDetail(params.adminDetail)
+    useGetWarehouseAdminDetail(params.adminDetail)
 
-  const { dataWarehouse } = getWarehouse()
+  const { dataWarehouse } = useGetWarehouse()
 
   const warehouseAdminData = dataWarehouseAdminDetail?.data?.data
   const warehouseData = dataWarehouse?.data?.data

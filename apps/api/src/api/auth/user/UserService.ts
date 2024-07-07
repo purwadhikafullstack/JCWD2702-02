@@ -69,6 +69,14 @@ export const createUserAddressService = async ({
   });
 };
 
+export const findAllUserAddressService = async (uid: string) => {
+  return await prisma.address.findMany({
+    where: {
+      userId: uid,
+    },
+  });
+};
+
 export const findUserAddressService = async ({ uid }: { uid: string }) => {
   return await prisma.address.findMany({
     where: {
@@ -164,6 +172,14 @@ export const updateUserAddressService = async ({
   longitude,
   latitude,
 }: IReqcreateUserAddressService) => {
+  const findAddress = await prisma.address.findUnique({
+    where: {
+      id: addressId,
+    },
+  });
+
+  if (findAddress?.userId !== uid) throw new Error('Unauthorized');
+
   await prisma.address.update({
     where: {
       id: Number(addressId),

@@ -1,11 +1,11 @@
-import { getUserDetailQuery } from '../api/getUserDetailQuery'
+import { useGetUserDetailQuery } from '../api/getUserDetailQuery'
 
-export const getUserDetail = (userId: string) => {
+export const useGetUserDetail = (userId: string) => {
   const {
     data: dataUserDetail,
     isLoading: userDetailLoading,
     refetch,
-  } = getUserDetailQuery(userId)
+  } = useGetUserDetailQuery(userId)
 
   return { dataUserDetail, userDetailLoading, refetch }
 }

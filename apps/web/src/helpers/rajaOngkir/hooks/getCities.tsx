@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { getCitiesQuery } from '../api/getCitiesQuery'
+import { useGetCitiesQuery } from '../api/getCitiesQuery'
 
-export const getCities = (provinceId: any) => {
+export const useGetCities = (provinceId: any) => {
   const {
     data: dataCities,
     isLoading: citiesLoading,
     refetch,
-  } = getCitiesQuery(provinceId)
+  } = useGetCitiesQuery(provinceId)
 
   return { dataCities, citiesLoading, refetch }
 }

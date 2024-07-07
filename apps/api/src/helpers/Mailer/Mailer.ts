@@ -18,7 +18,7 @@ export const sendMail = async ({
   subject,
 }: ISendMailParams) => {
   const verificationHTML = fs.readFileSync(
-    'src/template/EmailVerification.html',
+    'src/template/EmailConfirmation.html',
     'utf-8',
   );
 
@@ -27,7 +27,8 @@ export const sendMail = async ({
 
   verificationHTMLCompiler = verificationHTMLCompiler({
     username: username,
-    link: `http://localhost:3000/auth/${link}/${accesstoken}`,
+    link: `${process.env.APP_URL}/auth/${link}/${accesstoken}`,
+    subject: subject,
   });
 
   transporterNodemailer.sendMail({

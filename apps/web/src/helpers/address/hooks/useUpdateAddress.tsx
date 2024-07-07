@@ -1,10 +1,10 @@
 import { toast } from 'react-toastify'
 import { Slide } from 'react-toastify'
-import { getUserAddress } from './getUserAddress'
+import { useGetUserAddress } from './getUserAddress'
 import { useUpdateAddressMutation } from '../api/useUpdateAddressMutation'
 
 export const useUpdateAddress = () => {
-  const { refetch } = getUserAddress()
+  const { refetch } = useGetUserAddress()
   const { mutate: mutationUpdateAddress, isSuccess } = useUpdateAddressMutation(
     {
       onSuccess: (res: any) => {

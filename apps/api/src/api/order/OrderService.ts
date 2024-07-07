@@ -153,20 +153,80 @@ export const createOrderService = async ({
       });
     });
 
+    findCheckoutItem.map(async (x: any) => {
+      await tx.product.update({
+        where: {
+          id: x.Product.id,
+        },
+        data: {
+          reservedQuantity: x.Product.reservedQuantity + x.qty,
+        },
+      });
+    });
+
     await tx.orderItem.createMany({
       data: [...orderItemsArr],
     });
 
-    // await tx.carts.deleteMany({
-    //   where: {
-    //     selected: true,
-    //   },
-    // });
+    await tx.carts.deleteMany({
+      where: {
+        userId: uid,
+        selected: true,
+      },
+    });
   });
 };
 
-export const getUserOrderService = async (uid: string) => {
-  return await prisma.order.findMany({
+export const getUserOrderService = async (
+  uid: string,
+  page: number,
+  limit: number,
+  status: string,
+) => {
+  const pageNumber = page;
+
+  if (status != 'All') {
+    const totalOrder = await prisma.order.count({
+      where: {
+        userId: uid,
+        status: status as OrderStatus,
+      },
+    });
+
+    const result = await prisma.order.findMany({
+      where: {
+        userId: uid,
+        status: status as OrderStatus,
+      },
+      include: {
+        items: {
+          include: {
+            product: {
+              include: {
+                ProductImages: true,
+              },
+            },
+          },
+        },
+        address: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      skip: (Number(pageNumber) - 1) * limit,
+      take: limit,
+    });
+
+    return { result, totalOrder };
+  }
+
+  const totalOrder = await prisma.order.count({
+    where: {
+      userId: uid,
+    },
+  });
+
+  const result = await prisma.order.findMany({
     where: {
       userId: uid,
     },
@@ -185,7 +245,11 @@ export const getUserOrderService = async (uid: string) => {
     orderBy: {
       createdAt: 'desc',
     },
+    skip: (Number(pageNumber) - 1) * limit,
+    take: limit,
   });
+
+  return { result, totalOrder };
 };
 
 export const getTransactionByIdService = async (orderId: number) => {
@@ -209,6 +273,59 @@ export const updateTransactionStatusService = async ({
     },
     data: {
       status: status as OrderStatus,
+    },
+  });
+};
+
+export const cancelReservedQuatityService = async (orderId: number) => {
+  const findOrderById = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+
+  if (!findOrderById) throw new Error('Order not found');
+
+  const findOrderItems = await prisma.orderItem.findMany({
+    where: {
+      orderId: findOrderById.id,
+    },
+    include: {
+      product: true,
+    },
+  });
+
+  findOrderItems.map(async (x: any) => {
+    await prisma.product.update({
+      where: {
+        id: x.product.id,
+      },
+      data: {
+        reservedQuantity: x.product.reservedQuantity - x.qty,
+      },
+    });
+  });
+};
+
+export const getTransactionDetailService = async (
+  orderId: number,
+  uid: string,
+) => {
+  return await prisma.order.findUnique({
+    where: {
+      id: orderId,
+      userId: uid,
+    },
+    include: {
+      items: {
+        include: {
+          product: {
+            include: {
+              ProductImages: true,
+            },
+          },
+        },
+      },
     },
   });
 };

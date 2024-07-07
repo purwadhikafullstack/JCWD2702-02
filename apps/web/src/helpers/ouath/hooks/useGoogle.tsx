@@ -4,6 +4,7 @@ import { Slide } from 'react-toastify'
 import { setCookie } from '@/config/cookie'
 import { UserContext } from '@/config/context/userContext'
 import { useContext } from 'react'
+import { useRouter } from 'next/navigation'
 
 export const useOauthLogin = () => {
   const { userData, setUserData }: any = useContext(UserContext)
@@ -30,17 +31,17 @@ export const useOauthLogin = () => {
       )
     },
     onError: (err: any) => {
-      toast.error(err.response.data.message, {
-        position: 'top-right',
-        autoClose: 1500,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'colored',
-        transition: Slide,
-      })
+      // toast.error(err.response.data.message, {
+      //   position: 'top-right',
+      //   autoClose: 1500,
+      //   hideProgressBar: true,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: 'colored',
+      //   transition: Slide,
+      // })
       // console.log(err)
     },
   })

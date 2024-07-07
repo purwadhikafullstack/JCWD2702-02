@@ -1,14 +1,16 @@
-import { getCartDetail } from '@/helpers/cart/hooks/getCartDetail'
+import { useGetCartDetail } from '@/helpers/cart/hooks/getCartDetail'
 import Image from 'next/image'
 import Loading from '../cores/Loading'
 
 export default function SelectedCart(props: any) {
-  const { dataCartDetail, CartDetailLoading } = getCartDetail(props.productId)
+  const { dataCartDetail, CartDetailLoading } = useGetCartDetail(
+    props.productId
+  )
 
   const cartDetailData = dataCartDetail?.data?.data?.cartDetail
   const productImage = dataCartDetail?.data?.data?.productImage[0]?.productUrl
 
-  if (CartDetailLoading || !cartDetailData || !productImage) return <Loading />
+  if (!dataCartDetail) return <Loading />
   return (
     <div className='card card-side h-[170px] border-2 border-white bg-concrete shadow-xl'>
       <figure className='w-[50%] bg-ebony'>
@@ -29,6 +31,13 @@ export default function SelectedCart(props: any) {
             currency: 'IDR',
           })}
         </p>
+      </div>
+      <div
+        className='btn'
+        onClick={() => console.log(props.productId)}
+        // onClick={() => console.log(dataCartDetail)}
+      >
+        test
       </div>
     </div>
   )

@@ -31,7 +31,9 @@ export default function AdminLogin() {
         if (userData.role == 1) {
           return navigate.push('/admin/warehouse')
         } else if (userData.role == 2) {
-          return navigate.push(`/admin/warehouse/${loginData.warehouse}`)
+          return navigate.push(
+            `/admin/warehouse/${loginData.warehouse}/dashboard`
+          )
         }
       }, 1000)
     }

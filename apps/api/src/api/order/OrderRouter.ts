@@ -4,6 +4,8 @@ import {
   checkoutMidtrans,
   getUserOrder,
   midtransNotif,
+  test,
+  getTransactionDetail,
 } from './OrderController';
 import { tokenVerify } from '@/helpers/Token';
 
@@ -14,5 +16,5 @@ router.post('/orders', orderController.createOrder.bind(orderController));
 router.post('/checkout-midtrans', tokenVerify, checkoutMidtrans);
 router.get('/user', tokenVerify, getUserOrder);
 router.post('/notification', midtransNotif);
-
+router.get('/detail', tokenVerify, getTransactionDetail);
 export default router;

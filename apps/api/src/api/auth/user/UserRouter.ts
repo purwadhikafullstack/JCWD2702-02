@@ -26,6 +26,6 @@ router.post('/main-address', tokenVerify, mainUserAddress);
 router.get('/address-detail', tokenVerify, findUserAddressDetail);
 router.post('/delete-address', tokenVerify, deleteUserAddress);
 router.get('/detail-address', tokenVerify, getAddressDetail);
-router.post('/update-address', tokenVerify, updateUserAddress);
+router.patch('/update-address', tokenVerify, updateUserAddress);
 
 export default router;

@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useGetUser } from '@/helpers/auth/hooks/useGetUser'
 import { useResetPassword } from './../../../../helpers/auth/hooks/password/useResetPassword'
 import { useUpdateEmailRequest } from './../../../../helpers/auth/hooks/email/useUpdatePasswordRequest'
@@ -7,13 +7,14 @@ import Image from 'next/image'
 import UserModal from '../../Modal/UserUpdate'
 import { useUpdateUserImage } from '@/helpers/auth/hooks/userImge/useUpdateUserImage'
 import { MdMessage, MdMail, MdLocalPhone } from 'react-icons/md'
+import { toast } from 'react-toastify'
 
 export default function UserInfo() {
   const { dataUser, refetch } = useGetUser()
   const [file, setFile]: any = useState(null)
   const { mutationResetPassword } = useResetPassword()
   const { mutationUpdateEmailRequest } = useUpdateEmailRequest()
-  const { mutationUpdateUserImage } = useUpdateUserImage()
+  const { mutationUpdateUserImage, isSuccess } = useUpdateUserImage()
 
   const userInfo = dataUser?.data?.data
   const userImage = userInfo?.userImageUrl
@@ -25,6 +26,16 @@ export default function UserInfo() {
 
   const handleSubmit = (event: any) => {
     event.preventDefault()
+    const acceptedFormat = ['jpg', 'jpeg', 'webp', 'png', 'svg']
+    let validator = file[0].name.split('.')
+
+    if (
+      !acceptedFormat.includes(validator[validator.length - 1].toLowerCase()) ||
+      file[0].size > 1 * 1024 * 1024
+    ) {
+      toast.error(`Format Not Acceptable or File is too large`)
+    }
+
     if (file) {
       const fd = new FormData()
 
@@ -39,6 +50,10 @@ export default function UserInfo() {
       console.log('No file selected')
     }
   }
+
+  // useEffect(()=>{
+  //   if(isSuccess)
+  // })
 
   return (
     <div className='flex h-[800px] w-full flex-col items-start justify-around rounded-md border-2 border-white bg-white p-10 shadow-md'>
@@ -76,6 +91,7 @@ export default function UserInfo() {
                 className='file-input w-full max-w-xs border-eggplant text-black'
               />
               <button
+                disabled={!file}
                 onClick={handleSubmit}
                 className='btn border-ebony bg-ebony text-bouquet hover:border-eggplant hover:bg-second_ebony'
               >

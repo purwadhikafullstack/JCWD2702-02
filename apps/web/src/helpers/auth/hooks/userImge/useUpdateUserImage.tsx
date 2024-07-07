@@ -8,19 +8,23 @@ import { useGetUser } from '../useGetUser'
 export const useUpdateUserImage = () => {
   const { refetch } = useGetUser()
   const navigate = useRouter()
-  const { mutate: mutationUpdateUserImage, isPending } =
-    useUpdateUserImageMutation({
-      onSuccess: (res: any) => {
-        console.log(res)
-        refetch()
-      },
-      onError: (err: any) => {
-        console.log(err)
-      },
-    })
+  const {
+    mutate: mutationUpdateUserImage,
+    isPending,
+    isSuccess,
+  } = useUpdateUserImageMutation({
+    onSuccess: (res: any) => {
+      console.log(res)
+      refetch()
+    },
+    onError: (err: any) => {
+      console.log(err)
+    },
+  })
 
   return {
     mutationUpdateUserImage,
     isPending,
+    isSuccess,
   }
 }

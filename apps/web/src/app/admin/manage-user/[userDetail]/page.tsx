@@ -2,7 +2,7 @@
 import { useFormik } from 'formik'
 import Loading from '@/components/cores/Loading'
 import { useState, useEffect } from 'react'
-import { getUserDetail } from '@/helpers/admin/hooks/getUserDetail'
+import { useGetUserDetail } from '@/helpers/admin/hooks/getUserDetail'
 import AddressBox from '@/components/cores/Dashboard/User/AddressBox'
 import { useUpdateUserData } from '@/helpers/admin/hooks/useUpdateUserData'
 import { useDeleteUser } from '@/helpers/admin/hooks/useDeleteUser'
@@ -20,7 +20,9 @@ export default function UserDetail({
   const { mutationDeleteUser, isSuccess } = useDeleteUser()
 
   const { mutationUpdateUserData } = useUpdateUserData()
-  const { dataUserDetail, userDetailLoading } = getUserDetail(params.userDetail)
+  const { dataUserDetail, userDetailLoading } = useGetUserDetail(
+    params.userDetail
+  )
 
   const userDetailData = dataUserDetail?.data?.data
   const userAddressData = userDetailData?.Address

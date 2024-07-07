@@ -9,9 +9,8 @@ export const useUpdateUserImageMutation = ({
   onSuccess: any
   onError: any
 }) => {
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: async ({ data }: { data: any }) => {
-      console.log('AAAA')
       return await axiosInstanceInterceptor.post(
         '/auth/user/image-uploader',
         data
@@ -24,5 +23,6 @@ export const useUpdateUserImageMutation = ({
   return {
     mutate,
     isPending,
+    isSuccess,
   }
 }

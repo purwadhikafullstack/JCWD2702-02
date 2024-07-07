@@ -1,11 +1,11 @@
-import { getUserAddressQuery } from '../api/getUserAddressQuery'
+import { useGetUserAddressQuery } from '../api/getUserAddressQuery'
 
-export const getUserAddress = () => {
+export const useGetUserAddress = () => {
   const {
     data: dataUserAddress,
     isLoading: UserAddressLoading,
     refetch,
-  } = getUserAddressQuery()
+  } = useGetUserAddressQuery()
 
   return { dataUserAddress, UserAddressLoading, refetch }
 }

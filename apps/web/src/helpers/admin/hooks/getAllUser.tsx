@@ -1,11 +1,11 @@
-import { getAllUserQuery } from '../api/getAllUserQuery'
+import { useGetAllUserQuery } from '../api/getAllUserQuery'
 
-export const getAllUser = () => {
+export const useGetAllUser = () => {
   const {
     data: dataAllUser,
     isLoading: allUserLoading,
     refetch,
-  } = getAllUserQuery()
+  } = useGetAllUserQuery()
 
   return { dataAllUser, allUserLoading, refetch }
 }

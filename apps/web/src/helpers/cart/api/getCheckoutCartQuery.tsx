@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { axiosInstanceInterceptor } from './../../../config/axios/axiosInstanceInterceptor'
 
-export const getCheckoutCartQuery = () => {
+export const useGetCheckoutCartQuery = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['cart-checkout'],
     queryFn: async () => {

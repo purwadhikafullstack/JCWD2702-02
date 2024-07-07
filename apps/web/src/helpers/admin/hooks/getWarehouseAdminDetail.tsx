@@ -1,11 +1,11 @@
-import { getWarehouseAdminDetailQuery } from '../api/getWarehouseAdminDetailQuery'
+import { useGetWarehouseAdminDetailQuery } from '../api/getWarehouseAdminDetailQuery'
 
-export const getWarehouseAdminDetail = (adminId: string) => {
+export const useGetWarehouseAdminDetail = (adminId: string) => {
   const {
     data: dataWarehouseAdminDetail,
     isLoading: warehouseAdminDetailLoading,
     refetch,
-  } = getWarehouseAdminDetailQuery(adminId)
+  } = useGetWarehouseAdminDetailQuery(adminId)
 
   return { dataWarehouseAdminDetail, warehouseAdminDetailLoading, refetch }
 }
